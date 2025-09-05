@@ -65,3 +65,6 @@ gem "ruby_ui", "~> 1.0", group: :development, require: false
 gem "phlex-rails", "~> 2.3"
 
 gem "tailwind_merge", "~> 1.3"
+
+gem "omniauth-auth0", "~> 3.0"
+gem "omniauth-rails_csrf_protection", "~> 1.0" # prevents forged authentication requests
