@@ -1,0 +1,353 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'thor'
+require 'yaml'
+require 'fileutils'
+
+# Optional colorize gem for better output
+begin
+  require 'colorize'
+  COLORIZE_AVAILABLE = true
+rescue LoadError
+  COLORIZE_AVAILABLE = false
+end
+
+class RenameApp < Thor
+  include Thor::Actions
+
+  def self.exit_on_failure?
+    true
+  end
+
+  desc "rename [NEW_NAME]", "Rename the Rails application"
+  option :from, type: :string, desc: "Current application name (auto-detected if not provided)"
+  option :dry_run, type: :boolean, default: false, desc: "Preview changes without executing them"
+  option :backup, type: :boolean, default: false, desc: "Create backup of modified files"
+  option :force, type: :boolean, default: false, desc: "Skip confirmation prompts"
+
+  def rename(new_name = nil)
+    @dry_run = options[:dry_run]
+    @backup = options[:backup] || @dry_run
+    @force = options[:force]
+
+    # Get new app name
+    new_name = ask_for_name unless new_name
+    
+    # Validate new name
+    unless valid_name?(new_name)
+      colored_say "Error: '#{new_name}' is not a valid Rails application name", :red
+      exit 1
+    end
+
+    # Detect current name
+    current_name = options[:from] || detect_current_name
+    unless current_name
+      colored_say "Error: Could not detect current application name", :red
+      exit 1
+    end
+
+    colored_say "Renaming Rails app from '#{current_name}' to '#{new_name}'", :green
+
+    # Show what will change
+    preview_changes(current_name, new_name)
+
+    # Confirm unless forced
+    unless @force || @dry_run
+      exit 0 unless yes?("Proceed with renaming? (y/N)")
+    end
+
+    # Check for uncommitted changes
+    check_git_status unless @force
+
+    # Perform rename
+    perform_rename(current_name, new_name)
+
+    if @dry_run
+      colored_say "\nDry run completed. No files were modified.", :yellow
+    else
+      colored_say "\nRename completed successfully!", :green
+      colored_say "Don't forget to:", :cyan
+      say "  - Update your git remote if repository name changed"
+      say "  - Run: rails tmp:clear"
+      say "  - Run: bin/rails console (to verify)"
+      say "  - Run your test suite"
+    end
+  end
+
+  private
+
+  def ask_for_name
+    name = ask("Enter the new application name:")
+    exit 1 if name.nil? || name.strip.empty?
+    name.strip
+  end
+
+  def valid_name?(name)
+    return false if name.nil? || name.strip.empty?
+    
+    # Must be a valid Ruby constant name
+    return false unless name.match?(/\A[A-Z][a-zA-Z0-9]*\z/)
+    
+    # Check against Rails reserved words
+    rails_reserved = %w[
+      Application Configuration Rails ActiveRecord ActionController
+      ActionView ActionMailer ActiveJob ActiveStorage ActiveSupport
+      App Test Development Production Staging
+    ]
+    
+    return false if rails_reserved.include?(name)
+    
+    true
+  end
+
+  def detect_current_name
+    config_file = File.join(Dir.pwd, 'config', 'application.rb')
+    return nil unless File.exist?(config_file)
+
+    content = File.read(config_file)
+    match = content.match(/^module\s+(\w+)/)
+    match ? match[1] : nil
+  end
+
+  def preview_changes(current_name, new_name)
+    colored_say "\nChanges to be made:", :cyan
+    
+    name_variants = generate_name_variants(current_name, new_name)
+    files_to_change = get_files_to_change
+    
+    files_to_change.each do |file_path|
+      next unless File.exist?(file_path)
+      
+      changes = preview_file_changes(file_path, name_variants)
+      if changes.any?
+        colored_say "  #{file_path}:", :white
+        changes.each { |change| colored_say "    #{change}", :light_blue }
+      end
+    end
+  end
+
+  def generate_name_variants(current_name, new_name)
+    {
+      # Module name (CamelCase)
+      module: { from: current_name, to: new_name },
+      # Underscore (snake_case)
+      underscore: { 
+        from: camel_to_underscore(current_name), 
+        to: camel_to_underscore(new_name) 
+      },
+      # Hyphen (kebab-case)
+      hyphen: { 
+        from: camel_to_hyphen(current_name), 
+        to: camel_to_hyphen(new_name) 
+      },
+      # Lowercase
+      lowercase: { 
+        from: current_name.downcase, 
+        to: new_name.downcase 
+      },
+      # Human readable
+      human: {
+        from: camel_to_human(current_name),
+        to: camel_to_human(new_name)
+      }
+    }
+  end
+
+  def camel_to_underscore(name)
+    name.gsub(/([A-Z])/, '_\1').downcase.sub(/^_/, '')
+  end
+
+  def camel_to_hyphen(name)
+    name.gsub(/([A-Z])/, '-\1').downcase.sub(/^-/, '')
+  end
+
+  def camel_to_human(name)
+    name.gsub(/([A-Z])/, ' \1').strip
+  end
+
+  def get_files_to_change
+    base_files = [
+      'config/application.rb',
+      'config/deploy.yml',
+      'Dockerfile',
+      'app/views/layouts/application.html.erb',
+      'app/views/pwa/manifest.json.erb'
+    ]
+
+    # Add any view files that might contain the app name
+    view_files = Dir.glob('app/views/**/*.rb').select do |file|
+      File.file?(file) && file_contains_app_name?(file)
+    end
+
+    # Add package.json if it exists
+    base_files << 'package.json' if File.exist?('package.json')
+
+    # Add session store if it exists
+    session_store = 'config/initializers/session_store.rb'
+    base_files << session_store if File.exist?(session_store)
+
+    (base_files + view_files).uniq
+  end
+
+  def file_contains_app_name?(file_path)
+    current_name = detect_current_name
+    return false unless current_name
+
+    content = File.read(file_path)
+    variants = generate_name_variants(current_name, "TempName")
+    
+    variants.values.any? { |variant| content.include?(variant[:from]) }
+  end
+
+  def preview_file_changes(file_path, name_variants)
+    content = File.read(file_path)
+    changes = []
+
+    name_variants.each do |type, variant|
+      from_pattern = Regexp.escape(variant[:from])
+      
+      # Different matching strategies based on file type and context
+      case file_path
+      when /\.rb$/
+        # Ruby files - be more careful with word boundaries
+        if content.match(/\b#{from_pattern}\b/)
+          changes << "#{variant[:from]} → #{variant[:to]} (#{type})"
+        end
+      when /\.yml$/, /\.yaml$/
+        # YAML files - match anywhere
+        if content.include?(variant[:from])
+          changes << "#{variant[:from]} → #{variant[:to]} (#{type})"
+        end
+      when /\.erb$/
+        # ERB files - match in strings and content
+        if content.include?(variant[:from])
+          changes << "#{variant[:from]} → #{variant[:to]} (#{type})"
+        end
+      else
+        # Other files - basic string matching
+        if content.include?(variant[:from])
+          changes << "#{variant[:from]} → #{variant[:to]} (#{type})"
+        end
+      end
+    end
+
+    changes.uniq
+  end
+
+  def check_git_status
+    if system('git status --porcelain 2>/dev/null | grep -q .')
+      say "Warning: You have uncommitted changes.", :yellow
+      unless yes?("Continue anyway? (y/N)")
+        say "Aborting. Please commit your changes first.", :red
+        exit 1
+      end
+    end
+  end
+
+  def perform_rename(current_name, new_name)
+    name_variants = generate_name_variants(current_name, new_name)
+    files_to_change = get_files_to_change
+
+    backup_dir = create_backup_dir if @backup && !@dry_run
+
+    files_to_change.each do |file_path|
+      next unless File.exist?(file_path)
+      
+      original_content = File.read(file_path)
+      new_content = transform_file_content(original_content, name_variants, file_path)
+      
+      if original_content != new_content
+        if @dry_run
+          say "Would modify: #{file_path}", :yellow
+        else
+          # Create backup
+          create_file_backup(file_path, backup_dir) if @backup
+          
+          # Write new content
+          File.write(file_path, new_content)
+          say "Modified: #{file_path}", :green
+        end
+      end
+    end
+
+    if backup_dir && !@dry_run
+      say "Backup created in: #{backup_dir}", :cyan
+    end
+  end
+
+  def transform_file_content(content, name_variants, file_path)
+    new_content = content.dup
+
+    name_variants.each do |type, variant|
+      from_pattern = variant[:from]
+      to_replacement = variant[:to]
+
+      case file_path
+      when /config\/application\.rb$/
+        # Module name replacement - exact match
+        new_content.gsub!(/^module\s+#{Regexp.escape(from_pattern)}$/, "module #{to_replacement}")
+      
+      when /config\/deploy\.yml$/
+        # YAML values - exact word matching
+        new_content.gsub!(/^(\s*service:\s*)#{Regexp.escape(from_pattern)}$/, "\\1#{to_replacement}")
+        new_content.gsub!(/(\s*image:\s*[\w\-]+\/)#{Regexp.escape(from_pattern)}($|\s)/, "\\1#{to_replacement}\\2")
+        new_content.gsub!(/(#{Regexp.escape(from_pattern)})(_storage|_db|\-db)/, "#{to_replacement}\\2")
+        new_content.gsub!(/#{Regexp.escape(from_pattern)}/, to_replacement)
+      
+      when /Dockerfile$/
+        # Comments and labels
+        new_content.gsub!(/#{Regexp.escape(from_pattern)}/, to_replacement)
+      
+      when /\.erb$/
+        # ERB templates - string content
+        new_content.gsub!(/#{Regexp.escape(from_pattern)}/, to_replacement)
+      
+      when /\.rb$/
+        # Ruby view files - string content and variables
+        new_content.gsub!(/"[^"]*#{Regexp.escape(from_pattern)}[^"]*"/) do |match|
+          match.gsub(from_pattern, to_replacement)
+        end
+        new_content.gsub!(/'[^']*#{Regexp.escape(from_pattern)}[^']*'/) do |match|
+          match.gsub(from_pattern, to_replacement)
+        end
+      
+      when /\.json\.erb$/
+        # JSON templates
+        new_content.gsub!(/#{Regexp.escape(from_pattern)}/, to_replacement)
+      
+      else
+        # Default: simple replacement
+        new_content.gsub!(/#{Regexp.escape(from_pattern)}/, to_replacement)
+      end
+    end
+
+    new_content
+  end
+
+  def create_backup_dir
+    timestamp = Time.now.strftime("%Y%m%d_%H%M%S")
+    backup_dir = "backups/rename_#{timestamp}"
+    FileUtils.mkdir_p(backup_dir)
+    backup_dir
+  end
+
+  def create_file_backup(file_path, backup_dir)
+    return unless backup_dir
+    
+    backup_path = File.join(backup_dir, file_path)
+    FileUtils.mkdir_p(File.dirname(backup_path))
+    FileUtils.cp(file_path, backup_path)
+  end
+
+  def colored_say(message, color = nil)
+    if COLORIZE_AVAILABLE && color
+      say message.colorize(color)
+    else
+      say message
+    end
+  end
+end
+
+# Run the CLI
+RenameApp.start(ARGV)

@@ -1,7 +1,22 @@
-# README
+# Catalyst
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Rails 8 application template with Ruby UI components and modern tooling.
+
+## 🔧 Template Renaming
+
+This application can be easily renamed for use as a template:
+
+```bash
+# Rename to any new application name
+bin/rename MyNewApp
+
+# Preview changes without modifying files
+bin/rename MyNewApp --dry-run
+```
+
+See [docs/RENAMING.md](docs/RENAMING.md) for detailed instructions.
+
+## Getting Started
 
 Things you may want to cover:
 
