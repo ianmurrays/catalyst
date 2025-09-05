@@ -58,7 +58,7 @@ group :development do
   gem "web-console"
 end
 
-gem "rspec-rails", "~> 8.0", groups: [:development, :test]
+gem "rspec-rails", "~> 8.0", groups: [ :development, :test ]
 
 gem "ruby_ui", "~> 1.0", group: :development, require: false
 

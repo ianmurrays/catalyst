@@ -38,7 +38,7 @@ module TourHub3
 
     # Add views to autoload paths for Phlex components
     config.autoload_paths << Rails.root.join("app/views")
-    
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
