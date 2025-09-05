@@ -1,4 +1,4 @@
-name: "tour_hub"
+name: "catalyst"
 
 services:
   rails-app:
