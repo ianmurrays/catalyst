@@ -17,7 +17,7 @@ class Views::PagesHome < Views::Base
 
   def header_section
     div(class: "text-center mb-16") do
-      h1(class: "text-5xl font-bold text-slate-900 mb-4") { "Welcome to Tour Hub" }
+      h1(class: "text-5xl font-bold text-slate-900 mb-4") { "Welcome to Catalyst" }
       p(class: "text-xl text-slate-600 max-w-2xl mx-auto") do
         "A modern Rails application built with Ruby UI components and Phlex"
       end
