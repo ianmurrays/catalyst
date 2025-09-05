@@ -10,7 +10,7 @@ class Views::PagesHome < Views::Base
   def view_template
     div(class: "min-h-screen") do
       navbar_section
-      div(class: "bg-gradient-to-b from-slate-50 to-slate-100") do
+      div(class: "bg-gradient-to-b from-muted/50 to-muted") do
         div(class: "container mx-auto px-4 py-16") do
           header_section
           features_section
@@ -23,15 +23,15 @@ class Views::PagesHome < Views::Base
   private
 
   def navbar_section
-    header(class: "sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-2xl backdrop-saturate-200 block") do
+    header(class: "sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-2xl backdrop-saturate-200 block") do
       div(class: "w-full max-w-none px-4 flex h-14 items-center justify-between") do
         div(class: "flex items-center") do
-          h1(class: "text-xl font-bold text-slate-900") { "Catalyst" }
+          h1(class: "text-xl font-bold text-foreground") { "Catalyst" }
         end
-        div(class: "flex items-center") do
+        div(class: "flex items-center gap-4") do
           if logged_in?
             div(class: "flex items-center gap-4") do
-              span(class: "text-slate-700") { "Hello, #{current_auth0_user["name"]}" }
+              span(class: "text-muted-foreground") { "Hello, #{current_auth0_user["name"]}" }
               form(action: "/auth/logout", method: "post", "data-turbo": "false") do
                 input(type: "hidden", name: "authenticity_token", value: form_authenticity_token)
                 input(type: "hidden", name: "_method", value: "delete")
@@ -50,6 +50,39 @@ class Views::PagesHome < Views::Base
               end
             end
           end
+
+          render RubyUI::ThemeToggle::ThemeToggle.new do
+            render RubyUI::ThemeToggle::SetLightMode.new do
+              render RubyUI::Button::Button.new(variant: :ghost, icon: true) do
+                svg(
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewbox: "0 0 24 24",
+                  fill: "currentColor",
+                  class: "w-4 h-4"
+                ) do |s|
+                  s.path(
+                    d: "M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"
+                  )
+                end
+              end
+            end
+            render RubyUI::ThemeToggle::SetDarkMode.new do
+              render RubyUI::Button::Button.new(variant: :ghost, icon: true) do
+                svg(
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewbox: "0 0 24 24",
+                  fill: "currentColor",
+                  class: "w-4 h-4"
+                ) do |s|
+                  s.path(
+                    fill_rule: "evenodd",
+                    d: "M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z",
+                    clip_rule: "evenodd"
+                  )
+                end
+              end
+            end
+          end
         end
       end
     end
@@ -57,8 +90,8 @@ class Views::PagesHome < Views::Base
 
   def header_section
     div(class: "text-center mb-16") do
-      h1(class: "text-5xl font-bold text-slate-900 mb-4") { "Welcome to Catalyst" }
-      p(class: "text-xl text-slate-600 max-w-2xl mx-auto") do
+      h1(class: "text-5xl font-bold text-foreground mb-4") { "Welcome to Catalyst" }
+      p(class: "text-xl text-muted-foreground max-w-2xl mx-auto") do
         "A modern Rails application built with Ruby UI components and Phlex"
       end
       div(class: "mt-8 flex gap-4 justify-center") do
@@ -114,16 +147,16 @@ class Views::PagesHome < Views::Base
   end
 
   def cta_section
-    div(class: "bg-slate-900 rounded-xl p-12 text-center") do
-      h2(class: "text-3xl font-bold text-white mb-4") { "Ready to build something amazing?" }
-      p(class: "text-slate-300 mb-8 max-w-2xl mx-auto") do
+    div(class: "bg-card border rounded-xl p-12 text-center") do
+      h2(class: "text-3xl font-bold text-card-foreground mb-4") { "Ready to build something amazing?" }
+      p(class: "text-muted-foreground mb-8 max-w-2xl mx-auto") do
         "This is your starting point for building modern Ruby on Rails applications with beautiful UI components."
       end
       div(class: "flex gap-4 justify-center") do
-        render RubyUI::Button::Button.new(variant: :secondary, size: :lg) do
+        render RubyUI::Button::Button.new(variant: :primary, size: :lg) do
           "View Documentation"
         end
-        render RubyUI::Badge::Badge.new(variant: :outline, class: "text-white border-white px-4 py-2") do
+        render RubyUI::Badge::Badge.new(variant: :primary) do
           "v1.0.0"
         end
       end
