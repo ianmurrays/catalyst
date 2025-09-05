@@ -57,7 +57,7 @@ bin/rename MyNewApp --dry-run      # Preview rename changes
 
 ### View Layer Architecture
 The application uses **Phlex** as the view layer with two main namespaces:
-- `Views::` - Application-specific views in `app/views/` 
+- `Views::` - Application-specific views in `app/views/`
 - `Components::` - Reusable components in `app/components/`
 
 Base classes:
@@ -67,10 +67,49 @@ Base classes:
 
 ### Ruby UI Integration
 Ruby UI components are generated into `app/components/ruby_ui/` and include:
-- Card components (card, card_content, card_description, etc.)
-- Button component
-- Badge component  
-- Link component
+
+- Accordion
+- Alert
+- Alert Dialog
+- Aspect Ratio
+- Avatar
+- Badge
+- Breadcrumb
+- Button
+- Calendar
+- Card
+- Carousel
+- Chart
+- Checkbox
+- Clipboard
+- Codeblock
+- Collapsible
+- Combobox
+- Command
+- Context Menu
+- Dialog
+- Dropdown Menu
+- Form
+- Hover Card
+- Input
+- Link
+- Masked Input
+- Pagination
+- Popover
+- Progress
+- Radio Button
+- Select
+- Separator
+- Sheet
+- Shortcut Key
+- Skeleton
+- Switch
+- Table
+- Tabs
+- Textarea
+- Theme Toggle
+- Tooltip
+- Typography
 
 Components can be generated individually or all at once using the generators.
 
