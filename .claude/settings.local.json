@@ -1,0 +1,21 @@
+{
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(bundle exec rails g:*)",
+      "Bash(bin/rails g:*)",
+      "Bash(rubocop:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7"
+  ],
+  "statusLine": {
+    "type": "command",
+    "command": "npx ccusage@latest statusline",
+    "padding": 0
+  }
+}
