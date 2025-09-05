@@ -36,6 +36,9 @@ module TourHub3
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Add views to autoload paths for Phlex components
+    config.autoload_paths << Rails.root.join("app/views")
+    
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
