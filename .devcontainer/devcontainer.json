@@ -44,7 +44,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "Anthropic.claude-code"
+        "Anthropic.claude-code",
+        "KoichiSasada.vscode-rdbg"
       ]
     }
   }
