@@ -218,7 +218,12 @@ class Views::Profile::Edit < Views::Base
   def timezone_field(form)
     current_value = @user.preferences&.dig("timezone") || timezone_options.first[1]
 
-    div(class: "space-y-2", data: { controller: "timezone-detector" }) do
+    div(class: "space-y-2", data: {
+      controller: "timezone-detector",
+      timezone_detector_detected_text_value: t("timezones.detected", timezone: "%{timezone}"),
+      timezone_detector_use_this_text_value: t("timezones.use_this"),
+      timezone_detector_dismiss_text_value: t("timezones.dismiss")
+    }) do
       label(for: "user_preferences_timezone", class: "text-sm font-medium") do
         t("common.labels.timezone")
       end

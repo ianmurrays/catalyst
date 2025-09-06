@@ -255,6 +255,10 @@ en:
     london: "London"
     paris: "Paris"
     tokyo: "Tokyo"
+    # Timezone detection UI
+    detected: "Detected timezone: %{timezone}"
+    use_this: "Use this"
+    dismiss: "Dismiss"
 
   # Validation messages
   errors:

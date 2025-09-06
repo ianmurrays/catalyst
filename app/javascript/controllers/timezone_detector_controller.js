@@ -3,6 +3,11 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="timezone-detector"
 export default class extends Controller {
   static targets = ["select", "searchInput", "suggestion", "optionsList"]
+  static values = { 
+    detectedText: String, 
+    useThisText: String, 
+    dismissText: String 
+  }
   
   connect() {
     this.detectTimezone()
@@ -140,28 +145,31 @@ export default class extends Controller {
   showSuggestion(railsTimezone, browserTimezone) {
     if (!this.hasSuggestionTarget) return
     
+    // Get translated text, replacing %{timezone} placeholder with the actual timezone
+    const detectedText = this.detectedTextValue.replace('%{timezone}', `<strong>${railsTimezone}</strong>`)
+    
     // Create suggestion HTML
     const suggestionHTML = `
-      <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-md">
+      <div class="flex items-center justify-between p-3 bg-muted border border-border rounded-md">
         <div class="flex items-center space-x-2">
-          <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+          <svg class="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
           </svg>
-          <span class="text-sm text-blue-700">
-            Detected timezone: <strong>${railsTimezone}</strong>
+          <span class="text-sm text-foreground">
+            ${detectedText}
           </span>
         </div>
         <div class="flex space-x-2">
           <button type="button" 
                   data-action="click->timezone-detector#acceptSuggestion" 
                   data-timezone="${railsTimezone}"
-                  class="text-sm text-blue-600 hover:text-blue-800 font-medium">
-            Use this
+                  class="text-sm text-primary hover:text-primary/80 font-medium">
+            ${this.useThisTextValue}
           </button>
           <button type="button" 
                   data-action="click->timezone-detector#dismissSuggestion"
-                  class="text-sm text-gray-500 hover:text-gray-700">
-            Dismiss
+                  class="text-sm text-muted-foreground hover:text-foreground">
+            ${this.dismissTextValue}
           </button>
         </div>
       </div>

@@ -181,7 +181,7 @@ RSpec.describe Views::Base do
         allow_any_instance_of(Components::Layout::Application).to receive(:javascript_importmap_tags).and_return('<script>importmap</script>')
 
         # Mock navbar components
-    
+
         # Mock t method for the instance itself
 
         instance
