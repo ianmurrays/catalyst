@@ -15,7 +15,7 @@ class ProfileController < ApplicationController
     if @user.update(user_params)
       redirect_to profile_path, notice: "Profile updated successfully!"
     else
-      render Views::Profile::Edit.new(user: @user, errors: @user.errors), status: :unprocessable_entity
+      render Views::Profile::Edit.new(user: @user, errors: @user.errors), status: :unprocessable_content
     end
   end
 

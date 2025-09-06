@@ -93,7 +93,7 @@ RSpec.describe ProfileController, type: :controller do
 
       it "renders the edit page with errors" do
         patch :update, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

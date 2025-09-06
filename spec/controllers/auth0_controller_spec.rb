@@ -94,12 +94,12 @@ RSpec.describe Auth0Controller, type: :controller do
 
       it "renders the failure view" do
         post :callback
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
-      it "returns unprocessable_entity status" do
+      it "returns unprocessable_content status" do
         post :callback
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "renders with the correct error message" do
@@ -121,7 +121,7 @@ RSpec.describe Auth0Controller, type: :controller do
 
       it "renders the failure view" do
         post :callback
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "logs the error" do

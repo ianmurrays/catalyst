@@ -19,12 +19,12 @@ class Auth0Controller < ApplicationController
     rescue ArgumentError => e
       # Email is missing from provider
       Rails.logger.error "Authentication failed: #{e.message}"
-      render Views::Auth0::Failure.new(error_msg: e.message), status: :unprocessable_entity
+      render Views::Auth0::Failure.new(error_msg: e.message), status: :unprocessable_content
     rescue => e
       # Other authentication errors
       Rails.logger.error "Authentication error: #{e.message}"
       error_msg = "Authentication failed. Please try again or contact support."
-      render Views::Auth0::Failure.new(error_msg: error_msg), status: :unprocessable_entity
+      render Views::Auth0::Failure.new(error_msg: error_msg), status: :unprocessable_content
     end
   end
 
