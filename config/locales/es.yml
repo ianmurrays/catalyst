@@ -254,6 +254,10 @@ es:
     london: "Londres"
     paris: "París"
     tokyo: "Tokio"
+    # Timezone detection UI
+    detected: "Zona horaria detectada: %{timezone}"
+    use_this: "Usar esta"
+    dismiss: "Descartar"
 
   # Validation messages
   errors:

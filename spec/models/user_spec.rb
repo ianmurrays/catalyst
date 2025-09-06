@@ -171,4 +171,107 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "timezone preferences" do
+    let(:user) { build(:user) }
+
+    describe "#timezone" do
+      it "returns timezone from preferences" do
+        user.preferences = { "timezone" => "Eastern Time (US & Canada)" }
+        expect(user.timezone).to eq("Eastern Time (US & Canada)")
+      end
+
+      it "returns default timezone when not set in preferences" do
+        user.preferences = {}
+        expect(user.timezone).to eq("UTC")
+      end
+
+      it "returns default timezone when preferences is nil" do
+        user.preferences = nil
+        expect(user.timezone).to eq("UTC")
+      end
+    end
+
+    describe "#timezone=" do
+      it "sets timezone in preferences" do
+        user.timezone = "Eastern Time (US & Canada)"
+        expect(user.preferences["timezone"]).to eq("Eastern Time (US & Canada)")
+      end
+
+      it "initializes preferences if nil" do
+        user.preferences = nil
+        user.timezone = "Pacific Time (US & Canada)"
+        expect(user.preferences).to eq({ "timezone" => "Pacific Time (US & Canada)" })
+      end
+
+      it "merges with existing preferences" do
+        user.preferences = { "language" => "en" }
+        user.timezone = "Central Time (US & Canada)"
+        expect(user.preferences["language"]).to eq("en")
+        expect(user.preferences["timezone"]).to eq("Central Time (US & Canada)")
+      end
+    end
+
+    describe "timezone preference validation" do
+      before do
+        # Mock TimezoneService to return a predictable set of valid timezones
+        allow(TimezoneService).to receive(:valid_timezone?) do |identifier|
+          %w[UTC Eastern\ Time\ (US\ &\ Canada) Pacific\ Time\ (US\ &\ Canada) Central\ Time\ (US\ &\ Canada)].include?(identifier)
+        end
+      end
+
+      it "validates timezone against ActiveSupport::TimeZone identifiers" do
+        user.timezone = "Invalid/Timezone"
+        expect(user).not_to be_valid
+        expect(user.errors[:timezone]).to include("is not a valid timezone")
+      end
+
+      it "allows valid timezone identifiers" do
+        user.timezone = "Eastern Time (US & Canada)"
+        expect(user).to be_valid
+      end
+
+      it "allows UTC timezone" do
+        user.timezone = "UTC"
+        expect(user).to be_valid
+      end
+
+      it "allows nil/empty timezone (defaults to 'UTC')" do
+        user.timezone = nil
+        expect(user).to be_valid
+        expect(user.timezone).to eq("UTC")
+      end
+
+      it "allows blank timezone (defaults to 'UTC')" do
+        user.timezone = ""
+        expect(user).to be_valid
+        expect(user.timezone).to eq("UTC")
+      end
+    end
+
+    describe "#timezone_object" do
+      it "returns ActiveSupport::TimeZone object for current timezone" do
+        user.preferences = { "timezone" => "Eastern Time (US & Canada)" }
+        timezone_obj = user.timezone_object
+
+        expect(timezone_obj).to be_a(ActiveSupport::TimeZone)
+        expect(timezone_obj.name).to eq("Eastern Time (US & Canada)")
+      end
+
+      it "returns UTC timezone object when timezone is not set" do
+        user.preferences = {}
+        timezone_obj = user.timezone_object
+
+        expect(timezone_obj).to be_a(ActiveSupport::TimeZone)
+        expect(timezone_obj.name).to eq("UTC")
+      end
+
+      it "returns nil when timezone identifier is invalid" do
+        user.preferences = { "timezone" => "Invalid/Timezone" }
+        timezone_obj = user.timezone_object
+
+        expect(timezone_obj).to be_nil
+      end
+    end
+  end
 end

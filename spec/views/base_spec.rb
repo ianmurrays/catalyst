@@ -19,20 +19,7 @@ RSpec.describe Views::Base do
     end
   end
 
-  let(:view) do
-    instance = test_view_class.new
-    # Mock Rails helpers for layout components
-    allow_any_instance_of(Components::Layout::Application).to receive(:csrf_meta_tags).and_return('<meta name="csrf-token" content="test-token">')
-    allow_any_instance_of(Components::Layout::Application).to receive(:csp_meta_tag).and_return('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'">')
-    allow_any_instance_of(Components::Layout::Application).to receive(:stylesheet_link_tag).and_return('<link rel="stylesheet" href="/assets/application.css">')
-    allow_any_instance_of(Components::Layout::Application).to receive(:javascript_importmap_tags).and_return('<script>importmap</script>')
-
-    # Mock navbar components
-    mock_navbar_auth_helpers
-    mock_navbar_translations
-
-    instance
-  end
+  let(:view) { test_view_class.new }
 
   describe "PageInfo data structure" do
     it "defines PageInfo with title and description" do
@@ -111,14 +98,12 @@ RSpec.describe Views::Base do
 
   describe "#page_title" do
     context "when not overridden" do
-      let(:base_view) do
-        view = Views::Base.new
-        mock_view_translations_for(view)
-        view
-      end
+      let(:base_view) { Views::Base.new }
 
-      it "returns default Catalyst title" do
-        expect(base_view.page_title).to eq("Catalyst")
+      it "returns default Catalyst title in rendered HTML" do
+        html = render_with_view_context(base_view)
+        doc = Nokogiri::HTML5(html)
+        expect(doc.css('title').text).to eq("Catalyst")
       end
     end
 
@@ -196,11 +181,8 @@ RSpec.describe Views::Base do
         allow_any_instance_of(Components::Layout::Application).to receive(:javascript_importmap_tags).and_return('<script>importmap</script>')
 
         # Mock navbar components
-        mock_navbar_auth_helpers
-        mock_navbar_translations
 
         # Mock t method for the instance itself
-        mock_view_translations_for(instance)
 
         instance
       end

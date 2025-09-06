@@ -254,6 +254,10 @@ da:
     london: "London"
     paris: "Paris"
     tokyo: "Tokyo"
+    # Timezone detection UI
+    detected: "Registreret tidszone: %{timezone}"
+    use_this: "Brug denne"
+    dismiss: "Afvis"
 
   # Validation messages
   errors:
