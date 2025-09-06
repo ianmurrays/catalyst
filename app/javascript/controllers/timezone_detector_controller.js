@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="timezone-detector"
 export default class extends Controller {
-  static targets = ["select", "searchInput", "suggestion", "optionsList"]
+  static targets = ["select", "searchInput", "suggestion", "optionsList", "template"]
   static values = { 
     detectedText: String, 
     useThisText: String, 
@@ -143,39 +143,34 @@ export default class extends Controller {
   }
 
   showSuggestion(railsTimezone, browserTimezone) {
-    if (!this.hasSuggestionTarget) return
+    if (!this.hasSuggestionTarget || !this.hasTemplateTarget) return
+    
+    // Clone the template content
+    const templateClone = this.templateTarget.content.cloneNode(true)
     
     // Get translated text, replacing %{timezone} placeholder with the actual timezone
     const detectedText = this.detectedTextValue.replace('%{timezone}', `<strong>${railsTimezone}</strong>`)
     
-    // Create suggestion HTML
-    const suggestionHTML = `
-      <div class="flex items-center justify-between p-3 bg-muted border border-border rounded-md">
-        <div class="flex items-center space-x-2">
-          <svg class="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-          </svg>
-          <span class="text-sm text-foreground">
-            ${detectedText}
-          </span>
-        </div>
-        <div class="flex space-x-2">
-          <button type="button" 
-                  data-action="click->timezone-detector#acceptSuggestion" 
-                  data-timezone="${railsTimezone}"
-                  class="text-sm text-primary hover:text-primary/80 font-medium">
-            ${this.useThisTextValue}
-          </button>
-          <button type="button" 
-                  data-action="click->timezone-detector#dismissSuggestion"
-                  class="text-sm text-muted-foreground hover:text-foreground">
-            ${this.dismissTextValue}
-          </button>
-        </div>
-      </div>
-    `
+    // Update dynamic content in the cloned template
+    const detectedTextSpan = templateClone.querySelector('[data-timezone-detector-target="detectedText"]')
+    if (detectedTextSpan) {
+      detectedTextSpan.innerHTML = detectedText
+    }
     
-    this.suggestionTarget.innerHTML = suggestionHTML
+    const acceptButton = templateClone.querySelector('[data-timezone-detector-target="acceptButton"]')
+    if (acceptButton) {
+      acceptButton.textContent = this.useThisTextValue
+      acceptButton.dataset.timezone = railsTimezone
+    }
+    
+    const dismissButton = templateClone.querySelector('[data-timezone-detector-target="dismissButton"]')
+    if (dismissButton) {
+      dismissButton.textContent = this.dismissTextValue
+    }
+    
+    // Clear existing content and append the cloned template
+    this.suggestionTarget.innerHTML = ''
+    this.suggestionTarget.appendChild(templateClone)
     this.suggestionTarget.classList.remove('hidden')
   }
 

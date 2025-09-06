@@ -234,6 +234,40 @@ class Views::Profile::Edit < Views::Base
         class: "hidden mb-2"
       )
 
+      # HTML template for timezone suggestion
+      template(data: { timezone_detector_target: "template" }) do
+        div(class: "flex items-center justify-between p-3 bg-muted border border-border rounded-md") do
+          div(class: "flex items-center space-x-2") do
+            svg(class: "w-4 h-4 text-muted-foreground", fill: "currentColor", viewBox: "0 0 20 20") do |s|
+              s.path(fill_rule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z", clip_rule: "evenodd")
+            end
+            span(class: "text-sm text-foreground", data: { timezone_detector_target: "detectedText" }) do
+              # Placeholder text - will be replaced by JavaScript
+            end
+          end
+          div(class: "flex space-x-2") do
+            button(
+              type: "button",
+              data: {
+                action: "click->timezone-detector#acceptSuggestion",
+                timezone_detector_target: "acceptButton"
+              },
+              class: "text-sm text-primary hover:text-primary/80 font-medium"
+            ) do
+              # Button text will be set by JavaScript
+            end
+            button(
+              type: "button",
+              data: { action: "click->timezone-detector#dismissSuggestion" },
+              class: "text-sm text-muted-foreground hover:text-foreground",
+              data: { timezone_detector_target: "dismissButton" }
+            ) do
+              # Button text will be set by JavaScript
+            end
+          end
+        end
+      end
+
       select(
         name: "user[preferences][timezone]",
         id: "user_preferences_timezone",
