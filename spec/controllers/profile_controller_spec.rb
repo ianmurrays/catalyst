@@ -4,10 +4,10 @@ RSpec.describe ProfileController, type: :controller do
   let(:user) { create(:user) }
 
   before do
-    # Mock the Auth0 integration
+    # Mock the authentication provider integration
     allow(controller).to receive(:logged_in?).and_return(true)
     allow(controller).to receive(:current_user).and_return(user)
-    allow(controller).to receive(:current_auth0_user).and_return({
+    allow(controller).to receive(:current_auth_provider_user).and_return({
       "sub" => user.auth0_sub,
       "name" => user.display_name,
       "email" => "test@example.com"
@@ -103,7 +103,7 @@ RSpec.describe ProfileController, type: :controller do
       allow(controller).to receive(:logged_in?).and_return(false)
     end
 
-    it "redirects to auth0 when not logged in" do
+    it "redirects to authentication provider when not logged in" do
       get :show
       expect(response).to redirect_to("/auth/auth0")
     end

@@ -119,7 +119,7 @@ class Views::Profile::Show < Views::Base
       render RubyUI::Card::CardContent.new do
         profile_field("Member since", @user.created_at.strftime("%B %d, %Y"))
         profile_field("Last updated", @user.updated_at.strftime("%B %d, %Y at %I:%M %p"))
-        profile_field("Auth0 ID", @user.auth0_sub)
+        profile_field("Authentication Provider ID", @user.auth0_sub)
       end
     end
   end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:valid_auth0_info) do
+  let(:valid_auth_provider_info) do
     {
       "sub" => "auth0|123456789",
       "name" => "John Doe",
@@ -36,12 +36,12 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe ".find_or_create_from_auth0" do
+  describe ".find_or_create_from_auth_provider" do
     context "when user exists" do
       let!(:existing_user) { create(:user, auth0_sub: "auth0|123456789") }
 
       it "returns the existing user" do
-        result = User.find_or_create_from_auth0(valid_auth0_info)
+        result = User.find_or_create_from_auth_provider(valid_auth_provider_info)
         expect(result).to eq(existing_user)
       end
     end
@@ -49,12 +49,12 @@ RSpec.describe User, type: :model do
     context "when user doesn't exist" do
       it "creates a new user" do
         expect {
-          User.find_or_create_from_auth0(valid_auth0_info)
+          User.find_or_create_from_auth_provider(valid_auth_provider_info)
         }.to change(User, :count).by(1)
       end
 
       it "sets the correct attributes" do
-        user = User.find_or_create_from_auth0(valid_auth0_info)
+        user = User.find_or_create_from_auth_provider(valid_auth_provider_info)
         expect(user.auth0_sub).to eq("auth0|123456789")
         expect(user.display_name).to eq("John Doe")
         expect(user.preferences).to be_present

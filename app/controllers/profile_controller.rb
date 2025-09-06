@@ -33,8 +33,8 @@ class ProfileController < ApplicationController
       { preferences: [ :timezone, :language, { email_notifications: [ :profile_updates, :security_alerts, :feature_announcements ] } ] }
     ]
 
-    # Only allow email updates for manually-entered emails, not Auth0 emails
-    permitted_params << :email unless @user.auth0_email?
+    # Only allow email updates for manually-entered emails, not authentication provider emails
+    permitted_params << :email unless @user.auth_provider_email?
 
     params.require(:user).permit(*permitted_params)
   end

@@ -5,7 +5,7 @@ class Views::PagesHome < Views::Base
 
   register_value_helper :logged_in?
   register_value_helper :form_authenticity_token
-  register_value_helper :current_auth0_user
+  register_value_helper :current_user
 
   def view_template
     div(class: "min-h-screen") do
@@ -33,7 +33,7 @@ class Views::PagesHome < Views::Base
         div(class: "flex items-center gap-4") do
           if logged_in?
             div(class: "flex items-center gap-4") do
-              span(class: "text-muted-foreground") { "Hello, #{current_auth0_user["name"]}" }
+              span(class: "text-muted-foreground") { "Hello, #{current_user.name}" }
 
               a(href: "/profile", class: "inline-flex") do
                 render RubyUI::Button::Button.new(variant: :ghost, size: :md) do
