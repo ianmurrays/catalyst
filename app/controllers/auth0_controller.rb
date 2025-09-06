@@ -4,15 +4,35 @@ class Auth0Controller < ApplicationController
     # In this code, you will pull the raw_info supplied from the id_token and assign it to the session.
     # Refer to https://github.com/auth0/omniauth-auth0/blob/master/EXAMPLES.md#example-of-the-resulting-authentication-hash for complete information on 'omniauth.auth' contents.
     auth_info = request.env["omniauth.auth"]
-    session[:userinfo] = auth_info["extra"]["raw_info"]
+    raw_info = auth_info["extra"]["raw_info"]
 
-    # Redirect to the URL you want after successful auth
-    redirect_to "/"
+    begin
+      # Attempt to create or find user - this will raise an error if email is missing
+      User.find_or_create_from_auth_provider(raw_info)
+
+      # Only set session if user creation succeeds
+      session[:userinfo] = raw_info
+
+      # Redirect to the URL they were trying to access or home
+      redirect_url = session.delete(:return_to) || "/"
+      redirect_to redirect_url
+    rescue ArgumentError => e
+      # Email is missing from provider
+      Rails.logger.error "Authentication failed: #{e.message}"
+      render Views::Auth0::Failure.new(error_msg: e.message), status: :unprocessable_content
+    rescue => e
+      # Other authentication errors
+      Rails.logger.error "Authentication error: #{e.message}"
+      error_msg = "Authentication failed. Please try again or contact support."
+      render Views::Auth0::Failure.new(error_msg: error_msg), status: :unprocessable_content
+    end
   end
 
   def failure
     # Handles failed authentication -- Show a failure page (you can also handle with a redirect)
-    @error_msg = request.params["message"]
+    error_msg = request.params["message"] || "Authentication failed. Please try again."
+    Rails.logger.error "Authentication failure: #{error_msg}"
+    render Views::Auth0::Failure.new(error_msg: error_msg)
   end
 
   def logout

@@ -2,10 +2,15 @@ module Secured
   extend ActiveSupport::Concern
 
   included do
-    before_action :logged_in_using_omniauth?
+    before_action :require_authentication
   end
 
-  def logged_in_using_omniauth?
-    redirect_to "/" unless session[:userinfo].present?
+  private
+
+  def require_authentication
+    unless logged_in?
+      session[:return_to] = request.fullpath
+      redirect_to "/auth/auth0", allow_other_host: true
+    end
   end
 end

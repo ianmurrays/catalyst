@@ -14,6 +14,11 @@ Rails.application.routes.draw do
   get "/auth/failure" => "auth0#failure"
   delete "/auth/logout" => "auth0#logout"
 
+  # Profile
+  get "/profile" => "profile#show", as: :profile
+  get "/profile/edit" => "profile#edit", as: :edit_profile
+  patch "/profile" => "profile#update"
+
   # Defines the root path route ("/")
   root "pages#home"
 end
