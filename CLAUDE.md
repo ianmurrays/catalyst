@@ -33,6 +33,8 @@ bundle exec rspec                  # Run all tests
 bundle exec rspec spec/path/to/file_spec.rb  # Run specific test
 ```
 
+**Phlex Component Testing**: For detailed guidance on testing Phlex components with Rails helpers, see @.claude/guides/phlex-testing-guide.md. Key principle: use `render_with_view_context(component)` instead of manual mocking of Rails helpers.
+
 ### Code Quality
 ```bash
 bin/rubocop                        # Run linter (omakase style)
@@ -129,13 +131,13 @@ Auth0 integration with:
 - **Twitter**: Email is provided by default if available
 
 **Configuration Steps:**
-1. **GitHub OAuth App**: 
+1. **GitHub OAuth App**:
    - Go to Settings > Developer settings > OAuth Apps
    - Edit your application
    - Ensure "Request user authorization for email" is enabled
    - Users must have verified email addresses visible in their profile
 
-2. **Google OAuth**: 
+2. **Google OAuth**:
    - In Google Cloud Console
    - OAuth consent screen must include email scope
    - Users will see email permission request
