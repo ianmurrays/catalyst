@@ -30,9 +30,7 @@ class ProfileController < ApplicationController
       :display_name,
       :bio,
       :phone,
-      :website,
-      :company,
-      preferences: [ :theme, :timezone, :language, { email_notifications: [ :profile_updates, :security_alerts, :feature_announcements ] } ]
+      preferences: [ :timezone, :language, { email_notifications: [ :profile_updates, :security_alerts, :feature_announcements ] } ]
     )
   end
 end

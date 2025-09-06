@@ -45,8 +45,6 @@ RSpec.describe ProfileController, type: :controller do
           display_name: "Updated Name",
           bio: "Updated bio",
           phone: "+1234567890",
-          website: "https://example.com",
-          company: "Test Company",
           preferences: {
             theme: "dark",
             timezone: "America/New_York",
@@ -81,8 +79,7 @@ RSpec.describe ProfileController, type: :controller do
         {
           user: {
             display_name: "X", # Too short
-            phone: "invalid-phone",
-            website: "not-a-url"
+            phone: "invalid-phone"
           }
         }
       end
@@ -96,24 +93,6 @@ RSpec.describe ProfileController, type: :controller do
 
       it "renders the edit page with errors" do
         patch :update, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-    end
-
-    context "when rate limit is exceeded" do
-      before do
-        user.update_columns(updated_count: 10, last_update_window: 30.minutes.ago)
-      end
-
-      it "does not update the user" do
-        original_name = user.display_name
-        patch :update, params: valid_params
-        user.reload
-        expect(user.display_name).to eq(original_name)
-      end
-
-      it "renders the edit page with rate limit error" do
-        patch :update, params: valid_params
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end

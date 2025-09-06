@@ -16,18 +16,13 @@ class Views::Profile::Edit < Views::Base
         error_alert
       end
 
-      rate_limit_warning if @user.updates_remaining < 3
-
       form_with(model: @user, url: "/profile", method: :patch, local: true, class: "space-y-6") do |form|
         div(class: "grid grid-cols-1 lg:grid-cols-2 gap-6") do
           basic_info_section(form)
           contact_info_section(form)
         end
 
-        div(class: "grid grid-cols-1 lg:grid-cols-2 gap-6") do
-          preferences_section(form)
-          update_summary_section
-        end
+        preferences_section(form)
 
         form_actions(form)
       end
@@ -66,21 +61,6 @@ class Views::Profile::Edit < Views::Base
     end
   end
 
-  def rate_limit_warning
-    remaining = @user.updates_remaining
-
-    render RubyUI::Alert::Alert.new(variant: :warning, class: "mb-6") do
-      render RubyUI::Alert::AlertTitle.new { "Rate Limit Notice" }
-      render RubyUI::Alert::AlertDescription.new do
-        if remaining > 0
-          "You have #{remaining} profile updates remaining this hour."
-        else
-          next_reset = @user.next_reset_time
-          "Profile update limit reached. Next reset: #{next_reset.strftime('%I:%M %p')}"
-        end
-      end
-    end
-  end
 
   def basic_info_section(form)
     render RubyUI::Card::Card.new do
@@ -94,7 +74,6 @@ class Views::Profile::Edit < Views::Base
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
         form_field(form, :display_name, "Display Name", "Your public display name")
         form_field(form, :bio, "Bio", "Tell others about yourself", type: :textarea)
-        form_field(form, :company, "Company", "Your company or organization")
       end
     end
   end
@@ -111,7 +90,6 @@ class Views::Profile::Edit < Views::Base
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
         readonly_field("Email", @user.email, "Managed by Auth0")
         form_field(form, :phone, "Phone Number", "Your phone number with country code")
-        form_field(form, :website, "Website", "Your personal or company website")
       end
     end
   end
@@ -133,40 +111,6 @@ class Views::Profile::Edit < Views::Base
     end
   end
 
-  def update_summary_section
-    render RubyUI::Card::Card.new do
-      render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Update Summary" }
-        render RubyUI::Card::CardDescription.new do
-          "Profile completion and update limits"
-        end
-      end
-
-      render RubyUI::Card::CardContent.new do
-        completion_percentage = @user.profile_completion_percentage
-
-        div(class: "space-y-4") do
-          div do
-            label(class: "text-sm font-medium") { "Profile Completion" }
-            render RubyUI::Progress::Progress.new(
-              value: completion_percentage,
-              class: "mt-2"
-            )
-            p(class: "text-sm text-muted-foreground mt-1") do
-              "#{completion_percentage}% complete"
-            end
-          end
-
-          div do
-            label(class: "text-sm font-medium") { "Updates Remaining" }
-            p(class: "text-sm text-muted-foreground") do
-              "#{@user.updates_remaining} of 10 updates remaining this hour"
-            end
-          end
-        end
-      end
-    end
-  end
 
   def form_actions(form)
     div(class: "flex items-center justify-between pt-6 border-t border-border") do
@@ -182,8 +126,7 @@ class Views::Profile::Edit < Views::Base
         end
 
         render RubyUI::Button::Button.new(
-          type: :submit,
-          disabled: @user.updates_remaining == 0
+          type: :submit
         ) do
           "Save Changes"
         end

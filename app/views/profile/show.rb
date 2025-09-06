@@ -10,10 +10,7 @@ class Views::Profile::Show < Views::Base
   def view_template
     div(class: "container mx-auto px-4 py-8 max-w-4xl") do
       profile_header
-      div(class: "grid grid-cols-1 md:grid-cols-2 gap-6 mt-8") do
-        profile_overview_card
-        profile_completion_card
-      end
+      profile_overview_card
       div(class: "grid grid-cols-1 md:grid-cols-2 gap-6 mt-6") do
         profile_info_card
         preferences_card
@@ -69,46 +66,10 @@ class Views::Profile::Show < Views::Base
       render RubyUI::Card::CardContent.new do
         profile_field("Display Name", @user.display_name || "Not set")
         profile_field("Bio", @user.bio.present? ? @user.bio : "Not set")
-        profile_field("Location", @user.company.present? ? "#{@user.company}" : "Not set") if @user.company.present?
       end
     end
   end
 
-  def profile_completion_card
-    completion_percentage = @user.profile_completion_percentage
-
-    render RubyUI::Card::Card.new do
-      render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Profile Completion" }
-        render RubyUI::Card::CardDescription.new do
-          "#{completion_percentage}% complete"
-        end
-      end
-
-      render RubyUI::Card::CardContent.new do
-        render RubyUI::Progress::Progress.new(
-          value: completion_percentage,
-          class: "mb-4"
-        )
-
-        if @user.profile_complete?
-          div(class: "flex items-center gap-2 text-green-600") do
-            check_icon
-            span { "Profile complete!" }
-          end
-        else
-          div(class: "text-sm text-muted-foreground") do
-            p { "Complete your profile to unlock all features:" }
-            ul(class: "list-disc list-inside mt-2 space-y-1") do
-              li { "Add a display name" } unless @user.display_name.present?
-              li { "Write a bio" } unless @user.bio.present?
-              li { "Add phone number" } unless @user.phone.present?
-            end
-          end
-        end
-      end
-    end
-  end
 
   def profile_info_card
     render RubyUI::Card::Card.new do
@@ -122,8 +83,6 @@ class Views::Profile::Show < Views::Base
       render RubyUI::Card::CardContent.new do
         profile_field("Email", @user.email)
         profile_field("Phone", @user.phone || "Not set")
-        profile_field("Website", @user.website || "Not set")
-        profile_field("Company", @user.company || "Not set")
       end
     end
   end
@@ -162,9 +121,6 @@ class Views::Profile::Show < Views::Base
         profile_field("Member since", @user.created_at.strftime("%B %d, %Y"))
         profile_field("Last updated", @user.updated_at.strftime("%B %d, %Y at %I:%M %p"))
         profile_field("Auth0 ID", @user.auth0_sub)
-        if @user.profile_completed_at
-          profile_field("Profile completed", @user.profile_completed_at.strftime("%B %d, %Y"))
-        end
       end
     end
   end
@@ -180,20 +136,5 @@ class Views::Profile::Show < Views::Base
     return "U" if name.blank?
 
     name.split.map { |part| part[0]&.upcase }.join[0..1]
-  end
-
-  def check_icon
-    svg(
-      class: "w-4 h-4",
-      xmlns: "http://www.w3.org/2000/svg",
-      viewbox: "0 0 20 20",
-      fill: "currentColor"
-    ) do |s|
-      s.path(
-        fill_rule: "evenodd",
-        d: "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z",
-        clip_rule: "evenodd"
-      )
-    end
   end
 end

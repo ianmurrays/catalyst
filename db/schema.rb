@@ -10,18 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_06_081517) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_06_083436) do
   create_table "users", force: :cascade do |t|
     t.string "auth0_sub", null: false
     t.string "display_name"
     t.text "bio"
     t.string "phone"
-    t.string "website"
-    t.string "company"
     t.json "preferences"
-    t.datetime "profile_completed_at"
-    t.integer "updated_count", default: 0, null: false
-    t.datetime "last_update_window"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["auth0_sub"], name: "index_users_on_auth0_sub", unique: true
