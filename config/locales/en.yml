@@ -37,6 +37,7 @@ en:
       english: "English"
       spanish: "Spanish"  
       danish: "Danish"
+    not_set: "Not set"
 
   # Language names for LocaleService
   languages:

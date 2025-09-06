@@ -223,7 +223,7 @@ RSpec.describe Views::Profile::Edit, type: :component do
                     doc.css('h5').find { |h5| h5.text.include?("errors") }
 
       expect(error_alert).not_to be_nil
-      expect(html).to include("Please fix the following errors:")
+      expect(html).to include("Validation Errors")
       expect(html).to include("Timezone is not a valid timezone")
     end
   end

@@ -30,46 +30,6 @@ module ComponentHelpers
     view_context.define_singleton_method(:logged_in?) { user.present? }
     view_context.define_singleton_method(:current_user) { user }
     view_context.define_singleton_method(:form_authenticity_token) { "test-token" }
-
-    # Add translation helper to the view context
-    view_context.define_singleton_method(:t) do |key, **options|
-      case key.to_s
-      when "application.name"
-        "Catalyst"
-      when "navigation.login"
-        "Login"
-      when "navigation.logout"
-        "Logout"
-      when "navigation.profile"
-        "Profile"
-      when "navigation.greeting"
-        if options[:name]
-          "Hello, #{options[:name]}"
-        else
-          "Hello, Guest"
-        end
-      when "views.profile.edit.title"
-        "Edit Profile"
-      when "views.profile.edit.subtitle"
-        "Update your profile information"
-      when "views.profile.edit.preferences.title"
-        "Preferences"
-      when "views.profile.edit.preferences.description"
-        "Customize your experience"
-      when "common.labels.timezone"
-        "Timezone"
-      when "common.labels.language"
-        "Language"
-      when "common.buttons.save_changes"
-        "Save Changes"
-      when "common.buttons.cancel"
-        "Cancel"
-      when "views.profile.edit.validation_errors"
-        "Please fix the following errors:"
-      else
-        key.to_s
-      end
-    end
   end
 
   # Create a mock user for testing
