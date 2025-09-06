@@ -18,7 +18,7 @@ class Components::Layout::Navbar < Components::Base
 
   def brand_section
     div(class: "flex items-center") do
-      h1(class: "text-xl font-bold text-foreground") { t("application.name") }
+      link_to t("application.name"), root_path, class: "text-xl font-bold text-foreground no-underline hover:text-foreground/80 transition-colors"
     end
   end
 
