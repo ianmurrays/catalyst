@@ -3,10 +3,7 @@ class User < ApplicationRecord
   validates :display_name, length: { in: 2..100 }, allow_blank: true
   validates :bio, length: { maximum: 500 }
   validates :phone, format: { with: /\A\+?[0-9\s\-\(\)]+\z/ }, allow_blank: true
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
-  validates :email_source, inclusion: { in: %w[auth_provider manual] }
-
-  validate :prevent_auth_provider_email_modification, on: :update
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   def self.find_or_create_from_auth_provider(auth_provider_user_info)
     auth0_sub = auth_provider_user_info["sub"]
@@ -14,14 +11,16 @@ class User < ApplicationRecord
 
     return user if user
 
-    # Try to get email from authentication provider response (may be nil for GitHub users)
+    # Email is required from authentication provider
     auth_provider_email = auth_provider_user_info.dig("email")
+    if auth_provider_email.blank?
+      raise ArgumentError, "Email is required from authentication provider. Please ensure your social provider (GitHub, Google, etc.) is configured to provide email addresses by enabling the proper scopes."
+    end
 
     create!(
       auth0_sub: auth0_sub,
       display_name: auth_provider_user_info["name"],
       email: auth_provider_email,
-      email_source: auth_provider_email.present? ? "auth_provider" : "manual",
       preferences: default_preferences
     )
   end
@@ -38,13 +37,6 @@ class User < ApplicationRecord
     @picture_url ||= auth_provider_user_info["picture"] if auth_provider_user_info
   end
 
-  def auth_provider_email?
-    email_source == "auth_provider"
-  end
-
-  def manual_email?
-    email_source == "manual"
-  end
 
   private
 
@@ -70,11 +62,5 @@ class User < ApplicationRecord
     Rails.cache.fetch("auth_provider_user_#{auth0_sub}", expires_in: 1.hour) do
       {}
     end
-  end
-
-  def prevent_auth_provider_email_modification
-    return unless auth_provider_email? && email_changed?
-
-    errors.add(:email, "cannot be modified as it is provided by your authentication provider")
   end
 end

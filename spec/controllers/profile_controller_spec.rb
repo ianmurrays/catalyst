@@ -96,6 +96,30 @@ RSpec.describe ProfileController, type: :controller do
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
+
+    context "when attempting to update email" do
+      let(:params_with_email) do
+        {
+          user: {
+            display_name: "Updated Name",
+            email: "newemail@example.com"
+          }
+        }
+      end
+
+      it "does not allow email updates" do
+        original_email = user.email
+        patch :update, params: params_with_email
+        user.reload
+        expect(user.email).to eq(original_email)
+      end
+
+      it "still updates allowed fields" do
+        patch :update, params: params_with_email
+        user.reload
+        expect(user.display_name).to eq("Updated Name")
+      end
+    end
   end
 
   describe "authentication requirements" do

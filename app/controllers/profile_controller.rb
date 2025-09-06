@@ -26,16 +26,12 @@ class ProfileController < ApplicationController
   end
 
   def user_params
-    permitted_params = [
+    # Email is always provided by authentication provider and cannot be updated
+    params.require(:user).permit(
       :display_name,
       :bio,
       :phone,
       { preferences: [ :timezone, :language, { email_notifications: [ :profile_updates, :security_alerts, :feature_announcements ] } ] }
-    ]
-
-    # Only allow email updates for manually-entered emails, not authentication provider emails
-    permitted_params << :email unless @user.auth_provider_email?
-
-    params.require(:user).permit(*permitted_params)
+    )
   end
 end

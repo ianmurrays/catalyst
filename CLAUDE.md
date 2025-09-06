@@ -119,6 +119,35 @@ Auth0 integration with:
 - `Secured` concern for protecting controllers
 - CSRF protection via `omniauth-rails_csrf_protection`
 
+#### Email Requirements
+**IMPORTANT**: All social providers MUST be configured to provide email addresses.
+
+**Required Scopes by Provider:**
+- **GitHub**: `user:email` (grants access to user's email addresses)
+- **Google**: `email` (grants access to email address)
+- **Facebook**: `email` (grants access to primary email)
+- **Twitter**: Email is provided by default if available
+
+**Configuration Steps:**
+1. **GitHub OAuth App**: 
+   - Go to Settings > Developer settings > OAuth Apps
+   - Edit your application
+   - Ensure "Request user authorization for email" is enabled
+   - Users must have verified email addresses visible in their profile
+
+2. **Google OAuth**: 
+   - In Google Cloud Console
+   - OAuth consent screen must include email scope
+   - Users will see email permission request
+
+3. **Auth0 Dashboard**:
+   - Connections > Social
+   - Edit your social connection
+   - Ensure email scope is included in the scopes field
+
+**Error Handling:**
+If a provider doesn't supply an email address, authentication will fail with a user-friendly error message explaining the configuration issue.
+
 ## Task Management Guidelines
 
 When making task lists, always prepend:
@@ -126,6 +155,7 @@ When making task lists, always prepend:
 
 And always append:
 - Run Rubocop after making changes, and correct issues if required
+- Verify test suite passes
 
 ## Important Instructions
 Do what has been asked; nothing more, nothing less.

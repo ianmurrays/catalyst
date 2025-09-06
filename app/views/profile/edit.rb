@@ -88,11 +88,7 @@ class Views::Profile::Edit < Views::Base
       end
 
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
-        if @user.auth_provider_email?
-          readonly_field("Email", @user.email, "This email is provided by your authentication provider and cannot be changed")
-        else
-          form_field(form, :email, "Email", "Your email address")
-        end
+        readonly_field("Email", @user.email, "This email is provided by your authentication provider and cannot be changed")
         form_field(form, :phone, "Phone Number", "Your phone number with country code")
       end
     end

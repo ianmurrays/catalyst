@@ -39,7 +39,7 @@ class Views::Profile::Show < Views::Base
 
           div do
             h1(class: "text-2xl font-bold text-card-foreground") { @user.name }
-            p(class: "text-muted-foreground") { @user.email || "Not provided" }
+            p(class: "text-muted-foreground") { @user.email }
           end
         end
 
@@ -81,7 +81,7 @@ class Views::Profile::Show < Views::Base
       end
 
       render RubyUI::Card::CardContent.new do
-        profile_field("Email", @user.email || "Not provided")
+        profile_field("Email", @user.email)
         profile_field("Phone", @user.phone || "Not set")
       end
     end

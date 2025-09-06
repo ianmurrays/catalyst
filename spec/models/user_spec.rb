@@ -14,6 +14,9 @@ RSpec.describe User, type: :model do
 
     it { is_expected.to validate_presence_of(:auth0_sub) }
     it { is_expected.to validate_uniqueness_of(:auth0_sub) }
+    it { is_expected.to validate_presence_of(:email) }
+    it { is_expected.to allow_value("user@example.com").for(:email) }
+    it { is_expected.not_to allow_value("invalid-email").for(:email) }
     it { is_expected.to validate_length_of(:display_name).is_at_least(2).is_at_most(100) }
     it { is_expected.to validate_length_of(:bio).is_at_most(500) }
 
@@ -57,7 +60,45 @@ RSpec.describe User, type: :model do
         user = User.find_or_create_from_auth_provider(valid_auth_provider_info)
         expect(user.auth0_sub).to eq("auth0|123456789")
         expect(user.display_name).to eq("John Doe")
+        expect(user.email).to eq("john@example.com")
         expect(user.preferences).to be_present
+      end
+    end
+
+    context "when email is missing from auth provider" do
+      let(:auth_info_without_email) do
+        {
+          "sub" => "auth0|123456789",
+          "name" => "John Doe"
+        }
+      end
+
+      it "raises an ArgumentError" do
+        expect {
+          User.find_or_create_from_auth_provider(auth_info_without_email)
+        }.to raise_error(ArgumentError, /Email is required from authentication provider/)
+      end
+
+      it "does not create a user" do
+        expect {
+          User.find_or_create_from_auth_provider(auth_info_without_email) rescue nil
+        }.not_to change(User, :count)
+      end
+    end
+
+    context "when email is blank from auth provider" do
+      let(:auth_info_with_blank_email) do
+        {
+          "sub" => "auth0|123456789",
+          "name" => "John Doe",
+          "email" => ""
+        }
+      end
+
+      it "raises an ArgumentError" do
+        expect {
+          User.find_or_create_from_auth_provider(auth_info_with_blank_email)
+        }.to raise_error(ArgumentError, /Email is required from authentication provider/)
       end
     end
   end
