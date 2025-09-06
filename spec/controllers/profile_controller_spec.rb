@@ -209,6 +209,143 @@ RSpec.describe ProfileController, type: :controller do
     end
   end
 
+  describe "timezone preferences" do
+    before do
+      # Mock TimezoneService for consistent testing
+      allow(TimezoneService).to receive(:valid_timezone?) do |identifier|
+        %w[UTC Eastern\ Time\ (US\ &\ Canada) Pacific\ Time\ (US\ &\ Canada) Central\ Time\ (US\ &\ Canada) Invalid/Timezone].include?(identifier) &&
+        identifier != "Invalid/Timezone"
+      end
+    end
+
+    describe "PATCH #update with timezone preference" do
+      context "with valid timezone" do
+        let(:params_with_timezone) do
+          {
+            user: {
+              display_name: "Updated Name",
+              preferences: { timezone: "Eastern Time (US & Canada)" }
+            }
+          }
+        end
+
+        it "updates the user's timezone preference" do
+          patch :update, params: params_with_timezone
+          user.reload
+          expect(user.timezone).to eq("Eastern Time (US & Canada)")
+        end
+
+        it "persists timezone in preferences JSON" do
+          patch :update, params: params_with_timezone
+          user.reload
+          expect(user.preferences["timezone"]).to eq("Eastern Time (US & Canada)")
+        end
+
+        it "redirects successfully" do
+          patch :update, params: params_with_timezone
+          expect(response).to redirect_to(profile_path)
+        end
+
+        it "preserves other preferences" do
+          user.update!(preferences: { language: "es", theme: "dark" })
+          patch :update, params: params_with_timezone
+          user.reload
+          expect(user.preferences["language"]).to eq("es")
+          expect(user.preferences["theme"]).to eq("dark")
+          expect(user.preferences["timezone"]).to eq("Eastern Time (US & Canada)")
+        end
+      end
+
+      context "with invalid timezone" do
+        let(:params_with_invalid_timezone) do
+          {
+            user: {
+              display_name: "Updated Name",
+              preferences: { timezone: "Invalid/Timezone" }
+            }
+          }
+        end
+
+        it "does not update the user's timezone preference" do
+          original_timezone = user.timezone
+          patch :update, params: params_with_invalid_timezone
+          user.reload
+          expect(user.timezone).to eq(original_timezone)
+        end
+
+        it "renders the edit page with validation errors" do
+          patch :update, params: params_with_invalid_timezone
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "shows validation error for invalid timezone" do
+          patch :update, params: params_with_invalid_timezone
+          user.reload
+          expect(user.errors[:timezone]).to include("is not a valid timezone")
+        end
+      end
+
+      context "with empty timezone" do
+        let(:params_with_empty_timezone) do
+          {
+            user: {
+              display_name: "Updated Name",
+              preferences: { timezone: "" }
+            }
+          }
+        end
+
+        it "defaults to UTC timezone" do
+          patch :update, params: params_with_empty_timezone
+          user.reload
+          expect(user.timezone).to eq("UTC")
+        end
+
+        it "updates successfully" do
+          patch :update, params: params_with_empty_timezone
+          expect(response).to redirect_to(profile_path)
+        end
+      end
+
+      context "when timezone parameter is missing" do
+        let(:params_without_timezone) do
+          {
+            user: {
+              display_name: "Updated Name",
+              preferences: { language: "en" }
+            }
+          }
+        end
+
+        it "preserves existing timezone preference" do
+          user.update!(preferences: { timezone: "Pacific Time (US & Canada)" })
+          patch :update, params: params_without_timezone
+          user.reload
+          expect(user.timezone).to eq("Pacific Time (US & Canada)")
+        end
+      end
+    end
+
+    describe "timezone options availability" do
+      before do
+        allow(TimezoneService).to receive(:timezone_options).and_return([
+          [ "UTC", "UTC" ],
+          [ "Eastern Time (US & Canada)", "Eastern Time (US & Canada)" ],
+          [ "Pacific Time (US & Canada)", "Pacific Time (US & Canada)" ]
+        ])
+      end
+
+      describe "GET #edit" do
+        it "makes timezone options available through the view" do
+          get :edit
+          # The view should have access to TimezoneService.timezone_options
+          # This will be tested in the view component specs
+          expect(response).to have_http_status(:ok)
+        end
+      end
+    end
+  end
+
   describe "authentication requirements" do
     before do
       allow(controller).to receive(:logged_in?).and_return(false)

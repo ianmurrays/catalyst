@@ -108,7 +108,7 @@ class Views::Profile::Edit < Views::Base
       end
 
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
-        preferences_field(form, "timezone", t("common.labels.timezone"), timezone_options)
+        timezone_field(form)
         preferences_field(form, "language", t("common.labels.language"), language_options)
       end
     end
@@ -212,16 +212,41 @@ class Views::Profile::Edit < Views::Base
   end
 
   def timezone_options
-    [
-      [ "UTC", "UTC" ],
-      [ t("timezones.eastern"), "America/New_York" ],
-      [ t("timezones.central"), "America/Chicago" ],
-      [ t("timezones.mountain"), "America/Denver" ],
-      [ t("timezones.pacific"), "America/Los_Angeles" ],
-      [ t("timezones.london"), "Europe/London" ],
-      [ t("timezones.paris"), "Europe/Paris" ],
-      [ t("timezones.tokyo"), "Asia/Tokyo" ]
-    ]
+    TimezoneService.timezone_options
+  end
+
+  def timezone_field(form)
+    current_value = @user.preferences&.dig("timezone") || timezone_options.first[1]
+
+    div(class: "space-y-2", data: { controller: "timezone-detector" }) do
+      label(for: "user_preferences_timezone", class: "text-sm font-medium") do
+        t("common.labels.timezone")
+      end
+
+      # Suggestion area (initially hidden)
+      div(
+        data: { timezone_detector_target: "suggestion" },
+        class: "hidden mb-2"
+      )
+
+      select(
+        name: "user[preferences][timezone]",
+        id: "user_preferences_timezone",
+        data: { timezone_detector_target: "select" },
+        class: "w-full px-3 py-2 border border-border rounded-md bg-background"
+      ) do
+        timezone_options.each do |option|
+          option_value = option.is_a?(Array) ? option[1] : option
+          option_text = option.is_a?(Array) ? option[0] : option.humanize
+
+          option_tag(
+            option_text,
+            value: option_value,
+            selected: current_value == option_value
+          )
+        end
+      end
+    end
   end
 
   def error_class(field)

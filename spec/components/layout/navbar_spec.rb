@@ -97,7 +97,7 @@ RSpec.describe Components::Layout::Navbar do
         comp
       end
 
-      let(:html) { render_with_view_context(logged_in_component) }
+      let(:html) { render_with_view_context(logged_in_component, user: mock_user) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "shows user greeting with name" do
@@ -230,7 +230,7 @@ RSpec.describe Components::Layout::Navbar do
         comp
       end
 
-      let(:html) { render_with_view_context(logged_in_component) }
+      let(:html) { render_with_view_context(logged_in_component, user: mock_user) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "uses ghost variant for profile button" do

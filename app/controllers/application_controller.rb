@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   include AuthProvider
 
   before_action :set_locale
+  around_action :with_user_timezone
 
   private
 
@@ -63,5 +64,37 @@ class ApplicationController < ActionController::Base
                               .map(&:to_sym)
 
     accepted_locales.find { |locale| LocaleService.available_locales.include?(locale) }
+  end
+
+  def with_user_timezone(&block)
+    timezone = determine_timezone
+    Time.use_zone(timezone, &block)
+  end
+
+  def determine_timezone
+    # Priority order for timezone selection:
+    # 1. User's timezone preference (if authenticated)
+    # 2. Default timezone (UTC)
+
+    user_preference_timezone || "UTC"
+  end
+
+  def user_preference_timezone
+    return unless logged_in?
+
+    # Safely get current user - if user creation fails, just return nil
+    user = begin
+      current_user
+    rescue ArgumentError
+      nil
+    end
+
+    return unless user
+
+    user_timezone = user.timezone
+    return unless user_timezone
+    return unless TimezoneService.valid_timezone?(user_timezone)
+
+    user_timezone
   end
 end

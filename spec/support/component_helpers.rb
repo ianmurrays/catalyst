@@ -208,8 +208,41 @@ module ComponentHelpers
   end
 
   # Helper for rendering components with Rails integration
-  def render_with_view_context(component)
+  def render_with_view_context(component, user: nil)
+    # Set up comprehensive mocking before rendering
+    setup_comprehensive_component_mocks(user: user)
     view_context.render(component)
+  end
+
+  def setup_comprehensive_component_mocks(user: nil)
+    # Mock authentication for all component classes that might need it
+    [ Components::Layout::Navbar, Components::Layout::Application ].each do |klass|
+      allow_any_instance_of(klass).to receive(:logged_in?).and_return(user.present?)
+      allow_any_instance_of(klass).to receive(:current_user).and_return(user)
+      allow_any_instance_of(klass).to receive(:form_authenticity_token).and_return("test-token")
+    end
+
+    # Mock translations for layout components
+    allow_any_instance_of(Components::Layout::Navbar).to receive(:t) do |key, **options|
+      case key.to_s
+      when "application.name"
+        "Catalyst"
+      when "navigation.login"
+        "Login"
+      when "navigation.logout"
+        "Logout"
+      when "navigation.profile"
+        "Profile"
+      when "navigation.greeting"
+        if options[:name]
+          "Hello, #{options[:name]}"
+        else
+          "Hello, Guest"
+        end
+      else
+        key.to_s
+      end
+    end
   end
 
   # Create a mock user for testing
