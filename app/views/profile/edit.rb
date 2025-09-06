@@ -88,7 +88,11 @@ class Views::Profile::Edit < Views::Base
       end
 
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
-        readonly_field("Email", @user.email, "Managed by Auth0")
+        if @user.auth0_email?
+          readonly_field("Email", @user.email, "This email is provided by Auth0 and cannot be changed")
+        else
+          form_field(form, :email, "Email", "Your email address")
+        end
         form_field(form, :phone, "Phone Number", "Your phone number with country code")
       end
     end
@@ -104,7 +108,6 @@ class Views::Profile::Edit < Views::Base
       end
 
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
-        preferences_field(form, "theme", "Theme", [ "system", "light", "dark" ])
         preferences_field(form, "timezone", "Timezone", timezone_options)
         preferences_field(form, "language", "Language", [ [ "English", "en" ], [ "Spanish", "es" ] ])
       end
@@ -180,7 +183,7 @@ class Views::Profile::Edit < Views::Base
   end
 
   def preferences_field(form, key, label, options)
-    current_value = @user.preferences&.dig(key) || (key == "theme" ? "system" : options.first)
+    current_value = @user.preferences&.dig(key) || options.first
 
     div(class: "space-y-2") do
       label(for: "user_preferences_#{key}", class: "text-sm font-medium") { label }

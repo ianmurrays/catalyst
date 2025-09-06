@@ -39,7 +39,7 @@ class Views::Profile::Show < Views::Base
 
           div do
             h1(class: "text-2xl font-bold text-card-foreground") { @user.name }
-            p(class: "text-muted-foreground") { @user.email }
+            p(class: "text-muted-foreground") { @user.email || "Not provided" }
           end
         end
 
@@ -81,7 +81,7 @@ class Views::Profile::Show < Views::Base
       end
 
       render RubyUI::Card::CardContent.new do
-        profile_field("Email", @user.email)
+        profile_field("Email", @user.email || "Not provided")
         profile_field("Phone", @user.phone || "Not set")
       end
     end
@@ -98,7 +98,6 @@ class Views::Profile::Show < Views::Base
 
       render RubyUI::Card::CardContent.new do
         if @user.preferences.present?
-          profile_field("Theme", @user.preferences.dig("theme")&.humanize || "System")
           profile_field("Timezone", @user.preferences.dig("timezone") || "UTC")
           profile_field("Language", @user.preferences.dig("language") || "English")
         else
