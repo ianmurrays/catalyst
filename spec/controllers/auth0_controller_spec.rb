@@ -144,7 +144,7 @@ RSpec.describe Auth0Controller, type: :controller do
     end
 
     it "renders failure view with default error message when no message provided" do
-      expect(Views::Auth0::Failure).to receive(:new).with(error_msg: "Authentication failed. Please try again.").and_call_original
+      expect(Views::Auth0::Failure).to receive(:new).with(error_msg: "Authentication failed. Please try again or contact support.").and_call_original
       get :failure
       expect(response).to have_http_status(:ok)
     end

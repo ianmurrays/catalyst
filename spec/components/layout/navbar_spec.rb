@@ -5,8 +5,10 @@ require 'rails_helper'
 RSpec.describe Components::Layout::Navbar do
   let(:component) do
     comp = described_class.new
-    # Mock Rails helpers for testing
     allow(comp).to receive(:form_authenticity_token).and_return("test-token")
+    allow(comp).to receive(:logged_in?).and_return(false)
+    allow(comp).to receive(:current_user).and_return(nil)
+    mock_view_translations_for(comp)
     comp
   end
 

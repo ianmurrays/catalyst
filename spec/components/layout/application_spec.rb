@@ -12,16 +12,7 @@ RSpec.describe Components::Layout::Application do
 
   let(:component) do
     comp = described_class.new(page_info)
-    # Mock Rails helpers for testing
-    allow(comp).to receive(:csrf_meta_tags).and_return('<meta name="csrf-token" content="test-token">')
-    allow(comp).to receive(:csp_meta_tag).and_return('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'">')
-    allow(comp).to receive(:stylesheet_link_tag).and_return('<link rel="stylesheet" href="/assets/application.css">')
-    allow(comp).to receive(:javascript_importmap_tags).and_return('<script>importmap</script>')
-    
-    # Mock the navbar component to avoid authentication dependencies
-    allow_any_instance_of(Components::Layout::Navbar).to receive(:logged_in?).and_return(false)
-    allow_any_instance_of(Components::Layout::Navbar).to receive(:form_authenticity_token).and_return("test-token")
-    
+    setup_application_layout_mocks(comp)
     comp
   end
 
@@ -51,10 +42,12 @@ RSpec.describe Components::Layout::Application do
 
     it "defaults to 'Catalyst' when no title provided" do
       page_info = Views::Base::PageInfo.new(title: nil, description: nil)
-      component = described_class.new(page_info)
-      html = component.call
+      comp = described_class.new(page_info)
+      setup_application_layout_mocks(comp)
+
+      html = comp.call { "Test Content" }
       doc = Nokogiri::HTML5(html)
-      
+
       expect(doc.css('title').text).to eq("Catalyst")
     end
 
@@ -115,7 +108,7 @@ RSpec.describe Components::Layout::Application do
     it "yields head content when provided" do
       html = component.call(head: -> { meta(name: "custom", content: "test") }) { "Body Content" }
       doc = Nokogiri::HTML5(html)
-      
+
       expect(doc.css('meta[name="custom"]').first['content']).to eq("test")
     end
   end
