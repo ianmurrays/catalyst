@@ -68,3 +68,8 @@ gem "tailwind_merge", "~> 1.3"
 
 gem "omniauth-auth0", "~> 3.0"
 gem "omniauth-rails_csrf_protection", "~> 1.0" # prevents forged authentication requests
+
+gem "factory_bot_rails", "~> 6.5", group: :test
+
+gem "shoulda-matchers", "~> 6.5", group: :test
+gem "rails-controller-testing", "~> 1.0", group: :test
