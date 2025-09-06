@@ -102,4 +102,73 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "language preferences" do
+    let(:user) { build(:user) }
+
+    describe "#available_languages" do
+      it "delegates to LocaleService" do
+        expected_options = [ [ "English", "en" ], [ "Español (Spanish)", "es" ] ]
+        allow(LocaleService).to receive(:language_options).and_return(expected_options)
+
+        expect(user.available_languages).to eq(expected_options)
+        expect(LocaleService).to have_received(:language_options)
+      end
+    end
+
+    describe "#language" do
+      it "returns language from preferences" do
+        user.preferences = { "language" => "es" }
+        expect(user.language).to eq("es")
+      end
+
+      it "returns default language when not set in preferences" do
+        user.preferences = {}
+        expect(user.language).to eq("en")
+      end
+
+      it "returns default language when preferences is nil" do
+        user.preferences = nil
+        expect(user.language).to eq("en")
+      end
+    end
+
+    describe "#language=" do
+      it "sets language in preferences" do
+        user.language = "es"
+        expect(user.preferences["language"]).to eq("es")
+      end
+
+      it "initializes preferences if nil" do
+        user.preferences = nil
+        user.language = "es"
+        expect(user.preferences).to eq({ "language" => "es" })
+      end
+    end
+
+    describe "language preference validation" do
+      it "validates language against available locales" do
+        allow(LocaleService).to receive(:available_locales).and_return([ :en, :es, :da ])
+
+        user.language = "fr"
+        expect(user).not_to be_valid
+        expect(user.errors[:language]).to include("is not available")
+      end
+
+      it "allows valid language codes" do
+        allow(LocaleService).to receive(:available_locales).and_return([ :en, :es, :da ])
+
+        user.language = "es"
+        expect(user).to be_valid
+      end
+
+      it "allows nil/empty language (defaults to 'en')" do
+        allow(LocaleService).to receive(:available_locales).and_return([ :en, :es, :da ])
+
+        user.language = nil
+        expect(user).to be_valid
+        expect(user.language).to eq("en")
+      end
+    end
+  end
 end

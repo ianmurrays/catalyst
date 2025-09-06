@@ -60,7 +60,7 @@ RSpec.describe ApplicationController, type: :controller do
       context "when user has invalid language preference" do
         before do
           user.preferences = { "language" => "invalid" }
-          user.save!
+          user.save(validate: false) # Skip validation for this test scenario
         end
 
         it "falls back to default locale" do
@@ -216,6 +216,67 @@ RSpec.describe ApplicationController, type: :controller do
 
       it "gracefully falls back to default locale" do
         expect { get :index }.not_to raise_error
+      end
+    end
+  end
+
+  describe "dynamic locale validation with LocaleService" do
+    before do
+      allow(controller).to receive(:current_user).and_return(nil)
+    end
+
+    context "when LocaleService provides available locales" do
+      it "validates session locale against LocaleService available locales" do
+        session[:locale] = "es" # This should be available (en, es, da)
+        get :index
+        expect(I18n.locale).to eq(:es)
+      end
+
+      it "rejects session locale not in LocaleService available locales" do
+        session[:locale] = "fr" # Not in the available locales (en, es, da)
+        get :index
+        expect(I18n.locale).to eq(:en) # Falls back to default
+      end
+
+      it "validates Accept-Language header against LocaleService available locales" do
+        request.headers["Accept-Language"] = "da,es;q=0.9,fr;q=0.8"
+        get :index
+        expect(I18n.locale).to eq(:da) # First supported locale from LocaleService
+      end
+
+      it "ignores Accept-Language locales not in LocaleService" do
+        request.headers["Accept-Language"] = "fr,de,it,es" # Only es is available
+        get :index
+        expect(I18n.locale).to eq(:es)
+      end
+
+      it "falls back to default when no LocaleService locales match Accept-Language" do
+        request.headers["Accept-Language"] = "fr,de,it" # None available in LocaleService
+        get :index
+        expect(I18n.locale).to eq(:en)
+      end
+    end
+
+    context "when authenticated user has language preference" do
+      let(:user) { User.create!(auth0_sub: "auth0|999", display_name: "Test User", email: "test@example.com") }
+
+      before do
+        allow(controller).to receive(:current_user).and_return(user)
+      end
+
+      it "validates user language preference against LocaleService" do
+        user.preferences = { "language" => "es" } # Available locale
+        user.save!
+        get :index
+        expect(I18n.locale).to eq(:es)
+      end
+
+      it "falls back when user language preference not in LocaleService" do
+        user.preferences = { "language" => "fr" } # Not in available locales (en, es, da)
+        user.save(validate: false) # Skip validation for this test scenario
+        session[:locale] = "da" # Available fallback
+        get :index
+        expect(I18n.locale).to eq(:da) # Falls back to session
       end
     end
   end

@@ -40,6 +40,17 @@ es:
     not_set: "No establecido"
     no_preferences_set: "No hay preferencias establecidas"
 
+  # Language names for LocaleService
+  languages:
+    native:
+      en: "English"
+      es: "Español"
+      da: "Dansk"
+    translated:
+      en: "Inglés"
+      es: "Español"
+      da: "Danés"
+
   # Views
   views:
     pages_home:

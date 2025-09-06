@@ -208,11 +208,7 @@ class Views::Profile::Edit < Views::Base
   end
 
   def language_options
-    [
-      [ t("common.languages.english"), "en" ],
-      [ t("common.languages.spanish"), "es" ],
-      [ t("common.languages.danish"), "da" ]
-    ]
+    @user.available_languages
   end
 
   def timezone_options

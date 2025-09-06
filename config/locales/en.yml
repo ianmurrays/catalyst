@@ -37,6 +37,17 @@ en:
       english: "English"
       spanish: "Spanish"  
       danish: "Danish"
+
+  # Language names for LocaleService
+  languages:
+    native:
+      en: "English"
+      es: "Español"
+      da: "Dansk"
+    translated:
+      en: "English"
+      es: "Spanish"
+      da: "Danish"
     not_set: "Not set"
     no_preferences_set: "No preferences set"
 

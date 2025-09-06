@@ -4,6 +4,7 @@ class User < ApplicationRecord
   validates :bio, length: { maximum: 500 }
   validates :phone, format: { with: /\A\+?[0-9\s\-\(\)]+\z/ }, allow_blank: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validate :language_must_be_available
 
   def self.find_or_create_from_auth_provider(auth_provider_user_info)
     auth0_sub = auth_provider_user_info["sub"]
@@ -37,6 +38,19 @@ class User < ApplicationRecord
     @picture_url ||= auth_provider_user_info["picture"] if auth_provider_user_info
   end
 
+  # Language preference methods
+  def available_languages
+    LocaleService.language_options
+  end
+
+  def language
+    preferences&.dig("language") || "en"
+  end
+
+  def language=(locale)
+    self.preferences = {} if preferences.nil?
+    self.preferences = preferences.merge("language" => locale)
+  end
 
   private
 
@@ -61,6 +75,15 @@ class User < ApplicationRecord
 
     Rails.cache.fetch("auth_provider_user_#{auth0_sub}", expires_in: 1.hour) do
       {}
+    end
+  end
+
+  def language_must_be_available
+    return if language.blank? || language == "en"
+
+    available_locale_codes = LocaleService.available_locales.map(&:to_s)
+    unless available_locale_codes.include?(language)
+      errors.add(:language, "is not available")
     end
   end
 end
