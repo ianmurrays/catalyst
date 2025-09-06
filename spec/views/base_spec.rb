@@ -44,7 +44,7 @@ RSpec.describe Views::Base do
   end
 
   describe "#around_template" do
-    let(:html) { view.call }
+    let(:html) { render_with_view_context(view) }
     let(:doc) { Nokogiri::HTML5(html) }
 
     it "wraps view content in application layout" do
@@ -75,15 +75,16 @@ RSpec.describe Views::Base do
       expect(navbar['class']).to include('top-0')
       expect(navbar['class']).to include('z-50')
 
-      # Check for brand in h1 element - the actual text might be mocked differently
-      brand_heading = doc.css('header h1').first
-      expect(brand_heading).not_to be_nil
-      expect(brand_heading['class']).to include('text-xl')
-      expect(brand_heading['class']).to include('font-bold')
+      # Check for brand as clickable link - the actual text might be mocked differently
+      brand_link = doc.css('header a').first
+      expect(brand_link).not_to be_nil
+      expect(brand_link['class']).to include('text-xl')
+      expect(brand_link['class']).to include('font-bold')
+      expect(brand_link['href']).to eq('/')
 
       # The brand content should contain either "Catalyst" or be properly structured
       # Even if translation fails, the element structure should be correct
-      expect(brand_heading.text.strip).not_to be_empty
+      expect(brand_link.text.strip).not_to be_empty
     end
 
     it "renders view content inside main element" do
@@ -205,7 +206,7 @@ RSpec.describe Views::Base do
       end
 
       it "maintains profile-style container patterns within the layout" do
-        html = profile_style_view.call
+        html = render_with_view_context(profile_style_view)
         doc = Nokogiri::HTML5(html)
 
         container = doc.css('.container.mx-auto.px-4.py-8.max-w-4xl').first
@@ -214,7 +215,7 @@ RSpec.describe Views::Base do
       end
 
       it "wraps profile-style views in consistent layout" do
-        html = profile_style_view.call
+        html = render_with_view_context(profile_style_view)
         doc = Nokogiri::HTML5(html)
 
         # Should have layout wrapper

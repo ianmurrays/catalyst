@@ -209,7 +209,7 @@ module ComponentHelpers
 
   # Helper for rendering components with Rails integration
   def render_with_view_context(component)
-    component.call(view_context: view_context)
+    view_context.render(component)
   end
 
   # Create a mock user for testing

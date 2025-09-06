@@ -13,7 +13,7 @@ RSpec.describe Components::Layout::Navbar do
   end
 
   describe "structure" do
-    let(:html) { component.call }
+    let(:html) { render_with_view_context(component) }
     let(:doc) { Nokogiri::HTML5(html) }
 
     it "renders header element with sticky positioning" do
@@ -38,7 +38,8 @@ RSpec.describe Components::Layout::Navbar do
 
     it "renders brand section" do
       expect(html).to include("Catalyst")
-      brand = doc.css('h1').first
+      brand = doc.css('a').first
+      expect(brand).not_to be_nil
       expect(brand['class']).to include("text-xl")
       expect(brand['class']).to include("font-bold")
     end
@@ -57,7 +58,7 @@ RSpec.describe Components::Layout::Navbar do
         allow_any_instance_of(described_class).to receive(:logged_in?).and_return(false)
       end
 
-      let(:html) { component.call }
+      let(:html) { render_with_view_context(component) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "shows login button" do
@@ -96,7 +97,7 @@ RSpec.describe Components::Layout::Navbar do
         comp
       end
 
-      let(:html) { logged_in_component.call }
+      let(:html) { render_with_view_context(logged_in_component) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "shows user greeting with name" do
@@ -148,7 +149,7 @@ RSpec.describe Components::Layout::Navbar do
   end
 
   describe "theme toggle" do
-    let(:html) { component.call }
+    let(:html) { render_with_view_context(component) }
     let(:doc) { Nokogiri::HTML5(html) }
 
     it "includes theme toggle component" do
@@ -194,7 +195,7 @@ RSpec.describe Components::Layout::Navbar do
 
   describe "button styling" do
     context "when not logged in" do
-      let(:html) { component.call }
+      let(:html) { render_with_view_context(component) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "uses outline variant for login button" do
@@ -229,7 +230,7 @@ RSpec.describe Components::Layout::Navbar do
         comp
       end
 
-      let(:html) { logged_in_component.call }
+      let(:html) { render_with_view_context(logged_in_component) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "uses ghost variant for profile button" do
@@ -272,15 +273,18 @@ RSpec.describe Components::Layout::Navbar do
   end
 
   describe "accessibility" do
-    let(:html) { component.call }
+    let(:html) { render_with_view_context(component) }
     let(:doc) { Nokogiri::HTML5(html) }
 
     it "has proper semantic markup with header element" do
       expect(doc.css('header')).not_to be_empty
     end
 
-    it "uses proper heading hierarchy for brand" do
-      expect(doc.css('h1')).not_to be_empty
+    it "includes brand as clickable link" do
+      brand_link = doc.css('a').first
+      expect(brand_link).not_to be_nil
+      expect(brand_link.text.strip).to eq("Catalyst")
+      expect(brand_link['href']).to eq("/")
     end
 
     it "includes proper button elements for interactive components" do
@@ -289,7 +293,7 @@ RSpec.describe Components::Layout::Navbar do
   end
 
   describe "responsive behavior" do
-    let(:html) { component.call }
+    let(:html) { render_with_view_context(component) }
     let(:doc) { Nokogiri::HTML5(html) }
 
     it "includes responsive flex layout" do
