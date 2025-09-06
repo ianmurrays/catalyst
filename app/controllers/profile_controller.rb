@@ -13,7 +13,7 @@ class ProfileController < ApplicationController
 
   def update
     if @user.update(user_params)
-      redirect_to profile_path, notice: "Profile updated successfully!"
+      redirect_to profile_path, notice: t("flash.profile.updated")
     else
       render Views::Profile::Edit.new(user: @user, errors: @user.errors), status: :unprocessable_content
     end

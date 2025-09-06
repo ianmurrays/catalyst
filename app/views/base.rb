@@ -14,6 +14,8 @@ class Views::Base < Components::Base
   register_value_helper :form_authenticity_token
   register_value_helper :form_with
   register_output_helper :form_with
+  register_value_helper :t
+  register_value_helper :l
 
   def around_template
     render layout.new(page_info) do
@@ -29,7 +31,7 @@ class Views::Base < Components::Base
   end
 
   def page_title
-    "Catalyst"
+    t("application.name")
   end
 
   def page_description

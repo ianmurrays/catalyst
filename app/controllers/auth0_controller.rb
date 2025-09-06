@@ -23,14 +23,14 @@ class Auth0Controller < ApplicationController
     rescue => e
       # Other authentication errors
       Rails.logger.error "Authentication error: #{e.message}"
-      error_msg = "Authentication failed. Please try again or contact support."
+      error_msg = t("flash.auth.login_failed")
       render Views::Auth0::Failure.new(error_msg: error_msg), status: :unprocessable_content
     end
   end
 
   def failure
     # Handles failed authentication -- Show a failure page (you can also handle with a redirect)
-    error_msg = request.params["message"] || "Authentication failed. Please try again."
+    error_msg = request.params["message"] || t("flash.auth.login_failed")
     Rails.logger.error "Authentication failure: #{error_msg}"
     render Views::Auth0::Failure.new(error_msg: error_msg)
   end

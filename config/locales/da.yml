@@ -1,0 +1,256 @@
+# Danish translations for Catalyst Rails application
+da:
+  # Application-wide strings
+  application:
+    name: "Catalyst"
+
+  # Navigation and layout
+  navigation:
+    profile: "Profil"
+    login: "Log ind"
+    logout: "Log ud"
+    greeting: "Hej, %{name}"
+    
+  # Common UI elements
+  common:
+    buttons:
+      save: "Gem"
+      cancel: "Annuller"
+      delete: "Slet"
+      edit: "Rediger"
+      view: "Se"
+      submit: "Indsend"
+      try_again: "Prøv igen"
+      return_home: "Tilbage til start"
+      documentation: "Dokumentation"
+      view_on_github: "Se på GitHub"
+      save_changes: "Gem ændringer"
+    labels:
+      language: "Sprog"
+      timezone: "Tidszone"
+      email: "E-mail"
+      name: "Navn"
+      phone: "Telefonnummer"
+      bio: "Biografi"
+      display_name: "Visningsnavn"
+    languages:
+      english: "Engelsk"
+      spanish: "Spansk"  
+      danish: "Dansk"
+    not_set: "Ikke indstillet"
+    no_preferences_set: "Ingen præferencer sat"
+
+  # Views
+  views:
+    pages_home:
+      badge_text: "Rails 8 Skabelon"
+      title: "Catalyst Rails Skabelon"
+      subtitle: "En moderne Rails 8 applikationsskabelon med Ruby UI komponenter, Auth0 autentifikation, og Tailwind CSS. Kom i gang med at bygge din næste applikation på få minutter, ikke timer."
+      quick_start_label: "Hurtig start"
+      quick_start_command: "bin/rename DitAppNavn && bin/setup"
+      getting_started:
+        title: "Kom i gang"
+        description: "Følg disse trin for at tilpasse din nye Rails-applikation"
+        steps:
+          rename:
+            title: "Omdøb din applikation"
+            description: "Ændre applikationsnavnet fra 'Catalyst' til dit ønskede navn"
+            command: "bin/rename DitNyeApp"
+          setup:
+            title: "Kør setup-scriptet"
+            description: "Installer afhængigheder og opsæt databasen"
+            command: "bin/setup"
+          development:
+            title: "Start udviklingsserveren"
+            description: "Start Rails-serveren med asset overvågning"
+            command: "bin/dev"
+      features:
+        title: "Funktioner og teknologier"
+        ruby_ui:
+          title: "Ruby UI Komponenter"
+          description: "Smukke, tilgængelige komponenter bygget med Phlex og stylede med Tailwind CSS"
+        auth:
+          title: "Auth0 Autentifikation"
+          description: "Sikker brugerautentifikation med social login support"
+        rails:
+          title: "Rails 8 og moderne værktøjer"  
+          description: "Seneste Rails med Propshaft, Solid Cache/Queue, og mere"
+        tailwind:
+          title: "Tailwind CSS 4"
+          description: "Moderne CSS framework med utility-first tilgang"
+      development_workflow:
+        title: "Udviklingsarbejdsgang"
+        description: "Dit udviklingsmiljø er klar. Her er hvad du kan gøre næste:"
+        items:
+          generators:
+            title: "Brug Ruby UI generatorer"
+            description: "Generer komponenter med bin/rails g ruby_ui:component KomponentNavn"
+          customize:
+            title: "Tilpas komponenter"
+            description: "Alle komponenter er i app/components/ og kan modificeres"
+          auth_setup:
+            title: "Konfigurer autentifikation"
+            description: "Opdater Auth0 indstillinger i dine miljøvariabler"
+          deployment:
+            title: "Deploy med Kamal"
+            description: "Docker-baseret deployment er prækonfigureret"
+      next_steps:
+        title: "Næste trin"
+        description: "Klar til at bygge noget fantastisk? Her er nogle forslag:"
+        suggestions:
+          - "Udforsk Ruby UI komponentbiblioteket"
+          - "Opsæt din Auth0 applikation til autentifikation"
+          - "Tilpas temaet og stylingen"
+          - "Tilføj din forretningslogik og modeller"
+          - "Deploy til produktion med Kamal"
+
+    profile:
+      show:
+        title: "Profiloversigt" 
+        subtitle: "Administrer din kontoinformation og præferencer"
+        contact_info:
+          title: "Kontaktinformation"
+          description: "Dine kontaktoplysninger"
+        preferences:
+          title: "Præferencer"
+          description: "Tilpas din oplevelse"
+        account_info:
+          title: "Kontoinformation"  
+          description: "Dine autentifikationsdetaljer"
+        email_label: "E-mail adresse"
+        email_note: "Leveret af din autentifikationsudbyder"
+        phone_label: "Telefonnummer"
+        timezone_label: "Tidszone"
+        language_label: "Sprog"
+        member_since_label: "Medlem siden"
+        member_since: "Medlem siden %{date}"
+        provider_info: "Forbundet via %{provider}"
+      edit:
+        title: "Rediger profil"
+        subtitle: "Opdater din profilinformation og præferencer"
+        basic_info:
+          title: "Grundlæggende information"
+          description: "Din offentlige profilinformation"
+        contact_info:
+          title: "Kontaktinformation"
+          description: "Dine kontaktoplysninger (private)"
+        preferences:
+          title: "Præferencer"
+          description: "Tilpas din oplevelse"
+        display_name_hint: "Dit offentlige visningsnavn"
+        bio_hint: "Fortæl andre om dig selv"
+        email_readonly_note: "Denne e-mail leveres af din autentifikationsudbyder og kan ikke ændres"
+        phone_hint: "Dit telefonnummer med landekode"
+        changes_note: "Ændringer gemmes straks"
+        validation_errors: "Valideringsfejl"
+
+    auth0:
+      failure:
+        title: "Autentifikation mislykkedes"
+        subtitle: "Vi kunne ikke autentificere din konto"
+        email_required:
+          title: "E-mail adresse påkrævet"
+          description: "Din autentifikationsudbyder skal levere en e-mail adresse. Sørg for at din sociale udbyder er konfigureret korrekt:"
+          github_note: "Aktiver 'Request user authorization for email' i dine OAuth App-indstillinger"
+          google_note: "Inkluder e-mail scope i din OAuth samtykke-skærm"  
+          facebook_note: "Anmod om e-mail tilladelse i dine app-indstillinger"
+          auth0_note: "Sørg for at e-mail scope er inkluderet i dine Auth0 sociale forbindelsesindstillinger"
+        generic_error:
+          title: "Autentifikationsfejl"
+          description: "Der opstod en fejl under autentifikation. Prøv igen eller kontakt support hvis problemet fortsætter."
+
+  # Flash messages
+  flash:
+    profile:
+      updated: "Profil opdateret med succes!"
+      update_failed: "Kunne ikke opdatere profil. Tjek dine oplysninger og prøv igen."
+    auth:
+      login_success: "Login lykkedes!"
+      logout_success: "Logout lykkedes!"
+      login_failed: "Autentifikation mislykkedes. Prøv igen."
+      email_required: "E-mail er påkrævet fra autentifikationsudbyder. Sørg for at din sociale udbyder er konfigureret til at levere e-mail adresser."
+
+  # ActiveRecord translations
+  activerecord:
+    models:
+      user: "Bruger"
+    attributes:
+      user:
+        display_name: "Visningsnavn"
+        email: "E-mail adresse"
+        bio: "Biografi"
+        phone: "Telefonnummer"
+        preferences: "Præferencer"
+        auth0_sub: "Autentifikations-ID"
+        created_at: "Oprettet"
+        updated_at: "Opdateret"
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: "er påkrævet"
+              invalid: "skal være en gyldig e-mail adresse"
+            display_name:
+              too_short: "skal være mindst 2 tegn"
+              too_long: "kan ikke være mere end 100 tegn"
+            bio:
+              too_long: "kan ikke være mere end 500 tegn"
+            phone:
+              invalid: "skal være et gyldigt telefonnummer format"
+            auth0_sub:
+              blank: "er påkrævet"
+              taken: "er allerede taget"
+
+  # Date and time formats
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b"
+      long: "%d. %B %Y"
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d %b %H:%M"
+      long: "%d. %B %Y %H:%M"
+
+  # Number formats
+  number:
+    format:
+      separator: ","
+      delimiter: "."
+      precision: 2
+    currency:
+      format:
+        format: "%u %n"
+        unit: "kr"
+        separator: ","
+        delimiter: "."
+        precision: 2
+
+  # Pluralization examples for testing
+  item:
+    zero: "ingen elementer"
+    one: "et element"
+    other: "%{count} elementer"
+
+  # Timezone labels
+  timezones:
+    eastern: "Østlig tid"
+    central: "Central tid"
+    mountain: "Bjerg tid"
+    pacific: "Stillehavs tid"
+    london: "London"
+    paris: "Paris"
+    tokyo: "Tokyo"
+
+  # Validation messages
+  errors:
+    messages:
+      blank: "må ikke være tom"
+      invalid: "er ugyldig"
+      taken: "er allerede taget"
+      too_short: "er for kort (minimum %{count} tegn)"
+      too_long: "er for lang (maksimum %{count} tegn)"
+      confirmation: "passer ikke"
+      accepted: "skal accepteres"

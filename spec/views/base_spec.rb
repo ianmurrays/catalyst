@@ -26,10 +26,10 @@ RSpec.describe Views::Base do
     allow_any_instance_of(Components::Layout::Application).to receive(:csp_meta_tag).and_return('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'">')
     allow_any_instance_of(Components::Layout::Application).to receive(:stylesheet_link_tag).and_return('<link rel="stylesheet" href="/assets/application.css">')
     allow_any_instance_of(Components::Layout::Application).to receive(:javascript_importmap_tags).and_return('<script>importmap</script>')
-    
+
     allow_any_instance_of(Components::Layout::Navbar).to receive(:form_authenticity_token).and_return("test-token")
     allow_any_instance_of(Components::Layout::Navbar).to receive(:logged_in?).and_return(false)
-    
+
     instance
   end
 
@@ -173,7 +173,7 @@ RSpec.describe Views::Base do
       it "maintains profile-style container patterns within the layout" do
         html = profile_style_view.call
         doc = Nokogiri::HTML5(html)
-        
+
         container = doc.css('.container.mx-auto.px-4.py-8.max-w-4xl').first
         expect(container).not_to be_nil
         expect(container.text).to include("Profile Style Content")
@@ -182,11 +182,11 @@ RSpec.describe Views::Base do
       it "wraps profile-style views in consistent layout" do
         html = profile_style_view.call
         doc = Nokogiri::HTML5(html)
-        
+
         # Should have layout wrapper
         expect(doc.css('header')).not_to be_empty # navbar
         expect(doc.css('main')).not_to be_empty # main content wrapper
-        
+
         # Should have profile content inside
         expect(doc.css('main h1').text).to eq("Profile Style Content")
       end

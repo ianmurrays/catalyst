@@ -50,7 +50,7 @@ class Views::Profile::Show < Views::Base
         div(class: "flex gap-3") do
           link_to "/profile/edit", class: "inline-flex" do
             render RubyUI::Button::Button.new(variant: :outline) do
-              "Edit Profile"
+              t("common.buttons.edit")
             end
           end
         end
@@ -61,15 +61,15 @@ class Views::Profile::Show < Views::Base
   def profile_overview_card
     render RubyUI::Card::Card.new do
       render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Profile Overview" }
+        render RubyUI::Card::CardTitle.new { t("views.profile.show.title") }
         render RubyUI::Card::CardDescription.new do
-          "Your basic information and bio"
+          t("views.profile.show.subtitle")
         end
       end
 
       render RubyUI::Card::CardContent.new do
-        profile_field("Display Name", @user.display_name || "Not set")
-        profile_field("Bio", @user.bio.present? ? @user.bio : "Not set")
+        profile_field(t("activerecord.attributes.user.display_name"), @user.display_name || t("common.not_set"))
+        profile_field(t("activerecord.attributes.user.bio"), @user.bio.present? ? @user.bio : t("common.not_set"))
       end
     end
   end
@@ -78,15 +78,15 @@ class Views::Profile::Show < Views::Base
   def profile_info_card
     render RubyUI::Card::Card.new do
       render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Contact Information" }
+        render RubyUI::Card::CardTitle.new { t("views.profile.show.contact_info.title") }
         render RubyUI::Card::CardDescription.new do
-          "Your contact details and links"
+          t("views.profile.show.contact_info.description")
         end
       end
 
       render RubyUI::Card::CardContent.new do
-        profile_field("Email", @user.email)
-        profile_field("Phone", @user.phone || "Not set")
+        profile_field(t("activerecord.attributes.user.email"), @user.email)
+        profile_field(t("activerecord.attributes.user.phone"), @user.phone || t("common.not_set"))
       end
     end
   end
@@ -94,18 +94,18 @@ class Views::Profile::Show < Views::Base
   def preferences_card
     render RubyUI::Card::Card.new do
       render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Preferences" }
+        render RubyUI::Card::CardTitle.new { t("views.profile.show.preferences.title") }
         render RubyUI::Card::CardDescription.new do
-          "Your account preferences and settings"
+          t("views.profile.show.preferences.description")
         end
       end
 
       render RubyUI::Card::CardContent.new do
         if @user.preferences.present?
-          profile_field("Timezone", @user.preferences.dig("timezone") || "UTC")
-          profile_field("Language", @user.preferences.dig("language") || "English")
+          profile_field(t("common.labels.timezone"), @user.preferences.dig("timezone") || "UTC")
+          profile_field(t("common.labels.language"), language_display_name(@user.preferences.dig("language") || "en"))
         else
-          p(class: "text-muted-foreground") { "No preferences set" }
+          p(class: "text-muted-foreground") { t("common.no_preferences_set") }
         end
       end
     end
@@ -114,16 +114,16 @@ class Views::Profile::Show < Views::Base
   def account_info_card
     render RubyUI::Card::Card.new(class: "mt-6") do
       render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Account Information" }
+        render RubyUI::Card::CardTitle.new { t("views.profile.show.account_info.title") }
         render RubyUI::Card::CardDescription.new do
-          "Read-only account details"
+          t("views.profile.show.account_info.description")
         end
       end
 
       render RubyUI::Card::CardContent.new do
-        profile_field("Member since", @user.created_at.strftime("%B %d, %Y"))
-        profile_field("Last updated", @user.updated_at.strftime("%B %d, %Y at %I:%M %p"))
-        profile_field("Authentication Provider ID", @user.auth0_sub)
+        profile_field(t("views.profile.show.member_since_label"), l(@user.created_at, format: :long))
+        profile_field(t("activerecord.attributes.user.updated_at"), l(@user.updated_at, format: :default))
+        profile_field(t("activerecord.attributes.user.auth0_sub"), @user.auth0_sub)
       end
     end
   end
@@ -139,5 +139,18 @@ class Views::Profile::Show < Views::Base
     return "U" if name.blank?
 
     name.split.map { |part| part[0]&.upcase }.join[0..1]
+  end
+
+  def language_display_name(language_code)
+    case language_code
+    when "en"
+      t("common.languages.english")
+    when "es"
+      t("common.languages.spanish")
+    when "da"
+      t("common.languages.danish")
+    else
+      language_code
+    end
   end
 end

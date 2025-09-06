@@ -69,6 +69,9 @@ gem "tailwind_merge", "~> 1.3"
 gem "omniauth-auth0", "~> 3.0"
 gem "omniauth-rails_csrf_protection", "~> 1.0" # prevents forged authentication requests
 
+# Internationalization (i18n) locale data for Rails
+gem "rails-i18n", "~> 8.0.0"
+
 gem "factory_bot_rails", "~> 6.5", group: :test
 
 gem "shoulda-matchers", "~> 6.5", group: :test

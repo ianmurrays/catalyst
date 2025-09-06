@@ -9,7 +9,7 @@ class Views::Profile::Edit < Views::Base
   end
 
   def page_title
-    "Edit Profile"
+    t("views.profile.edit.title")
   end
 
   def view_template
@@ -38,15 +38,15 @@ class Views::Profile::Edit < Views::Base
   def page_header
     div(class: "flex items-center justify-between mb-8") do
       div do
-        h1(class: "text-3xl font-bold text-foreground") { "Edit Profile" }
+        h1(class: "text-3xl font-bold text-foreground") { t("views.profile.edit.title") }
         p(class: "text-muted-foreground mt-2") do
-          "Update your profile information and preferences"
+          t("views.profile.edit.subtitle")
         end
       end
 
       link_to "/profile", class: "inline-flex" do
         render RubyUI::Button::Button.new(variant: :outline) do
-          "Cancel"
+          t("common.buttons.cancel")
         end
       end
     end
@@ -54,7 +54,7 @@ class Views::Profile::Edit < Views::Base
 
   def error_alert
     render RubyUI::Alert::Alert.new(variant: :destructive, class: "mb-6") do
-      render RubyUI::Alert::AlertTitle.new { "Validation Errors" }
+      render RubyUI::Alert::AlertTitle.new { t("views.profile.edit.validation_errors") }
       render RubyUI::Alert::AlertDescription.new do
         ul(class: "list-disc list-inside space-y-1") do
           @errors.full_messages.each do |message|
@@ -69,15 +69,15 @@ class Views::Profile::Edit < Views::Base
   def basic_info_section(form)
     render RubyUI::Card::Card.new do
       render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Basic Information" }
+        render RubyUI::Card::CardTitle.new { t("views.profile.edit.basic_info.title") }
         render RubyUI::Card::CardDescription.new do
-          "Your public profile information"
+          t("views.profile.edit.basic_info.description")
         end
       end
 
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
-        form_field(form, :display_name, "Display Name", "Your public display name")
-        form_field(form, :bio, "Bio", "Tell others about yourself", type: :textarea)
+        form_field(form, :display_name, t("activerecord.attributes.user.display_name"), t("views.profile.edit.display_name_hint"))
+        form_field(form, :bio, t("activerecord.attributes.user.bio"), t("views.profile.edit.bio_hint"), type: :textarea)
       end
     end
   end
@@ -85,15 +85,15 @@ class Views::Profile::Edit < Views::Base
   def contact_info_section(form)
     render RubyUI::Card::Card.new do
       render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Contact Information" }
+        render RubyUI::Card::CardTitle.new { t("views.profile.edit.contact_info.title") }
         render RubyUI::Card::CardDescription.new do
-          "Your contact details (private)"
+          t("views.profile.edit.contact_info.description")
         end
       end
 
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
-        readonly_field("Email", @user.email, "This email is provided by your authentication provider and cannot be changed")
-        form_field(form, :phone, "Phone Number", "Your phone number with country code")
+        readonly_field(t("activerecord.attributes.user.email"), @user.email, t("views.profile.edit.email_readonly_note"))
+        form_field(form, :phone, t("activerecord.attributes.user.phone"), t("views.profile.edit.phone_hint"))
       end
     end
   end
@@ -101,15 +101,15 @@ class Views::Profile::Edit < Views::Base
   def preferences_section(form)
     render RubyUI::Card::Card.new do
       render RubyUI::Card::CardHeader.new do
-        render RubyUI::Card::CardTitle.new { "Preferences" }
+        render RubyUI::Card::CardTitle.new { t("views.profile.edit.preferences.title") }
         render RubyUI::Card::CardDescription.new do
-          "Customize your experience"
+          t("views.profile.edit.preferences.description")
         end
       end
 
       render RubyUI::Card::CardContent.new(class: "space-y-4") do
-        preferences_field(form, "timezone", "Timezone", timezone_options)
-        preferences_field(form, "language", "Language", [ [ "English", "en" ], [ "Spanish", "es" ] ])
+        preferences_field(form, "timezone", t("common.labels.timezone"), timezone_options)
+        preferences_field(form, "language", t("common.labels.language"), language_options)
       end
     end
   end
@@ -118,20 +118,20 @@ class Views::Profile::Edit < Views::Base
   def form_actions(form)
     div(class: "flex items-center justify-between pt-6 border-t border-border") do
       div(class: "text-sm text-muted-foreground") do
-        "Changes will be saved immediately"
+        t("views.profile.edit.changes_note")
       end
 
       div(class: "flex gap-3") do
         link_to "/profile", class: "inline-flex" do
           render RubyUI::Button::Button.new(variant: :outline) do
-            "Cancel"
+            t("common.buttons.cancel")
           end
         end
 
         render RubyUI::Button::Button.new(
           type: :submit
         ) do
-          "Save Changes"
+          t("common.buttons.save_changes")
         end
       end
     end
@@ -145,11 +145,12 @@ class Views::Profile::Edit < Views::Base
         render RubyUI::Textarea::Textarea.new(
           name: "user[#{field}]",
           id: "user_#{field}",
-          value: @user.send(field),
           placeholder: hint,
           rows: 3,
           class: error_class(field)
-        )
+        ) do
+          @user.send(field)
+        end
       else
         render RubyUI::Input::Input.new(
           name: "user[#{field}]",
@@ -206,16 +207,24 @@ class Views::Profile::Edit < Views::Base
     end
   end
 
+  def language_options
+    [
+      [ t("common.languages.english"), "en" ],
+      [ t("common.languages.spanish"), "es" ],
+      [ t("common.languages.danish"), "da" ]
+    ]
+  end
+
   def timezone_options
     [
       [ "UTC", "UTC" ],
-      [ "Eastern Time", "America/New_York" ],
-      [ "Central Time", "America/Chicago" ],
-      [ "Mountain Time", "America/Denver" ],
-      [ "Pacific Time", "America/Los_Angeles" ],
-      [ "London", "Europe/London" ],
-      [ "Paris", "Europe/Paris" ],
-      [ "Tokyo", "Asia/Tokyo" ]
+      [ t("timezones.eastern"), "America/New_York" ],
+      [ t("timezones.central"), "America/Chicago" ],
+      [ t("timezones.mountain"), "America/Denver" ],
+      [ t("timezones.pacific"), "America/Los_Angeles" ],
+      [ t("timezones.london"), "Europe/London" ],
+      [ t("timezones.paris"), "Europe/Paris" ],
+      [ t("timezones.tokyo"), "Asia/Tokyo" ]
     ]
   end
 

@@ -39,6 +39,11 @@ module Catalyst
     # Add views to autoload paths for Phlex components
     config.autoload_paths << Rails.root.join("app/views")
 
+    # I18n configuration
+    config.i18n.available_locales = [ :en, :es, :da ]
+    config.i18n.default_locale = :en
+    config.i18n.fallbacks = true
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

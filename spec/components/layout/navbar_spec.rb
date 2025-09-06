@@ -150,7 +150,7 @@ RSpec.describe Components::Layout::Navbar do
     end
 
     it "includes dark mode button with moon icon" do
-      # Look for moon icon SVG path  
+      # Look for moon icon SVG path
       expect(html).to include("M9.528 1.718a.75.75 0")
     end
 

@@ -1,0 +1,256 @@
+# Spanish translations for Catalyst Rails application
+es:
+  # Application-wide strings
+  application:
+    name: "Catalyst"
+
+  # Navigation and layout
+  navigation:
+    profile: "Perfil"
+    login: "Iniciar sesión"
+    logout: "Cerrar sesión"
+    greeting: "Hola, %{name}"
+    
+  # Common UI elements
+  common:
+    buttons:
+      save: "Guardar"
+      cancel: "Cancelar"
+      delete: "Eliminar"
+      edit: "Editar"
+      view: "Ver"
+      submit: "Enviar"
+      try_again: "Intentar de nuevo"
+      return_home: "Volver al inicio"
+      documentation: "Documentación"
+      view_on_github: "Ver en GitHub"
+      save_changes: "Guardar cambios"
+    labels:
+      language: "Idioma"
+      timezone: "Zona horaria"
+      email: "Correo electrónico"
+      name: "Nombre"
+      phone: "Número de teléfono"
+      bio: "Biografía"
+      display_name: "Nombre a mostrar"
+    languages:
+      english: "Inglés"
+      spanish: "Español"  
+      danish: "Danés"
+    not_set: "No establecido"
+    no_preferences_set: "No hay preferencias establecidas"
+
+  # Views
+  views:
+    pages_home:
+      badge_text: "Plantilla Rails 8"
+      title: "Plantilla Rails Catalyst"
+      subtitle: "Una plantilla moderna de aplicación Rails 8 con componentes Ruby UI, autenticación Auth0, y Tailwind CSS. Comienza a construir tu próxima aplicación en minutos, no horas."
+      quick_start_label: "Inicio rápido"
+      quick_start_command: "bin/rename NombreDeTuApp && bin/setup"
+      getting_started:
+        title: "Primeros pasos"
+        description: "Sigue estos pasos para personalizar tu nueva aplicación Rails"
+        steps:
+          rename:
+            title: "Renombra tu aplicación"
+            description: "Cambia el nombre de la aplicación de 'Catalyst' al nombre que desees"
+            command: "bin/rename TuNuevaApp"
+          setup:
+            title: "Ejecuta el script de configuración"
+            description: "Instala dependencias y configura la base de datos"
+            command: "bin/setup"
+          development:
+            title: "Inicia el servidor de desarrollo"
+            description: "Lanza el servidor Rails con monitoreo de assets"
+            command: "bin/dev"
+      features:
+        title: "Características y tecnologías"
+        ruby_ui:
+          title: "Componentes Ruby UI"
+          description: "Componentes hermosos y accesibles construidos con Phlex y estilizados con Tailwind CSS"
+        auth:
+          title: "Autenticación Auth0"
+          description: "Autenticación segura de usuarios con soporte para login social"
+        rails:
+          title: "Rails 8 y herramientas modernas"  
+          description: "La última versión de Rails con Propshaft, Solid Cache/Queue, y más"
+        tailwind:
+          title: "Tailwind CSS 4"
+          description: "Framework CSS moderno con enfoque utility-first"
+      development_workflow:
+        title: "Flujo de desarrollo"
+        description: "Tu entorno de desarrollo está listo. Esto es lo que puedes hacer a continuación:"
+        items:
+          generators:
+            title: "Usar generadores Ruby UI"
+            description: "Genera componentes con bin/rails g ruby_ui:component NombreComponente"
+          customize:
+            title: "Personalizar componentes"
+            description: "Todos los componentes están en app/components/ y pueden ser modificados"
+          auth_setup:
+            title: "Configurar autenticación"
+            description: "Actualiza la configuración de Auth0 en tus variables de entorno"
+          deployment:
+            title: "Despliega con Kamal"
+            description: "El despliegue basado en Docker está preconfigurado"
+      next_steps:
+        title: "Próximos pasos"
+        description: "¿Listo para construir algo increíble? Aquí tienes algunas sugerencias:"
+        suggestions:
+          - "Explora la biblioteca de componentes Ruby UI"
+          - "Configura tu aplicación Auth0 para autenticación"
+          - "Personaliza el tema y el estilo"
+          - "Agrega tu lógica de negocio y modelos"
+          - "Despliega a producción con Kamal"
+
+    profile:
+      show:
+        title: "Resumen del perfil" 
+        subtitle: "Gestiona la información de tu cuenta y preferencias"
+        contact_info:
+          title: "Información de contacto"
+          description: "Tus datos de contacto"
+        preferences:
+          title: "Preferencias"
+          description: "Personaliza tu experiencia"
+        account_info:
+          title: "Información de la cuenta"  
+          description: "Tus detalles de autenticación"
+        email_label: "Dirección de correo electrónico"
+        email_note: "Proporcionada por tu proveedor de autenticación"
+        phone_label: "Número de teléfono"
+        timezone_label: "Zona horaria"
+        language_label: "Idioma"
+        member_since_label: "Miembro desde"
+        member_since: "Miembro desde %{date}"
+        provider_info: "Conectado a través de %{provider}"
+      edit:
+        title: "Editar perfil"
+        subtitle: "Actualiza la información de tu perfil y preferencias"
+        basic_info:
+          title: "Información básica"
+          description: "Tu información de perfil público"
+        contact_info:
+          title: "Información de contacto"
+          description: "Tus datos de contacto (privados)"
+        preferences:
+          title: "Preferencias"
+          description: "Personaliza tu experiencia"
+        display_name_hint: "Tu nombre público a mostrar"
+        bio_hint: "Cuéntale a otros sobre ti"
+        email_readonly_note: "Este correo electrónico es proporcionado por tu proveedor de autenticación y no se puede cambiar"
+        phone_hint: "Tu número de teléfono con código de país"
+        changes_note: "Los cambios se guardarán inmediatamente"
+        validation_errors: "Errores de validación"
+
+    auth0:
+      failure:
+        title: "Falló la autenticación"
+        subtitle: "No pudimos autenticar tu cuenta"
+        email_required:
+          title: "Dirección de correo electrónico requerida"
+          description: "Tu proveedor de autenticación debe proporcionar una dirección de correo electrónico. Asegúrate de que tu proveedor social esté configurado correctamente:"
+          github_note: "Habilita 'Request user authorization for email' en la configuración de tu OAuth App"
+          google_note: "Incluye el alcance de email en tu pantalla de consentimiento OAuth"  
+          facebook_note: "Solicita permiso de email en la configuración de tu app"
+          auth0_note: "Asegúrate de que el alcance de email esté incluido en la configuración de conexión social de Auth0"
+        generic_error:
+          title: "Error de autenticación"
+          description: "Ocurrió un error durante la autenticación. Inténtalo de nuevo o contacta soporte si el problema persiste."
+
+  # Flash messages
+  flash:
+    profile:
+      updated: "¡Perfil actualizado exitosamente!"
+      update_failed: "No se pudo actualizar el perfil. Verifica tu información e inténtalo de nuevo."
+    auth:
+      login_success: "¡Inicio de sesión exitoso!"
+      logout_success: "¡Cierre de sesión exitoso!"
+      login_failed: "Falló la autenticación. Inténtalo de nuevo."
+      email_required: "Se requiere email del proveedor de autenticación. Asegúrate de que tu proveedor social esté configurado para proporcionar direcciones de correo electrónico."
+
+  # ActiveRecord translations
+  activerecord:
+    models:
+      user: "Usuario"
+    attributes:
+      user:
+        display_name: "Nombre a mostrar"
+        email: "Dirección de correo electrónico"
+        bio: "Biografía"
+        phone: "Número de teléfono"
+        preferences: "Preferencias"
+        auth0_sub: "ID de autenticación"
+        created_at: "Creado en"
+        updated_at: "Actualizado en"
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: "es requerido"
+              invalid: "debe ser una dirección de correo electrónico válida"
+            display_name:
+              too_short: "debe tener al menos 2 caracteres"
+              too_long: "no puede tener más de 100 caracteres"
+            bio:
+              too_long: "no puede tener más de 500 caracteres"
+            phone:
+              invalid: "debe ser un formato de número de teléfono válido"
+            auth0_sub:
+              blank: "es requerido"
+              taken: "ya ha sido tomado"
+
+  # Date and time formats
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b"
+      long: "%d de %B de %Y"
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d %b %H:%M"
+      long: "%d de %B de %Y %H:%M"
+
+  # Number formats
+  number:
+    format:
+      separator: ","
+      delimiter: "."
+      precision: 2
+    currency:
+      format:
+        format: "%u%n"
+        unit: "€"
+        separator: ","
+        delimiter: "."
+        precision: 2
+
+  # Pluralization examples for testing
+  item:
+    zero: "ningún elemento"
+    one: "un elemento"
+    other: "%{count} elementos"
+
+  # Timezone labels
+  timezones:
+    eastern: "Hora del Este"
+    central: "Hora Central"
+    mountain: "Hora de la Montaña"
+    pacific: "Hora del Pacífico"
+    london: "Londres"
+    paris: "París"
+    tokyo: "Tokio"
+
+  # Validation messages
+  errors:
+    messages:
+      blank: "no puede estar en blanco"
+      invalid: "no es válido"
+      taken: "ya ha sido tomado"
+      too_short: "es demasiado corto (mínimo %{count} caracteres)"
+      too_long: "es demasiado largo (máximo %{count} caracteres)"
+      confirmation: "no coincide"
+      accepted: "debe ser aceptado"

@@ -1,31 +1,256 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
+# English translations for Catalyst Rails application
 en:
-  hello: "Hello world"
+  # Application-wide strings
+  application:
+    name: "Catalyst"
+
+  # Navigation and layout
+  navigation:
+    profile: "Profile"
+    login: "Login"
+    logout: "Logout"
+    greeting: "Hello, %{name}"
+    
+  # Common UI elements
+  common:
+    buttons:
+      save: "Save"
+      cancel: "Cancel"
+      delete: "Delete"
+      edit: "Edit"
+      view: "View"
+      submit: "Submit"
+      try_again: "Try Again"
+      return_home: "Return Home"
+      documentation: "Documentation"
+      view_on_github: "View on GitHub"
+      save_changes: "Save Changes"
+    labels:
+      language: "Language"
+      timezone: "Timezone"
+      email: "Email"
+      name: "Name"
+      phone: "Phone Number"
+      bio: "Bio"
+      display_name: "Display Name"
+    languages:
+      english: "English"
+      spanish: "Spanish"  
+      danish: "Danish"
+    not_set: "Not set"
+    no_preferences_set: "No preferences set"
+
+  # Views
+  views:
+    pages_home:
+      badge_text: "Rails 8 Template"
+      title: "Catalyst Rails Template"
+      subtitle: "A modern Rails 8 application template with Ruby UI components, Auth0 authentication, and Tailwind CSS. Get started building your next application in minutes, not hours."
+      quick_start_label: "Quick Start"
+      quick_start_command: "bin/rename YourAppName && bin/setup"
+      getting_started:
+        title: "Getting Started"
+        description: "Follow these steps to customize your new Rails application"
+        steps:
+          rename:
+            title: "Rename Your Application"
+            description: "Change the application name from 'Catalyst' to your desired name"
+            command: "bin/rename YourNewApp"
+          setup:
+            title: "Run Setup Script"
+            description: "Install dependencies and setup the database"
+            command: "bin/setup"
+          development:
+            title: "Start Development Server"
+            description: "Launch the Rails server with asset watching"
+            command: "bin/dev"
+      features:
+        title: "Features & Stack"
+        ruby_ui:
+          title: "Ruby UI Components"
+          description: "Beautiful, accessible components built with Phlex and styled with Tailwind CSS"
+        auth:
+          title: "Auth0 Authentication"
+          description: "Secure user authentication with social login support"
+        rails:
+          title: "Rails 8 & Modern Tooling"  
+          description: "Latest Rails with Propshaft, Solid Cache/Queue, and more"
+        tailwind:
+          title: "Tailwind CSS 4"
+          description: "Modern CSS framework with utility-first approach"
+      development_workflow:
+        title: "Development Workflow"
+        description: "Your development environment is ready. Here's what you can do next:"
+        items:
+          generators:
+            title: "Use Ruby UI Generators"
+            description: "Generate components with bin/rails g ruby_ui:component ComponentName"
+          customize:
+            title: "Customize Components"
+            description: "All components are in app/components/ and can be modified"
+          auth_setup:
+            title: "Configure Authentication"
+            description: "Update Auth0 settings in your environment variables"
+          deployment:
+            title: "Deploy with Kamal"
+            description: "Docker-based deployment is pre-configured"
+      next_steps:
+        title: "Next Steps"
+        description: "Ready to build something amazing? Here are some suggestions:"
+        suggestions:
+          - "Explore the Ruby UI component library"
+          - "Set up your Auth0 application for authentication"
+          - "Customize the theme and styling"
+          - "Add your business logic and models"
+          - "Deploy to production with Kamal"
+
+    profile:
+      show:
+        title: "Profile Overview" 
+        subtitle: "Manage your account information and preferences"
+        contact_info:
+          title: "Contact Information"
+          description: "Your contact details"
+        preferences:
+          title: "Preferences"
+          description: "Customize your experience"
+        account_info:
+          title: "Account Information"  
+          description: "Your authentication details"
+        email_label: "Email Address"
+        email_note: "Provided by your authentication provider"
+        phone_label: "Phone Number"
+        timezone_label: "Timezone"
+        language_label: "Language"
+        member_since_label: "Member since"
+        member_since: "Member since %{date}"
+        provider_info: "Connected via %{provider}"
+      edit:
+        title: "Edit Profile"
+        subtitle: "Update your profile information and preferences"
+        basic_info:
+          title: "Basic Information"
+          description: "Your public profile information"
+        contact_info:
+          title: "Contact Information"
+          description: "Your contact details (private)"
+        preferences:
+          title: "Preferences"
+          description: "Customize your experience"
+        display_name_hint: "Your public display name"
+        bio_hint: "Tell others about yourself"
+        email_readonly_note: "This email is provided by your authentication provider and cannot be changed"
+        phone_hint: "Your phone number with country code"
+        changes_note: "Changes will be saved immediately"
+        validation_errors: "Validation Errors"
+
+    auth0:
+      failure:
+        title: "Authentication Failed"
+        subtitle: "We were unable to authenticate your account"
+        email_required:
+          title: "Email Address Required"
+          description: "Your authentication provider must provide an email address. Please ensure your social provider is configured correctly:"
+          github_note: "Enable 'Request user authorization for email' in your OAuth App settings"
+          google_note: "Include email scope in your OAuth consent screen"  
+          facebook_note: "Request email permission in your app settings"
+          auth0_note: "Ensure email scope is included in your Auth0 social connection settings"
+        generic_error:
+          title: "Authentication Error"
+          description: "An error occurred during authentication. Please try again or contact support if the problem persists."
+
+  # Flash messages
+  flash:
+    profile:
+      updated: "Profile updated successfully!"
+      update_failed: "Failed to update profile. Please check your information and try again."
+    auth:
+      login_success: "Successfully logged in!"
+      logout_success: "Successfully logged out!"
+      login_failed: "Authentication failed. Please try again."
+      email_required: "Email is required from authentication provider. Please ensure your social provider is configured to provide email addresses."
+
+  # ActiveRecord translations
+  activerecord:
+    models:
+      user: "User"
+    attributes:
+      user:
+        display_name: "Display name"
+        email: "Email address"
+        bio: "Biography"
+        phone: "Phone number"
+        preferences: "Preferences"
+        auth0_sub: "Authentication ID"
+        created_at: "Created at"
+        updated_at: "Updated at"
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: "is required"
+              invalid: "must be a valid email address"
+            display_name:
+              too_short: "must be at least 2 characters"
+              too_long: "cannot be more than 100 characters"
+            bio:
+              too_long: "cannot be more than 500 characters"
+            phone:
+              invalid: "must be a valid phone number format"
+            auth0_sub:
+              blank: "is required"
+              taken: "has already been taken"
+
+  # Date and time formats
+  date:
+    formats:
+      default: "%m/%d/%Y"
+      short: "%b %d"
+      long: "%B %d, %Y"
+  time:
+    formats:
+      default: "%m/%d/%Y %I:%M %p"
+      short: "%d %b %H:%M"
+      long: "%B %d, %Y %H:%M"
+
+  # Number formats
+  number:
+    format:
+      separator: "."
+      delimiter: ","
+      precision: 2
+    currency:
+      format:
+        format: "%u%n"
+        unit: "$"
+        separator: "."
+        delimiter: ","
+        precision: 2
+
+  # Pluralization examples for testing
+  item:
+    zero: "no items"
+    one: "one item"
+    other: "%{count} items"
+
+  # Timezone labels
+  timezones:
+    eastern: "Eastern Time"
+    central: "Central Time"
+    mountain: "Mountain Time"
+    pacific: "Pacific Time"
+    london: "London"
+    paris: "Paris"
+    tokyo: "Tokyo"
+
+  # Validation messages
+  errors:
+    messages:
+      blank: "can't be blank"
+      invalid: "is invalid"
+      taken: "has already been taken"
+      too_short: "is too short (minimum is %{count} characters)"
+      too_long: "is too long (maximum is %{count} characters)"
+      confirmation: "doesn't match"
+      accepted: "must be accepted"

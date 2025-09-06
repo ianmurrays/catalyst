@@ -18,7 +18,7 @@ class Components::Layout::Navbar < Components::Base
 
   def brand_section
     div(class: "flex items-center") do
-      h1(class: "text-xl font-bold text-foreground") { "Catalyst" }
+      h1(class: "text-xl font-bold text-foreground") { t("application.name") }
     end
   end
 
@@ -36,11 +36,11 @@ class Components::Layout::Navbar < Components::Base
 
   def authenticated_user_section
     div(class: "flex items-center gap-4") do
-      span(class: "text-muted-foreground") { "Hello, #{current_user.name}" }
+      span(class: "text-muted-foreground") { t("navigation.greeting", name: current_user.name) }
 
       a(href: "/profile", class: "inline-flex") do
         render RubyUI::Button::Button.new(variant: :ghost, size: :md) do
-          "Profile"
+          t("navigation.profile")
         end
       end
 
@@ -49,7 +49,7 @@ class Components::Layout::Navbar < Components::Base
         input(type: "hidden", name: "_method", value: "delete")
 
         render RubyUI::Button::Button.new(type: :submit, variant: :outline, size: :md) do
-          "Logout"
+          t("navigation.logout")
         end
       end
     end
@@ -60,7 +60,7 @@ class Components::Layout::Navbar < Components::Base
       input(type: "hidden", name: "authenticity_token", value: form_authenticity_token)
 
       render RubyUI::Button::Button.new(type: :submit, variant: :outline, size: :md) do
-        "Login"
+        t("navigation.login")
       end
     end
   end

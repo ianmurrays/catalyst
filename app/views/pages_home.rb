@@ -24,27 +24,27 @@ class Views::PagesHome < Views::Base
     div(class: "text-center mb-16") do
       div(class: "mb-6") do
         render RubyUI::Badge::Badge.new(variant: :primary, class: "mb-4") do
-          "Rails 8 Template"
+          t("views.pages_home.badge_text")
         end
       end
-      h1(class: "text-5xl font-bold text-foreground mb-4") { "Catalyst Rails Template" }
+      h1(class: "text-5xl font-bold text-foreground mb-4") { t("views.pages_home.title") }
       p(class: "text-xl text-muted-foreground max-w-3xl mx-auto mb-8") do
-        "A modern Rails 8 application template with Ruby UI components, Auth0 authentication, and Tailwind CSS. Get started building your next application in minutes, not hours."
+        t("views.pages_home.subtitle")
       end
 
       div(class: "bg-muted/30 rounded-lg p-6 max-w-2xl mx-auto mb-8") do
-        div(class: "text-sm text-muted-foreground mb-2") { "Quick Start" }
+        div(class: "text-sm text-muted-foreground mb-2") { t("views.pages_home.quick_start_label") }
         div(class: "font-mono text-sm bg-card border rounded p-3") do
-          "bin/rename YourAppName && bin/setup"
+          t("views.pages_home.quick_start_command")
         end
       end
 
       div(class: "flex gap-4 justify-center") do
         render RubyUI::Button::Button.new(variant: :default, size: :lg) do
-          "Documentation"
+          t("common.buttons.documentation")
         end
         render RubyUI::Button::Button.new(variant: :outline, size: :lg) do
-          "View on GitHub"
+          t("common.buttons.view_on_github")
         end
       end
     end
@@ -52,21 +52,21 @@ class Views::PagesHome < Views::Base
 
   def getting_started_section
     div(class: "mb-16") do
-      h2(class: "text-3xl font-bold text-center text-foreground mb-12") { "Getting Started" }
+      h2(class: "text-3xl font-bold text-center text-foreground mb-12") { t("views.pages_home.getting_started.title") }
 
       div(class: "max-w-4xl mx-auto space-y-8") do
         step_card(
           number: "1",
-          title: "Clone and Rename",
-          description: "Clone this template and rename it to your project name",
-          code: "git clone https://github.com/your-org/catalyst.git my-app\ncd my-app\nbin/rename MyApp"
+          title: t("views.pages_home.getting_started.steps.rename.title"),
+          description: t("views.pages_home.getting_started.steps.rename.description"),
+          code: t("views.pages_home.getting_started.steps.rename.command")
         )
 
         step_card(
           number: "2",
-          title: "Setup Dependencies",
-          description: "Install Ruby gems and run the setup script",
-          code: "bin/setup"
+          title: t("views.pages_home.getting_started.steps.setup.title"),
+          description: t("views.pages_home.getting_started.steps.setup.description"),
+          code: t("views.pages_home.getting_started.steps.setup.command")
         )
 
         step_card(
@@ -78,9 +78,9 @@ class Views::PagesHome < Views::Base
 
         step_card(
           number: "4",
-          title: "Start Development",
-          description: "Launch the development server and start building",
-          code: "bin/dev"
+          title: t("views.pages_home.getting_started.steps.development.title"),
+          description: t("views.pages_home.getting_started.steps.development.description"),
+          code: t("views.pages_home.getting_started.steps.development.command")
         )
       end
     end
@@ -106,7 +106,7 @@ class Views::PagesHome < Views::Base
 
   def features_section
     div(class: "mb-16") do
-      h2(class: "text-3xl font-bold text-center text-foreground mb-12") { "Features & Stack" }
+      h2(class: "text-3xl font-bold text-center text-foreground mb-12") { t("views.pages_home.features.title") }
 
       div(class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6") do
         tech_stack_card(
