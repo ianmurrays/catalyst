@@ -10,14 +10,10 @@ RSpec.describe Components::Layout::Application do
     )
   end
 
-  let(:component) do
-    comp = described_class.new(page_info)
-    setup_application_layout_mocks(comp)
-    comp
-  end
+  let(:component) { described_class.new(page_info) }
 
   describe "HTML structure" do
-    let(:html) { component.call { "Test Content" } }
+    let(:html) { render_with_view_context(component) { "Test Content" } }
     let(:doc) { Nokogiri::HTML5(html) }
 
     it "renders proper DOCTYPE" do
@@ -43,9 +39,8 @@ RSpec.describe Components::Layout::Application do
     it "defaults to 'Catalyst' when no title provided" do
       page_info = Views::Base::PageInfo.new(title: nil, description: nil)
       comp = described_class.new(page_info)
-      setup_application_layout_mocks(comp)
 
-      html = comp.call { "Test Content" }
+      html = render_with_view_context(comp) { "Test Content" }
       doc = Nokogiri::HTML5(html)
 
       expect(doc.css('title').text).to eq("Catalyst")
@@ -119,7 +114,6 @@ RSpec.describe Components::Layout::Application do
       # The head block should be executed in the component's context to have access to meta method
       # But since the current implementation just calls the proc, we need to mock the call differently
       comp = described_class.new(page_info)
-      setup_application_layout_mocks(comp)
 
       # Mock the head block call to insert HTML directly
       allow(comp).to receive(:render_head) do
@@ -155,7 +149,7 @@ RSpec.describe Components::Layout::Application do
         end
       end
 
-      html = comp.call { "Body Content" }
+      html = render_with_view_context(comp) { "Body Content" }
       doc = Nokogiri::HTML5(html)
 
       custom_meta = doc.css('meta[name="custom"]')
@@ -165,7 +159,7 @@ RSpec.describe Components::Layout::Application do
   end
 
   describe "background styling consistency" do
-    let(:doc) { Nokogiri::HTML5(component.call { "Content" }) }
+    let(:doc) { Nokogiri::HTML5(render_with_view_context(component) { "Content" }) }
 
     it "applies consistent background class like profile views" do
       body_classes = doc.css('body').first['class'].split

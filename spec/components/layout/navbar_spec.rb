@@ -3,14 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Components::Layout::Navbar do
-  let(:component) do
-    comp = described_class.new
-    allow(comp).to receive(:form_authenticity_token).and_return("test-token")
-    allow(comp).to receive(:logged_in?).and_return(false)
-    allow(comp).to receive(:current_user).and_return(nil)
-    mock_view_translations_for(comp)
-    comp
-  end
+  let(:component) { described_class.new }
 
   describe "structure" do
     let(:html) { render_with_view_context(component) }
@@ -88,16 +81,7 @@ RSpec.describe Components::Layout::Navbar do
 
     context "when user is logged in" do
       let(:mock_user) { double("User", name: "John Doe", email: "john@example.com") }
-      let(:logged_in_component) do
-        comp = described_class.new
-        allow(comp).to receive(:form_authenticity_token).and_return("test-token")
-        allow(comp).to receive(:logged_in?).and_return(true)
-        allow(comp).to receive(:current_user).and_return(mock_user)
-        mock_view_translations_for(comp)
-        comp
-      end
-
-      let(:html) { render_with_view_context(logged_in_component, user: mock_user) }
+      let(:html) { render_with_view_context(described_class.new, user: mock_user) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "shows user greeting with name" do
@@ -221,16 +205,7 @@ RSpec.describe Components::Layout::Navbar do
 
     context "when logged in" do
       let(:mock_user) { double("User", name: "John Doe") }
-      let(:logged_in_component) do
-        comp = described_class.new
-        allow(comp).to receive(:form_authenticity_token).and_return("test-token")
-        allow(comp).to receive(:logged_in?).and_return(true)
-        allow(comp).to receive(:current_user).and_return(mock_user)
-        mock_view_translations_for(comp)
-        comp
-      end
-
-      let(:html) { render_with_view_context(logged_in_component, user: mock_user) }
+      let(:html) { render_with_view_context(described_class.new, user: mock_user) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "uses ghost variant for profile button" do
