@@ -6,8 +6,9 @@ class Auth0Controller < ApplicationController
     auth_info = request.env["omniauth.auth"]
     session[:userinfo] = auth_info["extra"]["raw_info"]
 
-    # Redirect to the URL you want after successful auth
-    redirect_to "/"
+    # Redirect to the URL they were trying to access or home
+    redirect_url = session.delete(:return_to) || "/"
+    redirect_to redirect_url
   end
 
   def failure

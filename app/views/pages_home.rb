@@ -34,6 +34,13 @@ class Views::PagesHome < Views::Base
           if logged_in?
             div(class: "flex items-center gap-4") do
               span(class: "text-muted-foreground") { "Hello, #{current_auth0_user["name"]}" }
+
+              a(href: "/profile", class: "inline-flex") do
+                render RubyUI::Button::Button.new(variant: :ghost, size: :md) do
+                  "Profile"
+                end
+              end
+
               form(action: "/auth/logout", method: "post", "data-turbo": "false") do
                 input(type: "hidden", name: "authenticity_token", value: form_authenticity_token)
                 input(type: "hidden", name: "_method", value: "delete")
