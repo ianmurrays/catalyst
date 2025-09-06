@@ -7,6 +7,10 @@ class Views::Auth0::Failure < Views::Base
     @error_msg = error_msg
   end
 
+  def page_title
+    "Authentication Error"
+  end
+
   def view_template
     div(class: "min-h-screen bg-background flex items-center justify-center px-4") do
       div(class: "max-w-md w-full space-y-8") do
