@@ -40,6 +40,17 @@ da:
     not_set: "Ikke indstillet"
     no_preferences_set: "Ingen præferencer sat"
 
+  # Language names for LocaleService
+  languages:
+    native:
+      en: "English"
+      es: "Español"
+      da: "Dansk"
+    translated:
+      en: "Engelsk"
+      es: "Spansk"
+      da: "Dansk"
+
   # Views
   views:
     pages_home:

@@ -35,6 +35,8 @@ bundle exec rspec spec/path/to/file_spec.rb  # Run specific test
 
 **Phlex Component Testing**: For detailed guidance on testing Phlex components with Rails helpers, see @.claude/guides/phlex-testing-guide.md. Key principle: use `render_with_view_context(component)` instead of manual mocking of Rails helpers.
 
+When writing/updating tests, claude should test examples as it goes along, instead of waiting until the end to run the entire suite
+
 ### Code Quality
 ```bash
 bin/rubocop                        # Run linter (omakase style)

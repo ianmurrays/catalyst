@@ -122,6 +122,93 @@ RSpec.describe ProfileController, type: :controller do
     end
   end
 
+  describe "dynamic language options" do
+    before do
+      allow(LocaleService).to receive(:language_options).and_return([
+        [ "English", "en" ],
+        [ "Español (Spanish)", "es" ],
+        [ "Dansk (Danish)", "da" ]
+      ])
+    end
+
+    describe "GET #edit" do
+      it "provides dynamic language options from LocaleService" do
+        get :edit
+        expect(LocaleService).to have_received(:language_options)
+      end
+
+      it "makes language options available to the view" do
+        get :edit
+        expect(assigns(:user).available_languages).to eq([
+          [ "English", "en" ],
+          [ "Español (Spanish)", "es" ],
+          [ "Dansk (Danish)", "da" ]
+        ])
+      end
+    end
+
+    describe "PATCH #update with language preference" do
+      context "with valid language code" do
+        let(:params_with_language) do
+          {
+            user: {
+              display_name: "Updated Name",
+              preferences: { language: "es" }
+            }
+          }
+        end
+
+        before do
+          allow(LocaleService).to receive(:available_locales).and_return([ :en, :es, :da ])
+        end
+
+        it "updates the user's language preference" do
+          patch :update, params: params_with_language
+          user.reload
+          expect(user.language).to eq("es")
+        end
+
+        it "redirects successfully" do
+          patch :update, params: params_with_language
+          expect(response).to redirect_to(profile_path)
+        end
+      end
+
+      context "with invalid language code" do
+        let(:params_with_invalid_language) do
+          {
+            user: {
+              display_name: "Updated Name",
+              preferences: { language: "fr" }
+            }
+          }
+        end
+
+        before do
+          allow(LocaleService).to receive(:available_locales).and_return([ :en, :es, :da ])
+        end
+
+        it "does not update the user's language preference" do
+          original_language = user.language
+          patch :update, params: params_with_invalid_language
+          user.reload
+          expect(user.language).to eq(original_language)
+        end
+
+        it "renders the edit page with validation errors" do
+          patch :update, params: params_with_invalid_language
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "shows validation error for invalid language" do
+          patch :update, params: params_with_invalid_language
+          user.reload
+          expect(user.errors[:language]).to include("is not available")
+        end
+      end
+    end
+  end
+
   describe "authentication requirements" do
     before do
       allow(controller).to receive(:logged_in?).and_return(false)

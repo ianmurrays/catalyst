@@ -40,14 +40,14 @@ class ApplicationController < ActionController::Base
 
     user_locale = current_user.preferences&.dig("language")
     return unless user_locale
-    return unless I18n.available_locales.include?(user_locale.to_sym)
+    return unless LocaleService.available_locales.include?(user_locale.to_sym)
 
     user_locale.to_sym
   end
 
   def session_locale
     return unless session[:locale]
-    return unless I18n.available_locales.include?(session[:locale].to_sym)
+    return unless LocaleService.available_locales.include?(session[:locale].to_sym)
 
     session[:locale].to_sym
   end
@@ -62,6 +62,6 @@ class ApplicationController < ActionController::Base
                               .map { |lang| lang.split("-").first.strip } # Remove country code (e.g., "es-ES" becomes "es")
                               .map(&:to_sym)
 
-    accepted_locales.find { |locale| I18n.available_locales.include?(locale) }
+    accepted_locales.find { |locale| LocaleService.available_locales.include?(locale) }
   end
 end
