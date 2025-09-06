@@ -12,145 +12,61 @@ This is "Catalyst" - a Rails 8 application template built with modern tooling an
 - **Ruby UI** components built with Phlex for view layer abstraction
 - **Tailwind CSS 4** for styling with `tailwind_merge` for class composition
 - **Auth0** for authentication with CSRF protection
-- **RSpec** for testing
+- **RSpec** for testing with FactoryBot and Shoulda Matchers
 - **Solid Cache/Queue/Cable** for Rails background jobs and caching
+- **Kamal** for Docker-based deployment
 
 ## Development Commands
 
-### Rails Operations
+### Essential Commands
 ```bash
 bin/rails server                    # Start development server
 bin/dev                            # Start development with asset watching
 bin/rails console                  # Rails console
-bin/rails db:create db:migrate     # Database setup
-bin/rails db:seed                  # Seed database
 bin/setup                          # Initial project setup
-```
-
-### Testing
-```bash
 bundle exec rspec                  # Run all tests
-bundle exec rspec spec/path/to/file_spec.rb  # Run specific test
-```
-
-**Phlex Component Testing**: For detailed guidance on testing Phlex components with Rails helpers, see @.claude/guides/phlex-testing-guide.md. Key principle: use `render_with_view_context(component)` instead of manual mocking of Rails helpers.
-
-When writing/updating tests, claude should test examples as it goes along, instead of waiting until the end to run the entire suite
-
-### Code Quality
-```bash
 bin/rubocop                        # Run linter (omakase style)
-bin/rubocop -a                     # Auto-fix issues
-bin/brakeman                       # Security analysis
-```
-
-### Ruby UI Components
-```bash
-bin/rails g ruby_ui:install        # Install Ruby UI system
-bin/rails g ruby_ui:component ComponentName  # Generate specific component
-bin/rails g ruby_ui:component:all  # Generate all available components
-```
-
-### Application Renaming
-```bash
 bin/rename MyNewApp                # Rename application
-bin/rename MyNewApp --dry-run      # Preview rename changes
 ```
 
-## Architecture
+### Detailed Guides
+- **Testing**: See @.claude/guides/testing-guide.md for comprehensive testing patterns
+- **Ruby UI Components**: See @.claude/guides/ruby-ui-components-guide.md for component usage
+- **Deployment**: See @.claude/guides/deployment-guide.md for production deployment
 
-### View Layer Architecture
-The application uses **Phlex** as the view layer with two main namespaces:
-- `Views::` - Application-specific views in `app/views/`
-- `Components::` - Reusable components in `app/components/`
+## Architecture & Guides
 
-Base classes:
-- `Views::Base` - Base class for application views
-- `Components::Base` - Base class for components
-- `Components::RubyUI::Base` - Base class for Ruby UI components
+**For comprehensive architecture details, see @.claude/guides/architecture-guide.md**
 
-### Ruby UI Integration
-Ruby UI components are generated into `app/components/ruby_ui/` and include:
+### Key Architectural Patterns
+- **Phlex Views**: Type-safe, component-based view layer
+- **Service Objects**: Business logic in dedicated service classes 
+- **Authentication Concerns**: `AuthProvider` and `Secured` for auth management
+- **Component Composition**: Ruby UI + custom components
 
-- Accordion
-- Alert
-- Alert Dialog
-- Aspect Ratio
-- Avatar
-- Badge
-- Breadcrumb
-- Button
-- Calendar
-- Card
-- Carousel
-- Chart
-- Checkbox
-- Clipboard
-- Codeblock
-- Collapsible
-- Combobox
-- Command
-- Context Menu
-- Dialog
-- Dropdown Menu
-- Form
-- Hover Card
-- Input
-- Link
-- Masked Input
-- Pagination
-- Popover
-- Progress
-- Radio Button
-- Select
-- Separator
-- Sheet
-- Shortcut Key
-- Skeleton
-- Switch
-- Table
-- Tabs
-- Textarea
-- Theme Toggle
-- Tooltip
-- Typography
+### Critical Requirements
 
-Components can be generated individually or all at once using the generators.
+#### Internationalization (i18n) 🌍
+**CRITICAL**: All view strings MUST use `t()` helper for internationalization.
 
-### Authentication
-Auth0 integration with:
-- `Auth0Controller` for handling authentication flow
-- `Secured` concern for protecting controllers
-- CSRF protection via `omniauth-rails_csrf_protection`
+```ruby
+# ❌ NEVER do this
+h1 { "Welcome to our application" }
 
-#### Email Requirements
-**IMPORTANT**: All social providers MUST be configured to provide email addresses.
+# ✅ ALWAYS do this  
+h1 { t("views.welcome.title") }
+```
 
-**Required Scopes by Provider:**
-- **GitHub**: `user:email` (grants access to user's email addresses)
-- **Google**: `email` (grants access to email address)
-- **Facebook**: `email` (grants access to primary email)
-- **Twitter**: Email is provided by default if available
+**Complete i18n guide: @.claude/guides/i18n-guide.md**
 
-**Configuration Steps:**
-1. **GitHub OAuth App**:
-   - Go to Settings > Developer settings > OAuth Apps
-   - Edit your application
-   - Ensure "Request user authorization for email" is enabled
-   - Users must have verified email addresses visible in their profile
+#### Authentication 🔐
+**Complete authentication setup: @.claude/guides/authentication-guide.md**
 
-2. **Google OAuth**:
-   - In Google Cloud Console
-   - OAuth consent screen must include email scope
-   - Users will see email permission request
+#### Deployment 🚀
+**Complete deployment guide: @.claude/guides/deployment-guide.md**
 
-3. **Auth0 Dashboard**:
-   - Connections > Social
-   - Edit your social connection
-   - Ensure email scope is included in the scopes field
-
-**Error Handling:**
-If a provider doesn't supply an email address, authentication will fail with a user-friendly error message explaining the configuration issue.
+#### Ruby UI Components 🎨
+**Complete component reference: @.claude/guides/ruby-ui-components-guide.md**
 
 ## Task Management Guidelines
 
@@ -166,3 +82,12 @@ Do what has been asked; nothing more, nothing less.
 NEVER create files unless they're absolutely necessary for achieving your goal.
 ALWAYS prefer editing an existing file to creating a new one.
 NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+
+## Quick Reference Links
+- Architecture: @.claude/guides/architecture-guide.md
+- Authentication: @.claude/guides/authentication-guide.md  
+- Deployment: @.claude/guides/deployment-guide.md
+- I18n: @.claude/guides/i18n-guide.md
+- Ruby UI: @.claude/guides/ruby-ui-components-guide.md
+- Testing: @.claude/guides/testing-guide.md
+- Phlex Testing: @.claude/guides/phlex-testing-guide.md
