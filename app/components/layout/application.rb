@@ -25,6 +25,7 @@ class Components::Layout::Application < Components::Base
   def render_head
     head do
       title { @page_info.title || "Catalyst" }
+      meta(name: "description", content: @page_info.description) if @page_info.description
 
       meta(name: "viewport", content: "width=device-width,initial-scale=1")
       meta(name: "apple-mobile-web-app-capable", content: "yes")

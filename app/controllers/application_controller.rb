@@ -13,8 +13,13 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = determine_locale
-  rescue I18n::InvalidLocale
-    I18n.locale = I18n.default_locale
+  rescue StandardError
+    begin
+      I18n.locale = I18n.default_locale
+    rescue StandardError
+      # If even setting the default locale fails, continue without changing locale
+      Rails.logger.warn "Failed to set locale, continuing with current locale: #{I18n.locale}"
+    end
   end
 
   def determine_locale

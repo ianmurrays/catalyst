@@ -167,7 +167,7 @@ en:
     auth:
       login_success: "Successfully logged in!"
       logout_success: "Successfully logged out!"
-      login_failed: "Authentication failed. Please try again."
+      login_failed: "Authentication failed. Please try again or contact support."
       email_required: "Email is required from authentication provider. Please ensure your social provider is configured to provide email addresses."
 
   # ActiveRecord translations
