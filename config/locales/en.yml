@@ -146,6 +146,13 @@ en:
         contact_info:
           title: "Contact Information"
           description: "Your contact details (private)"
+        avatar:
+          title: "Profile Picture"
+          description: "Upload a profile picture or use your default avatar"
+          upload_label: "Choose new avatar"
+          remove_label: "Remove current avatar"
+          current_avatar_alt: "Current profile picture"
+          file_requirements: "JPEG, PNG, or WebP. Max 5MB."
         preferences:
           title: "Preferences"
           description: "Customize your experience"
@@ -213,6 +220,11 @@ en:
             auth0_sub:
               blank: "is required"
               taken: "has already been taken"
+            avatar:
+              invalid_content_type: "must be a JPEG, PNG, or WebP image"
+              content_type_mismatch: "file content doesn't match the expected image format"
+              processing_failed: "could not be processed"
+              file_size_too_large: "must be smaller than %{max_size}"
 
   # Date and time formats
   date:

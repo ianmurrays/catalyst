@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RubyUI
-  class Sheet < Base
+  class CheckboxGroup < Base
     def view_template(&)
       div(**attrs, &)
     end
@@ -10,7 +10,10 @@ module RubyUI
 
     def default_attrs
       {
-        data: { controller: "ruby-ui--sheet" }
+        role: "group",
+        data: {
+          controller: "ruby-ui--checkbox-group"
+        }
       }
     end
   end
