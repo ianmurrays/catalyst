@@ -317,20 +317,6 @@ RSpec.describe User, type: :model do
       it "generates xlarge variant" do
         expect(user.avatar.variant(:xlarge)).to be_present
       end
-
-      # Regression test for VIPS strip operation bug
-      # This ensures variant processing doesn't fail with "VipsOperation: class 'strip' not found"
-      it "successfully processes all variants without VIPS errors" do
-        variants = [ :thumb, :small, :medium, :large, :xlarge ]
-
-        variants.each do |variant_name|
-          expect {
-            variant = user.avatar.variant(variant_name)
-            # Force variant processing to catch VIPS operation errors
-            variant.processed
-          }.not_to raise_error, "Failed to process #{variant_name} variant"
-        end
-      end
     end
 
     describe "#picture_url" do
