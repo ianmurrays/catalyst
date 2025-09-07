@@ -219,6 +219,11 @@ da:
             auth0_sub:
               blank: "er påkrævet"
               taken: "er allerede taget"
+            avatar:
+              invalid_content_type: "skal være et JPEG, PNG eller WebP billede"
+              content_type_mismatch: "filindholdet matcher ikke det forventede billedformat"
+              processing_failed: "kunne ikke behandles"
+              file_size_too_large: "skal være mindre end %{max_size}"
 
   # Date and time formats
   date:

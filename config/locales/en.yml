@@ -220,6 +220,11 @@ en:
             auth0_sub:
               blank: "is required"
               taken: "has already been taken"
+            avatar:
+              invalid_content_type: "must be a JPEG, PNG, or WebP image"
+              content_type_mismatch: "file content doesn't match the expected image format"
+              processing_failed: "could not be processed"
+              file_size_too_large: "must be smaller than %{max_size}"
 
   # Date and time formats
   date:

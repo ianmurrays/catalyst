@@ -125,7 +125,7 @@ class User < ApplicationRecord
 
     # First check MIME type from headers
     unless acceptable_types.include?(avatar.content_type)
-      errors.add(:avatar, "must be a JPEG, PNG, or WebP image")
+      errors.add(:avatar, :invalid_content_type)
       return
     end
 
@@ -137,7 +137,7 @@ class User < ApplicationRecord
         # Verify the actual content matches expected image types
         # Use broader image type matching to account for Marcel's variations
         if actual_type && !actual_type.start_with?("image/")
-          errors.add(:avatar, "file content doesn't match the expected image format")
+          errors.add(:avatar, :content_type_mismatch)
         end
       end
     rescue => e
@@ -145,7 +145,7 @@ class User < ApplicationRecord
       # Be more selective about when to add processing errors
       # Only add error for clearly dangerous files or actual processing failures
       if e.message.downcase.include?("processing") && !e.message.downcase.include?("image")
-        errors.add(:avatar, "could not be processed")
+        errors.add(:avatar, :processing_failed)
       end
     end
   end
@@ -154,7 +154,7 @@ class User < ApplicationRecord
     return unless avatar.attached?
 
     if avatar.byte_size > 5.megabytes
-      errors.add(:avatar, "must be smaller than 5MB")
+      errors.add(:avatar, :file_size_too_large, max_size: "5MB")
     end
   end
 end

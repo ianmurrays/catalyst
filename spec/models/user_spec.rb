@@ -321,8 +321,8 @@ RSpec.describe User, type: :model do
       # Regression test for VIPS strip operation bug
       # This ensures variant processing doesn't fail with "VipsOperation: class 'strip' not found"
       it "successfully processes all variants without VIPS errors" do
-        variants = [:thumb, :small, :medium, :large, :xlarge]
-        
+        variants = [ :thumb, :small, :medium, :large, :xlarge ]
+
         variants.each do |variant_name|
           expect {
             variant = user.avatar.variant(variant_name)
