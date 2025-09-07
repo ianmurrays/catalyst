@@ -46,7 +46,7 @@ class Components::Layout::Navbar < Components::Base
     div(class: "flex items-center gap-4") do
       div(class: "flex items-center gap-2") do
         render RubyUI::Avatar::Avatar.new(size: :sm) do
-          if current_user.picture_url
+          if current_user.avatar.attached?
             render RubyUI::Avatar::AvatarImage.new(
               src: current_user.avatar_url(:thumb),
               alt: current_user.name

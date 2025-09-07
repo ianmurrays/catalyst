@@ -80,7 +80,7 @@ RSpec.describe Components::Layout::Navbar do
     end
 
     context "when user is logged in" do
-      let(:mock_user) { double("User", name: "John Doe", email: "john@example.com", display_name: "John Doe", picture_url: nil, avatar_url: nil) }
+      let(:mock_user) { create(:user, display_name: "John Doe", email: "john@example.com") }
       let(:html) { render_with_view_context(described_class.new, user: mock_user) }
       let(:doc) { Nokogiri::HTML5(html) }
 
@@ -204,7 +204,7 @@ RSpec.describe Components::Layout::Navbar do
     end
 
     context "when logged in" do
-      let(:mock_user) { double("User", name: "John Doe", display_name: "John Doe", picture_url: nil, avatar_url: nil) }
+      let(:mock_user) { create(:user, display_name: "John Doe") }
       let(:html) { render_with_view_context(described_class.new, user: mock_user) }
       let(:doc) { Nokogiri::HTML5(html) }
 
@@ -344,7 +344,7 @@ RSpec.describe Components::Layout::Navbar do
       end
 
       context "when user is logged in" do
-        let(:mock_user) { double("User", name: "John Doe", email: "john@example.com", display_name: "John Doe", picture_url: nil, avatar_url: nil) }
+        let(:mock_user) { create(:user, display_name: "John Doe", email: "john@example.com") }
         let(:html) { render_with_view_context(described_class.new, user: mock_user) }
         let(:doc) { Nokogiri::HTML5(html) }
 
