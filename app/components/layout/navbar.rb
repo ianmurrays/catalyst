@@ -44,7 +44,20 @@ class Components::Layout::Navbar < Components::Base
 
   def authenticated_user_section
     div(class: "flex items-center gap-4") do
-      span(class: "text-muted-foreground") { t("navigation.greeting", name: current_user.name) }
+      div(class: "flex items-center gap-2") do
+        render RubyUI::Avatar::Avatar.new(size: :sm) do
+          if current_user.picture_url
+            render RubyUI::Avatar::AvatarImage.new(
+              src: current_user.avatar_url(:thumb),
+              alt: current_user.name
+            )
+          end
+          render RubyUI::Avatar::AvatarFallback.new do
+            current_user.display_name&.first&.upcase || current_user.email.first.upcase
+          end
+        end
+        span(class: "text-muted-foreground hidden sm:inline") { t("navigation.greeting", name: current_user.name) }
+      end
 
       a(href: "/profile", class: "inline-flex") do
         render RubyUI::Button::Button.new(variant: :ghost, size: :md) do

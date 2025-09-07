@@ -145,6 +145,13 @@ es:
         contact_info:
           title: "Información de contacto"
           description: "Tus datos de contacto (privados)"
+        avatar:
+          title: "Foto de perfil"
+          description: "Sube una foto de perfil o usa tu avatar predeterminado"
+          upload_label: "Elegir nuevo avatar"
+          remove_label: "Eliminar avatar actual"
+          current_avatar_alt: "Foto de perfil actual"
+          file_requirements: "JPEG, PNG o WebP. Máximo 5MB."
         preferences:
           title: "Preferencias"
           description: "Personaliza tu experiencia"

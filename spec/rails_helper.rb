@@ -38,6 +38,9 @@ RSpec.configure do |config|
   # Include FactoryBot methods
   config.include FactoryBot::Syntax::Methods
 
+  # Include ActionDispatch::TestProcess for fixture_file_upload
+  config.include ActionDispatch::TestProcess::FixtureFile
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')

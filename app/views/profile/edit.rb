@@ -20,7 +20,9 @@ class Views::Profile::Edit < Views::Base
         error_alert
       end
 
-      form_with(model: @user, url: "/profile", method: :patch, local: true, class: "space-y-6") do |form|
+      form_with(model: @user, url: "/profile", method: :patch, local: true, multipart: true, class: "space-y-6") do |form|
+        avatar_section(form)
+
         div(class: "grid grid-cols-1 lg:grid-cols-2 gap-6") do
           basic_info_section(form)
           contact_info_section(form)
@@ -65,6 +67,31 @@ class Views::Profile::Edit < Views::Base
     end
   end
 
+  def avatar_section(form)
+    render RubyUI::Card::Card.new do
+      render RubyUI::Card::CardHeader.new do
+        render RubyUI::Card::CardTitle.new { t("views.profile.edit.avatar.title") }
+        render RubyUI::Card::CardDescription.new do
+          t("views.profile.edit.avatar.description")
+        end
+      end
+
+      render RubyUI::Card::CardContent.new(class: "space-y-4") do
+        div(class: "flex flex-col sm:flex-row gap-6") do
+          # Current avatar display
+          div(class: "flex-shrink-0") do
+            current_avatar_display
+          end
+
+          # Upload controls
+          div(class: "flex-1 space-y-4") do
+            avatar_upload_field(form)
+            avatar_remove_checkbox(form) if @user.avatar.attached?
+          end
+        end
+      end
+    end
+  end
 
   def basic_info_section(form)
     render RubyUI::Card::Card.new do
@@ -299,5 +326,52 @@ class Views::Profile::Edit < Views::Base
 
   def option_tag(text, value:, selected: false)
     option(value: value, selected: selected) { text }
+  end
+
+  def current_avatar_display
+    render RubyUI::Avatar::Avatar.new(size: :xl) do
+      if @user.avatar.attached?
+        render RubyUI::Avatar::AvatarImage.new(src: @user.avatar_url(:large), alt: t("views.profile.edit.avatar.current_avatar_alt"))
+      else
+        render RubyUI::Avatar::AvatarFallback.new do
+          @user.display_name&.first&.upcase || @user.email.first.upcase
+        end
+      end
+    end
+  end
+
+  def avatar_upload_field(form)
+    div(class: "space-y-2") do
+      label(for: "user_avatar", class: "text-sm font-medium") { t("views.profile.edit.avatar.upload_label") }
+
+      input(
+        type: "file",
+        name: "user[avatar]",
+        id: "user_avatar",
+        accept: "image/jpeg,image/png,image/webp",
+        class: "block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/80 #{error_class(:avatar)}"
+      )
+
+      p(class: "text-sm text-muted-foreground") { t("views.profile.edit.avatar.file_requirements") }
+
+      if @errors[:avatar]&.any?
+        p(class: "text-sm text-destructive") { @errors[:avatar].first }
+      end
+    end
+  end
+
+  def avatar_remove_checkbox(form)
+    div(class: "flex items-center space-x-2") do
+      input(
+        type: "checkbox",
+        name: "user[remove_avatar]",
+        id: "user_remove_avatar",
+        value: "1",
+        class: "rounded border-border text-primary focus:ring-primary"
+      )
+      label(for: "user_remove_avatar", class: "text-sm text-muted-foreground") do
+        t("views.profile.edit.avatar.remove_label")
+      end
+    end
   end
 end

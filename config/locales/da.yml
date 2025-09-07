@@ -145,6 +145,13 @@ da:
         contact_info:
           title: "Kontaktinformation"
           description: "Dine kontaktoplysninger (private)"
+        avatar:
+          title: "Profilbillede"
+          description: "Upload et profilbillede eller brug din standard avatar"
+          upload_label: "Vælg ny avatar"
+          remove_label: "Fjern nuværende avatar"
+          current_avatar_alt: "Nuværende profilbillede"
+          file_requirements: "JPEG, PNG eller WebP. Maksimum 5MB."
         preferences:
           title: "Præferencer"
           description: "Tilpas din oplevelse"

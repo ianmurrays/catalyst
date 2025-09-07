@@ -40,7 +40,7 @@ bin/rename MyNewApp                # Rename application
 
 ### Key Architectural Patterns
 - **Phlex Views**: Type-safe, component-based view layer
-- **Service Objects**: Business logic in dedicated service classes 
+- **Service Objects**: Business logic in dedicated service classes
 - **Authentication Concerns**: `AuthProvider` and `Secured` for auth management
 - **Component Composition**: Ruby UI + custom components
 
@@ -53,7 +53,7 @@ bin/rename MyNewApp                # Rename application
 # ❌ NEVER do this
 h1 { "Welcome to our application" }
 
-# ✅ ALWAYS do this  
+# ✅ ALWAYS do this
 h1 { t("views.welcome.title") }
 ```
 
@@ -70,7 +70,7 @@ h1 { t("views.welcome.title") }
 
 ## Task Management Guidelines
 
-When making task lists, always prepend:
+When making task lists, always add to the planning phase:
 - Consult context7 MCP for up to date documentation and code snippets
 
 And always append:
@@ -85,7 +85,7 @@ NEVER proactively create documentation files (*.md) or README files. Only create
 
 ## Quick Reference Links
 - Architecture: @.claude/guides/architecture-guide.md
-- Authentication: @.claude/guides/authentication-guide.md  
+- Authentication: @.claude/guides/authentication-guide.md
 - Deployment: @.claude/guides/deployment-guide.md
 - I18n: @.claude/guides/i18n-guide.md
 - Ruby UI: @.claude/guides/ruby-ui-components-guide.md

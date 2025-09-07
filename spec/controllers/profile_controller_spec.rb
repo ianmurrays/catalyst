@@ -355,6 +355,128 @@ RSpec.describe ProfileController, type: :controller do
     end
   end
 
+  describe "avatar upload functionality" do
+    let(:valid_avatar) { fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg") }
+    let(:invalid_avatar) { fixture_file_upload("spec/fixtures/files/document.pdf", "application/pdf") }
+
+    describe "PATCH #update with avatar upload" do
+      context "with valid avatar file" do
+        let(:params_with_avatar) do
+          {
+            user: {
+              display_name: "Updated Name",
+              avatar: valid_avatar
+            }
+          }
+        end
+
+        it "attaches the avatar to the user" do
+          patch :update, params: params_with_avatar
+          user.reload
+          expect(user.avatar).to be_attached
+        end
+
+        it "updates other profile fields" do
+          patch :update, params: params_with_avatar
+          user.reload
+          expect(user.display_name).to eq("Updated Name")
+        end
+
+        it "redirects to profile page" do
+          patch :update, params: params_with_avatar
+          expect(response).to redirect_to(profile_path)
+        end
+
+        it "sets success flash message" do
+          patch :update, params: params_with_avatar
+          expect(flash[:notice]).to eq("Profile updated successfully!")
+        end
+      end
+
+      context "with invalid avatar file" do
+        let(:params_with_invalid_avatar) do
+          {
+            user: {
+              display_name: "Updated Name",
+              avatar: invalid_avatar
+            }
+          }
+        end
+
+        it "does not attach the invalid avatar" do
+          patch :update, params: params_with_invalid_avatar
+          user.reload
+          expect(user.avatar).not_to be_attached
+        end
+
+        it "renders edit page with errors" do
+          patch :update, params: params_with_invalid_avatar
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "shows avatar validation error" do
+          patch :update, params: params_with_invalid_avatar
+          user.reload
+          expect(user.errors[:avatar]).to include("must be a JPEG, PNG, or WebP image")
+        end
+      end
+
+      context "when removing avatar" do
+        before do
+          user.avatar.attach(valid_avatar)
+          user.save!
+        end
+
+        let(:params_remove_avatar) do
+          {
+            user: {
+              display_name: "Updated Name",
+              remove_avatar: "1"
+            }
+          }
+        end
+
+        it "removes the attached avatar" do
+          expect(user.avatar).to be_attached
+          patch :update, params: params_remove_avatar
+          user.reload
+          expect(user.avatar).not_to be_attached
+        end
+
+        it "redirects successfully" do
+          patch :update, params: params_remove_avatar
+          expect(response).to redirect_to(profile_path)
+        end
+      end
+
+      context "when replacing existing avatar" do
+        let(:new_avatar) { fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg") }
+
+        before do
+          user.avatar.attach(valid_avatar)
+          user.save!
+        end
+
+        let(:params_replace_avatar) do
+          {
+            user: {
+              display_name: "Updated Name",
+              avatar: new_avatar
+            }
+          }
+        end
+
+        it "replaces the existing avatar" do
+          old_avatar_id = user.avatar.id
+          patch :update, params: params_replace_avatar
+          user.reload
+          expect(user.avatar).to be_attached
+          expect(user.avatar.id).not_to eq(old_avatar_id)
+        end
+      end
+    end
+  end
+
   describe "authentication requirements" do
     before do
       allow(controller).to receive(:logged_in?).and_return(false)

@@ -146,6 +146,13 @@ en:
         contact_info:
           title: "Contact Information"
           description: "Your contact details (private)"
+        avatar:
+          title: "Profile Picture"
+          description: "Upload a profile picture or use your default avatar"
+          upload_label: "Choose new avatar"
+          remove_label: "Remove current avatar"
+          current_avatar_alt: "Current profile picture"
+          file_requirements: "JPEG, PNG, or WebP. Max 5MB."
         preferences:
           title: "Preferences"
           description: "Customize your experience"

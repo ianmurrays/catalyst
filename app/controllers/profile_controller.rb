@@ -12,7 +12,9 @@ class ProfileController < ApplicationController
   end
 
   def update
-    if @user.update(user_params)
+    handle_avatar_removal if params[:user][:remove_avatar] == "1"
+
+    if @user.update(user_params_without_avatar_removal)
       redirect_to profile_path, notice: t("flash.profile.updated")
     else
       render Views::Profile::Edit.new(user: @user, errors: @user.errors), status: :unprocessable_content
@@ -31,7 +33,17 @@ class ProfileController < ApplicationController
       :display_name,
       :bio,
       :phone,
+      :avatar,
+      :remove_avatar,
       { preferences: [ :timezone, :language, { email_notifications: [ :profile_updates, :security_alerts, :feature_announcements ] } ] }
     )
+  end
+
+  def user_params_without_avatar_removal
+    user_params.except(:remove_avatar)
+  end
+
+  def handle_avatar_removal
+    @user.avatar.purge if @user.avatar.attached?
   end
 end

@@ -229,4 +229,132 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "avatar functionality" do
+    let(:user) { create(:user) }
+
+    describe "attachment" do
+      it "has an avatar attachment" do
+        expect(user).to respond_to(:avatar)
+      end
+
+      it "can attach an avatar" do
+        avatar_file = fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg")
+        user.avatar.attach(avatar_file)
+        expect(user.avatar).to be_attached
+      end
+    end
+
+    describe "validations" do
+      it "validates avatar content type to be an image" do
+        invalid_file = fixture_file_upload("spec/fixtures/files/document.pdf", "application/pdf")
+        user.avatar.attach(invalid_file)
+        expect(user).not_to be_valid
+        expect(user.errors[:avatar]).to include("must be a JPEG, PNG, or WebP image")
+      end
+
+      it "validates avatar file size to be under 5MB" do
+        # This would need a large test file in real implementation
+        # For now, we'll test the validation exists
+        user.avatar.attach(io: StringIO.new("x" * 6.megabytes), filename: "large.jpg", content_type: "image/jpeg")
+        expect(user).not_to be_valid
+        expect(user.errors[:avatar]).to include("must be smaller than 5MB")
+      end
+
+      it "allows valid image files" do
+        valid_file = fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg")
+        user.avatar.attach(valid_file)
+        expect(user).to be_valid
+      end
+    end
+
+    describe "variants" do
+      before do
+        avatar_file = fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg")
+        user.avatar.attach(avatar_file)
+      end
+
+      it "generates thumb variant" do
+        expect(user.avatar.variant(:thumb)).to be_present
+      end
+
+      it "generates small variant" do
+        expect(user.avatar.variant(:small)).to be_present
+      end
+
+      it "generates medium variant" do
+        expect(user.avatar.variant(:medium)).to be_present
+      end
+
+      it "generates large variant" do
+        expect(user.avatar.variant(:large)).to be_present
+      end
+
+      it "generates xlarge variant" do
+        expect(user.avatar.variant(:xlarge)).to be_present
+      end
+    end
+
+    describe "#picture_url" do
+      context "when avatar is attached" do
+        before do
+          avatar_file = fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg")
+          user.avatar.attach(avatar_file)
+        end
+
+        it "returns the avatar URL instead of auth provider picture" do
+          # Mock auth provider picture URL
+          allow(user).to receive(:auth_provider_user_info).and_return({ "picture" => "https://auth0.com/avatar.jpg" })
+
+          expect(user.picture_url).to include("avatar")
+          expect(user.picture_url).not_to include("auth0.com")
+        end
+      end
+
+      context "when no avatar is attached" do
+        it "falls back to auth provider picture URL" do
+          allow(user).to receive(:auth_provider_user_info).and_return({ "picture" => "https://auth0.com/avatar.jpg" })
+
+          expect(user.picture_url).to eq("https://auth0.com/avatar.jpg")
+        end
+
+        it "returns nil when no auth provider picture" do
+          allow(user).to receive(:auth_provider_user_info).and_return({})
+
+          expect(user.picture_url).to be_nil
+        end
+      end
+    end
+
+    describe "#avatar_url" do
+      context "when avatar is attached" do
+        before do
+          avatar_file = fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg")
+          user.avatar.attach(avatar_file)
+        end
+
+        it "returns default variant URL when no variant specified" do
+          url = user.avatar_url
+          expect(url).to be_present
+          expect(url).to include("avatar")
+        end
+
+        it "returns specific variant URL when variant specified" do
+          url = user.avatar_url(:thumb)
+          expect(url).to be_present
+          expect(url).to include("avatar")
+        end
+      end
+
+      context "when no avatar is attached" do
+        it "returns nil" do
+          expect(user.avatar_url).to be_nil
+        end
+
+        it "returns nil for variant" do
+          expect(user.avatar_url(:thumb)).to be_nil
+        end
+      end
+    end
+  end
 end
