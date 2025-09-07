@@ -5,11 +5,11 @@ class User < ApplicationRecord
 
   # Active Storage avatar attachment
   has_one_attached :avatar do |attachable|
-    attachable.variant :thumb, resize_to_fill: [ 32, 32 ], strip: true, saver: { strip: true, quality: 85 }
-    attachable.variant :small, resize_to_fill: [ 64, 64 ], strip: true, saver: { strip: true, quality: 85 }
-    attachable.variant :medium, resize_to_fill: [ 150, 150 ], strip: true, saver: { strip: true, quality: 85 }
-    attachable.variant :large, resize_to_fill: [ 400, 400 ], strip: true, saver: { strip: true, quality: 85 }
-    attachable.variant :xlarge, resize_to_fill: [ 800, 800 ], strip: true, saver: { strip: true, quality: 90 }
+    attachable.variant :thumb, resize_to_fill: [ 32, 32 ], saver: { strip: true, quality: 85 }
+    attachable.variant :small, resize_to_fill: [ 64, 64 ], saver: { strip: true, quality: 85 }
+    attachable.variant :medium, resize_to_fill: [ 150, 150 ], saver: { strip: true, quality: 85 }
+    attachable.variant :large, resize_to_fill: [ 400, 400 ], saver: { strip: true, quality: 85 }
+    attachable.variant :xlarge, resize_to_fill: [ 800, 800 ], saver: { strip: true, quality: 90 }
   end
 
   validates :auth0_sub, presence: true, uniqueness: true
