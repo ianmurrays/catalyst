@@ -266,10 +266,34 @@ RSpec.describe User, type: :model do
         user.avatar.attach(valid_file)
         expect(user).to be_valid
       end
+
+      it "detects MIME type spoofing - PDF with image MIME type" do
+        # Create a fake file that looks like a PDF but claims to be an image
+        user.avatar.attach(io: StringIO.new("fake content"), filename: "fake.jpg", content_type: "image/jpeg")
+
+        # Mock only the Marcel detection to return PDF type
+        allow(user.avatar).to receive(:open).and_yield(StringIO.new("fake content"))
+        allow(Marcel::Magic).to receive(:by_magic).and_return(double(type: "application/pdf"))
+
+        expect(user).not_to be_valid
+        expect(user.errors[:avatar]).to include("file content doesn't match the expected image format")
+      end
+
+      it "handles file processing errors gracefully" do
+        user.avatar.attach(io: StringIO.new("fake content"), filename: "test.jpg", content_type: "image/jpeg")
+
+        # Mock Marcel to raise an error during file processing
+        allow(user.avatar).to receive(:open).and_yield(StringIO.new("fake content"))
+        allow(Marcel::Magic).to receive(:by_magic).and_raise(StandardError.new("Processing failed"))
+
+        expect(user).not_to be_valid
+        expect(user.errors[:avatar]).to include("could not be processed")
+      end
     end
 
     describe "variants" do
       before do
+        user.save!
         avatar_file = fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg")
         user.avatar.attach(avatar_file)
       end
@@ -298,6 +322,7 @@ RSpec.describe User, type: :model do
     describe "#picture_url" do
       context "when avatar is attached" do
         before do
+          user.save!
           avatar_file = fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg")
           user.avatar.attach(avatar_file)
         end
@@ -329,6 +354,7 @@ RSpec.describe User, type: :model do
     describe "#avatar_url" do
       context "when avatar is attached" do
         before do
+          user.save!
           avatar_file = fixture_file_upload("spec/fixtures/files/avatar.jpg", "image/jpeg")
           user.avatar.attach(avatar_file)
         end

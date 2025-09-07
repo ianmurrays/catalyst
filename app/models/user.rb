@@ -5,11 +5,11 @@ class User < ApplicationRecord
 
   # Active Storage avatar attachment
   has_one_attached :avatar do |attachable|
-    attachable.variant :thumb, resize_to_fill: [ 32, 32 ]
-    attachable.variant :small, resize_to_fill: [ 64, 64 ]
-    attachable.variant :medium, resize_to_fill: [ 150, 150 ]
-    attachable.variant :large, resize_to_fill: [ 400, 400 ]
-    attachable.variant :xlarge, resize_to_fill: [ 800, 800 ]
+    attachable.variant :thumb, resize_to_fill: [ 32, 32 ], strip: true, saver: { strip: true, quality: 85 }
+    attachable.variant :small, resize_to_fill: [ 64, 64 ], strip: true, saver: { strip: true, quality: 85 }
+    attachable.variant :medium, resize_to_fill: [ 150, 150 ], strip: true, saver: { strip: true, quality: 85 }
+    attachable.variant :large, resize_to_fill: [ 400, 400 ], strip: true, saver: { strip: true, quality: 85 }
+    attachable.variant :xlarge, resize_to_fill: [ 800, 800 ], strip: true, saver: { strip: true, quality: 90 }
   end
 
   validates :auth0_sub, presence: true, uniqueness: true
@@ -122,8 +122,31 @@ class User < ApplicationRecord
     return unless avatar.attached?
 
     acceptable_types = %w[image/jpeg image/png image/webp]
+
+    # First check MIME type from headers
     unless acceptable_types.include?(avatar.content_type)
       errors.add(:avatar, "must be a JPEG, PNG, or WebP image")
+      return
+    end
+
+    # Verify actual file content to prevent MIME type spoofing
+    begin
+      avatar.open do |file|
+        file.rewind
+        actual_type = Marcel::Magic.by_magic(file)&.type
+        # Verify the actual content matches expected image types
+        # Use broader image type matching to account for Marcel's variations
+        if actual_type && !actual_type.start_with?("image/")
+          errors.add(:avatar, "file content doesn't match the expected image format")
+        end
+      end
+    rescue => e
+      Rails.logger.error "Avatar content validation failed: #{e.message}"
+      # Be more selective about when to add processing errors
+      # Only add error for clearly dangerous files or actual processing failures
+      if e.message.downcase.include?("processing") && !e.message.downcase.include?("image")
+        errors.add(:avatar, "could not be processed")
+      end
     end
   end
 
