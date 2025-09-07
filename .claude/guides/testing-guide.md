@@ -45,16 +45,16 @@ RSpec.describe User, type: :model do
         'name' => 'Test User',
         'sub' => 'auth0|123'
       }
-      
+
       user = User.find_or_create_from_auth_provider(auth_info)
-      
+
       expect(user).to be_persisted
       expect(user.email).to eq('test@example.com')
     end
 
     it "raises error when email is missing" do
       auth_info = { 'name' => 'Test User' }
-      
+
       expect {
         User.find_or_create_from_auth_provider(auth_info)
       }.to raise_error(ArgumentError, /Email is required/)
@@ -73,9 +73,9 @@ RSpec.describe ProfileController, type: :controller do
   describe "GET #show" do
     context "when authenticated" do
       let(:user) { create(:user) }
-      
+
       before { login_as(user) }
-      
+
       it "returns success" do
         get :show
         expect(response).to be_successful
@@ -102,14 +102,14 @@ RSpec.describe ProfileController, type: :controller do
 
   describe "PATCH #update" do
     let(:user) { create(:user) }
-    
+
     before { login_as(user) }
 
     it "updates user attributes" do
       patch :update, params: {
         user: { name: "New Name" }
       }
-      
+
       expect(user.reload.name).to eq("New Name")
       expect(response).to redirect_to(profile_path)
     end
@@ -118,7 +118,7 @@ RSpec.describe ProfileController, type: :controller do
       patch :update, params: {
         user: { email: "invalid" }
       }
-      
+
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
@@ -141,13 +141,13 @@ RSpec.describe Layout::Navbar, type: :component do
 
   context "when user is logged in" do
     let(:user) { create(:user, name: "John Doe") }
-    
+
     before { login_as(user) }
-    
+
     it "displays user greeting" do
       component = described_class.new
       rendered = render_with_view_context(component)
-      
+
       expect(rendered).to have_text("Hello, John Doe")
       expect(rendered).to have_link("Logout")
     end
@@ -157,7 +157,7 @@ RSpec.describe Layout::Navbar, type: :component do
     it "displays login link" do
       component = described_class.new
       rendered = render_with_view_context(component)
-      
+
       expect(rendered).to have_link("Login", href: "/auth/auth0")
       expect(rendered).not_to have_text("Hello")
     end
@@ -189,18 +189,18 @@ RSpec.describe "Authentication", type: :request do
       expect {
         get "/auth/auth0/callback"
       }.to change(User, :count).by(1)
-      
+
       expect(session[:userinfo]).to be_present
       expect(response).to redirect_to(root_path)
     end
 
     it "handles missing email gracefully" do
       OmniAuth.config.mock_auth[:auth0]['extra']['raw_info'].delete('email')
-      
+
       expect {
         get "/auth/auth0/callback"
       }.not_to change(User, :count)
-      
+
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
@@ -218,11 +218,11 @@ FactoryBot.define do
     email { Faker::Internet.email }
     name { Faker::Name.full_name }
     auth_provider_id { "auth0|#{SecureRandom.hex(12)}" }
-    
+
     trait :without_name do
       name { nil }
     end
-    
+
     trait :admin do
       role { :admin }
     end
@@ -285,7 +285,7 @@ module I18nHelpers
   ensure
     I18n.locale = original_locale
   end
-  
+
   def expect_translation(key, **options)
     expect(I18n.t(key, **options)).not_to include("translation missing")
   end
@@ -328,16 +328,16 @@ end
 RSpec.configure do |config|
   # Use transactions for speed
   config.use_transactional_fixtures = true
-  
+
   # Auto-infer spec type from file location
   config.infer_spec_type_from_file_location!
-  
+
   # Focus on tagged tests
   config.filter_run_when_matching :focus
-  
+
   # Include FactoryBot methods
   config.include FactoryBot::Syntax::Methods
-  
+
   # Clean up after tests
   config.after(:each) do
     # Reset I18n locale
@@ -374,10 +374,10 @@ end
 it "creates a user with valid attributes" do
   # Arrange
   user_params = { email: "test@example.com", name: "Test User" }
-  
+
   # Act
   user = User.create(user_params)
-  
+
   # Assert
   expect(user).to be_persisted
   expect(user.email).to eq("test@example.com")
@@ -405,21 +405,21 @@ describe "User.find_or_create_from_auth_provider" do
       User.find_or_create_from_auth_provider({})
     }.to raise_error(ArgumentError)
   end
-  
+
   it "handles empty email" do
     expect {
       User.find_or_create_from_auth_provider({ 'email' => '' })
     }.to raise_error(ArgumentError)
   end
-  
+
   it "finds existing user by email" do
     existing_user = create(:user, email: "test@example.com")
-    
+
     user = User.find_or_create_from_auth_provider({
       'email' => "test@example.com",
       'name' => "Different Name"
     })
-    
+
     expect(user).to eq(existing_user)
   end
 end
@@ -431,7 +431,7 @@ end
 # For Auth0 testing
 before do
   allow(Rails.logger).to receive(:error)
-  
+
   # Mock successful auth
   allow(request.env).to receive(:[]).with("omniauth.auth").and_return({
     "extra" => {
@@ -465,7 +465,7 @@ COVERAGE=true bundle exec rspec
 # For testing performance-critical code
 it "handles large datasets efficiently" do
   users = create_list(:user, 1000)
-  
+
   expect {
     User.active.includes(:posts).to_a
   }.to perform_under(100).ms
@@ -484,22 +484,22 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.4
         bundler-cache: true
-        
+
     - name: Setup database
       run: |
         bin/rails db:create
         bin/rails db:migrate
-        
+
     - name: Run tests
       run: bundle exec rspec
-      
+
     - name: Run linter
       run: bin/rubocop
 ```
