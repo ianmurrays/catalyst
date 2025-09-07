@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class ApplicationView < Views::Base
+class Views::ApplicationView < Views::Base
 end

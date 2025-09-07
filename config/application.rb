@@ -36,8 +36,7 @@ module Catalyst
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    # Add views to autoload paths for Phlex components
-    config.autoload_paths << Rails.root.join("app/views")
+    # Rails 8 automatically handles app/views for Phlex components
 
     # I18n configuration
     config.i18n.available_locales = [ :en, :es, :da ]
