@@ -1,9 +1,7 @@
 name: CI
 
 on:
-  pull_request:
   push:
-    branches: [ main ]
 
 jobs:
   scan_ruby:
@@ -55,6 +53,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      RACK_ENV: test
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
 
     steps:
       - name: Checkout code
@@ -71,4 +72,3 @@ jobs:
 
       - name: Run tests
         run: bundle exec rspec
-
