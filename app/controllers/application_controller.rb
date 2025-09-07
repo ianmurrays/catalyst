@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
   def user_preference_locale
     return unless current_user
 
-    user_locale = current_user.preferences&.dig("language")
+    user_locale = current_user.preferences&.language
     return unless user_locale
     return unless LocaleService.available_locales.include?(user_locale.to_sym)
 

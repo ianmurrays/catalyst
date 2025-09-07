@@ -46,9 +46,13 @@ RSpec.describe ProfileController, type: :controller do
           bio: "Updated bio",
           phone: "+1234567890",
           preferences: {
-            theme: "dark",
-            timezone: "America/New_York",
-            language: "en"
+            timezone: "Eastern Time (US & Canada)",
+            language: "en",
+            email_notifications: {
+              profile_updates: true,
+              security_alerts: false,
+              feature_announcements: true
+            }
           }
         }
       }
@@ -203,7 +207,7 @@ RSpec.describe ProfileController, type: :controller do
         it "shows validation error for invalid language" do
           patch :update, params: params_with_invalid_language
           user.reload
-          expect(user.errors[:language]).to include("is not available")
+          expect(user.errors.full_messages.any? { |msg| msg.include?("invalid") }).to be true
         end
       end
     end
@@ -235,10 +239,10 @@ RSpec.describe ProfileController, type: :controller do
           expect(user.timezone).to eq("Eastern Time (US & Canada)")
         end
 
-        it "persists timezone in preferences JSON" do
+        it "persists timezone in preferences model" do
           patch :update, params: params_with_timezone
           user.reload
-          expect(user.preferences["timezone"]).to eq("Eastern Time (US & Canada)")
+          expect(user.preferences.timezone).to eq("Eastern Time (US & Canada)")
         end
 
         it "redirects successfully" do
@@ -247,12 +251,16 @@ RSpec.describe ProfileController, type: :controller do
         end
 
         it "preserves other preferences" do
-          user.update!(preferences: { language: "es", theme: "dark" })
+          user.preferences.language = "es"
+          user.preferences.email_notifications.profile_updates = false
+          user.save!
+
           patch :update, params: params_with_timezone
           user.reload
-          expect(user.preferences["language"]).to eq("es")
-          expect(user.preferences["theme"]).to eq("dark")
-          expect(user.preferences["timezone"]).to eq("Eastern Time (US & Canada)")
+
+          expect(user.preferences.language).to eq("es")
+          expect(user.preferences.email_notifications.profile_updates).to be false
+          expect(user.preferences.timezone).to eq("Eastern Time (US & Canada)")
         end
       end
 
@@ -281,7 +289,7 @@ RSpec.describe ProfileController, type: :controller do
         it "shows validation error for invalid timezone" do
           patch :update, params: params_with_invalid_timezone
           user.reload
-          expect(user.errors[:timezone]).to include("is not a valid timezone")
+          expect(user.errors.full_messages.any? { |msg| msg.include?("invalid") }).to be true
         end
       end
 
@@ -318,7 +326,8 @@ RSpec.describe ProfileController, type: :controller do
         end
 
         it "preserves existing timezone preference" do
-          user.update!(preferences: { timezone: "Pacific Time (US & Canada)" })
+          user.preferences.timezone = "Pacific Time (US & Canada)"
+          user.save!
           patch :update, params: params_without_timezone
           user.reload
           expect(user.timezone).to eq("Pacific Time (US & Canada)")

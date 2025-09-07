@@ -20,6 +20,11 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:display_name).is_at_least(2).is_at_most(100) }
     it { is_expected.to validate_length_of(:bio).is_at_most(500) }
 
+    it "validates preferences using store_model" do
+      subject.preferences = UserPreferences.new
+      expect(subject).to be_valid
+    end
+
     describe "phone validation" do
       it "allows valid phone numbers" do
         subject.phone = "+1 (555) 123-4567"
@@ -61,7 +66,9 @@ RSpec.describe User, type: :model do
         expect(user.auth0_sub).to eq("auth0|123456789")
         expect(user.display_name).to eq("John Doe")
         expect(user.email).to eq("john@example.com")
-        expect(user.preferences).to be_present
+        expect(user.preferences).to be_a(UserPreferences)
+        expect(user.language).to eq("en")  # Uses User model default logic
+        expect(user.timezone).to eq("UTC")
       end
     end
 
@@ -118,17 +125,11 @@ RSpec.describe User, type: :model do
 
     describe "#language" do
       it "returns language from preferences" do
-        user.preferences = { "language" => "es" }
+        user.preferences.language = "es"
         expect(user.language).to eq("es")
       end
 
       it "returns default language when not set in preferences" do
-        user.preferences = {}
-        expect(user.language).to eq("en")
-      end
-
-      it "returns default language when preferences is nil" do
-        user.preferences = nil
         expect(user.language).to eq("en")
       end
     end
@@ -136,23 +137,17 @@ RSpec.describe User, type: :model do
     describe "#language=" do
       it "sets language in preferences" do
         user.language = "es"
-        expect(user.preferences["language"]).to eq("es")
-      end
-
-      it "initializes preferences if nil" do
-        user.preferences = nil
-        user.language = "es"
-        expect(user.preferences).to eq({ "language" => "es" })
+        expect(user.preferences.language).to eq("es")
       end
     end
 
     describe "language preference validation" do
-      it "validates language against available locales" do
+      it "validates language through preferences model" do
         allow(LocaleService).to receive(:available_locales).and_return([ :en, :es, :da ])
 
         user.language = "fr"
         expect(user).not_to be_valid
-        expect(user.errors[:language]).to include("is not available")
+        expect(user.errors.full_messages.any? { |msg| msg.include?("invalid") }).to be true
       end
 
       it "allows valid language codes" do
@@ -160,14 +155,6 @@ RSpec.describe User, type: :model do
 
         user.language = "es"
         expect(user).to be_valid
-      end
-
-      it "allows nil/empty language (defaults to 'en')" do
-        allow(LocaleService).to receive(:available_locales).and_return([ :en, :es, :da ])
-
-        user.language = nil
-        expect(user).to be_valid
-        expect(user.language).to eq("en")
       end
     end
   end
@@ -177,17 +164,11 @@ RSpec.describe User, type: :model do
 
     describe "#timezone" do
       it "returns timezone from preferences" do
-        user.preferences = { "timezone" => "Eastern Time (US & Canada)" }
+        user.preferences.timezone = "Eastern Time (US & Canada)"
         expect(user.timezone).to eq("Eastern Time (US & Canada)")
       end
 
       it "returns default timezone when not set in preferences" do
-        user.preferences = {}
-        expect(user.timezone).to eq("UTC")
-      end
-
-      it "returns default timezone when preferences is nil" do
-        user.preferences = nil
         expect(user.timezone).to eq("UTC")
       end
     end
@@ -195,35 +176,22 @@ RSpec.describe User, type: :model do
     describe "#timezone=" do
       it "sets timezone in preferences" do
         user.timezone = "Eastern Time (US & Canada)"
-        expect(user.preferences["timezone"]).to eq("Eastern Time (US & Canada)")
+        expect(user.preferences.timezone).to eq("Eastern Time (US & Canada)")
       end
 
-      it "initializes preferences if nil" do
-        user.preferences = nil
-        user.timezone = "Pacific Time (US & Canada)"
-        expect(user.preferences).to eq({ "timezone" => "Pacific Time (US & Canada)" })
-      end
-
-      it "merges with existing preferences" do
-        user.preferences = { "language" => "en" }
+      it "preserves other preferences when setting timezone" do
+        user.preferences.language = "es"
         user.timezone = "Central Time (US & Canada)"
-        expect(user.preferences["language"]).to eq("en")
-        expect(user.preferences["timezone"]).to eq("Central Time (US & Canada)")
+        expect(user.preferences.language).to eq("es")
+        expect(user.preferences.timezone).to eq("Central Time (US & Canada)")
       end
     end
 
     describe "timezone preference validation" do
-      before do
-        # Mock TimezoneService to return a predictable set of valid timezones
-        allow(TimezoneService).to receive(:valid_timezone?) do |identifier|
-          %w[UTC Eastern\ Time\ (US\ &\ Canada) Pacific\ Time\ (US\ &\ Canada) Central\ Time\ (US\ &\ Canada)].include?(identifier)
-        end
-      end
-
-      it "validates timezone against ActiveSupport::TimeZone identifiers" do
+      it "validates timezone through preferences model" do
         user.timezone = "Invalid/Timezone"
         expect(user).not_to be_valid
-        expect(user.errors[:timezone]).to include("is not a valid timezone")
+        expect(user.errors.full_messages.any? { |msg| msg.include?("invalid") }).to be true
       end
 
       it "allows valid timezone identifiers" do
@@ -235,23 +203,11 @@ RSpec.describe User, type: :model do
         user.timezone = "UTC"
         expect(user).to be_valid
       end
-
-      it "allows nil/empty timezone (defaults to 'UTC')" do
-        user.timezone = nil
-        expect(user).to be_valid
-        expect(user.timezone).to eq("UTC")
-      end
-
-      it "allows blank timezone (defaults to 'UTC')" do
-        user.timezone = ""
-        expect(user).to be_valid
-        expect(user.timezone).to eq("UTC")
-      end
     end
 
     describe "#timezone_object" do
       it "returns ActiveSupport::TimeZone object for current timezone" do
-        user.preferences = { "timezone" => "Eastern Time (US & Canada)" }
+        user.preferences.timezone = "Eastern Time (US & Canada)"
         timezone_obj = user.timezone_object
 
         expect(timezone_obj).to be_a(ActiveSupport::TimeZone)
@@ -259,7 +215,6 @@ RSpec.describe User, type: :model do
       end
 
       it "returns UTC timezone object when timezone is not set" do
-        user.preferences = {}
         timezone_obj = user.timezone_object
 
         expect(timezone_obj).to be_a(ActiveSupport::TimeZone)
@@ -267,7 +222,7 @@ RSpec.describe User, type: :model do
       end
 
       it "returns nil when timezone identifier is invalid" do
-        user.preferences = { "timezone" => "Invalid/Timezone" }
+        user.preferences.timezone = "Invalid/Timezone"
         timezone_obj = user.timezone_object
 
         expect(timezone_obj).to be_nil

@@ -4,6 +4,6 @@ FactoryBot.define do
     sequence(:email) { |n| "user#{n}@example.com" }
     display_name { "Test User" }
     bio { "A test user bio" }
-    preferences { User.send(:default_preferences) }
+    preferences { UserPreferences.new }
   end
 end
