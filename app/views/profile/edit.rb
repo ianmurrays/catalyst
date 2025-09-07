@@ -362,12 +362,10 @@ class Views::Profile::Edit < Views::Base
 
   def avatar_remove_checkbox(form)
     div(class: "flex items-center space-x-2") do
-      input(
-        type: "checkbox",
+      render RubyUI::Checkbox.new(
         name: "user[remove_avatar]",
         id: "user_remove_avatar",
-        value: "1",
-        class: "rounded border-border text-primary focus:ring-primary"
+        value: "1"
       )
       label(for: "user_remove_avatar", class: "text-sm text-muted-foreground") do
         t("views.profile.edit.avatar.remove_label")
