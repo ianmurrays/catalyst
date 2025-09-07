@@ -18,34 +18,19 @@ class User < ApplicationRecord
     preferences&.language || "en"
   end
 
-  # Custom preferences assignment to handle nested attributes
+  # Custom preferences assignment to handle nested attributes elegantly
   def preferences=(attributes)
     if attributes.is_a?(Hash)
-      # Handle nested hash assignment for store_model
+      # Get current preferences or create new instance
       current_prefs = self.preferences || UserPreferences.new
 
-      # Update language if provided
-      current_prefs.language = attributes[:language] || attributes["language"] if attributes.key?(:language) || attributes.key?("language")
+      # Use standard Rails assignment - store_model handles everything
+      current_prefs.assign_attributes(attributes)
 
-      # Update timezone if provided
-      if attributes.key?(:timezone) || attributes.key?("timezone")
-        timezone_value = attributes[:timezone] || attributes["timezone"]
-        # Convert empty string to default UTC
-        current_prefs.timezone = timezone_value.present? ? timezone_value : "UTC"
-      end
-
-      # Update email notifications if provided
-      if attributes.key?(:email_notifications) || attributes.key?("email_notifications")
-        email_attrs = attributes[:email_notifications] || attributes["email_notifications"]
-        if email_attrs.is_a?(Hash)
-          current_prefs.email_notifications.profile_updates = email_attrs[:profile_updates] || email_attrs["profile_updates"] if email_attrs.key?(:profile_updates) || email_attrs.key?("profile_updates")
-          current_prefs.email_notifications.security_alerts = email_attrs[:security_alerts] || email_attrs["security_alerts"] if email_attrs.key?(:security_alerts) || email_attrs.key?("security_alerts")
-          current_prefs.email_notifications.feature_announcements = email_attrs[:feature_announcements] || email_attrs["feature_announcements"] if email_attrs.key?(:feature_announcements) || email_attrs.key?("feature_announcements")
-        end
-      end
-
+      # Assign the updated preferences object
       super(current_prefs)
     else
+      # Handle direct UserPreferences object assignment or other types
       super
     end
   end

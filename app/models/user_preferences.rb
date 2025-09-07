@@ -2,6 +2,7 @@
 
 class UserPreferences
   include StoreModel::Model
+  include StoreModel::NestedAttributes
 
   # Language preference
   attribute :language, :string
@@ -22,8 +23,16 @@ class UserPreferences
   }
   validates :email_notifications, store_model: true
 
+  # Enable nested attributes for email notifications
+  accepts_nested_attributes_for :email_notifications
+
   # Helper methods (maintain existing API)
   def timezone_object
     ActiveSupport::TimeZone[timezone]
+  end
+
+  # Custom setter to ensure timezone defaults to UTC when blank
+  def timezone=(value)
+    super(value.presence || "UTC")
   end
 end
