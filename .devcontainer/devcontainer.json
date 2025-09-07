@@ -45,7 +45,8 @@
     "vscode": {
       "extensions": [
         "Anthropic.claude-code",
-        "KoichiSasada.vscode-rdbg"
+        "KoichiSasada.vscode-rdbg",
+        "LoranKloeze.ruby-rubocop-revived"
       ]
     }
   }

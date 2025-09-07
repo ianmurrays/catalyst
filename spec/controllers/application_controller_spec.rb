@@ -35,7 +35,7 @@ RSpec.describe ApplicationController, type: :controller do
 
       context "when user has no language preference" do
         before do
-          user.preferences = {}
+          user.preferences.language = nil
           user.save!
         end
 

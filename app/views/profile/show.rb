@@ -102,8 +102,8 @@ class Views::Profile::Show < Views::Base
 
       render RubyUI::Card::CardContent.new do
         if @user.preferences.present?
-          profile_field(t("common.labels.timezone"), @user.preferences.dig("timezone") || "UTC")
-          profile_field(t("common.labels.language"), language_display_name(@user.preferences.dig("language") || "en"))
+          profile_field(t("common.labels.timezone"), @user.preferences.timezone || "UTC")
+          profile_field(t("common.labels.language"), language_display_name(@user.preferences.language || "en"))
         else
           p(class: "text-muted-foreground") { t("common.no_preferences_set") }
         end

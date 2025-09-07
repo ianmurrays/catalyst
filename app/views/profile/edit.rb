@@ -184,7 +184,14 @@ class Views::Profile::Edit < Views::Base
   end
 
   def preferences_field(form, key, label, options)
-    current_value = @user.preferences&.dig(key) || options.first
+    current_value = case key
+    when "language"
+                      @user.preferences&.language || options.first
+    when "timezone"
+                      @user.preferences&.timezone || options.first
+    else
+                      options.first
+    end
 
     div(class: "space-y-2") do
       label(for: "user_preferences_#{key}", class: "text-sm font-medium") { label }
@@ -216,7 +223,7 @@ class Views::Profile::Edit < Views::Base
   end
 
   def timezone_field(form)
-    current_value = @user.preferences&.dig("timezone") || timezone_options.first[1]
+    current_value = @user.preferences&.timezone || timezone_options.first[1]
 
     div(class: "space-y-2", data: {
       controller: "timezone-detector",
