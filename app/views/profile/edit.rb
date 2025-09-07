@@ -290,9 +290,8 @@ class Views::Profile::Edit < Views::Base
             end
             button(
               type: "button",
-              data: { action: "click->timezone-detector#dismissSuggestion" },
               class: "text-sm text-muted-foreground hover:text-foreground",
-              data: { timezone_detector_target: "dismissButton" }
+              data: { timezone_detector_target: "dismissButton", action: "click->timezone-detector#dismissSuggestion" }
             ) do
               # Button text will be set by JavaScript
             end
