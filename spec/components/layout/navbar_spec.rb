@@ -162,12 +162,12 @@ RSpec.describe Components::Layout::Navbar do
     end
 
     it "renders theme toggle buttons as ghost variants" do
-      # Check specifically for theme toggle buttons (they have the icon styling)
-      theme_buttons = doc.css('div[data-controller*="theme-toggle"] button')
-      expect(theme_buttons.length).to eq(2) # Light and dark mode buttons
+      # Check specifically for desktop theme toggle buttons (they have the icon styling)
+      desktop_theme_buttons = doc.css('div.hidden.md\\:flex div[data-controller*="theme-toggle"] button')
+      expect(desktop_theme_buttons.length).to eq(2) # Light and dark mode buttons
 
-      # Check that both theme buttons have ghost styling
-      theme_buttons.each do |button|
+      # Check that both desktop theme buttons have ghost styling
+      desktop_theme_buttons.each do |button|
         expect(button['class']).to include('hover:bg-accent')
         expect(button['class']).to include('hover:text-accent-foreground')
         # Theme toggle buttons are icon buttons so they should have specific sizing
@@ -279,6 +279,96 @@ RSpec.describe Components::Layout::Navbar do
     it "includes gap spacing for button groups" do
       nav_section = doc.css('div.flex.items-center.gap-4').first
       expect(nav_section).not_to be_nil
+    end
+
+    describe "mobile menu" do
+      it "includes hamburger menu button visible only on mobile" do
+        mobile_button = doc.css('button.flex.md\\:hidden').first
+        expect(mobile_button).not_to be_nil
+        expect(mobile_button['data-action']).to include('mobile-menu#open')
+      end
+
+      it "hamburger button contains menu icon" do
+        mobile_button = doc.css('button.flex.md\\:hidden').first
+        expect(mobile_button).not_to be_nil
+        # Check for menu icon SVG path
+        menu_icon = mobile_button.css('svg path[d*="M3 6.75A.75.75 0 013.75 6h16.5"]').first
+        expect(menu_icon).not_to be_nil
+      end
+
+      it "desktop navigation is hidden on mobile screens" do
+        desktop_nav = doc.css('div.hidden.md\\:flex').first
+        expect(desktop_nav).not_to be_nil
+        expect(desktop_nav['class']).to include('hidden')
+        expect(desktop_nav['class']).to include('md:flex')
+      end
+
+      it "includes mobile menu drawer using Sheet component" do
+        sheet = doc.css('[data-controller*="ruby-ui--sheet"]').first
+        expect(sheet).not_to be_nil
+      end
+
+      it "mobile menu drawer contains navigation items" do
+        sheet_content = doc.css('[data-controller*="ruby-ui--sheet"] [data-controller*="ruby-ui--sheet-content"]').first
+        expect(sheet_content).not_to be_nil
+      end
+
+      it "mobile menu has close button with close icon" do
+        close_button = doc.css('button[data-action="click->ruby-ui--sheet-content#close"]').first
+        expect(close_button).not_to be_nil
+        # Check for close icon (Ruby UI Sheet's built-in close button)
+        close_icon = close_button.css('svg path[d*="M11.7816 4.03157"]').first
+        expect(close_icon).not_to be_nil
+      end
+    end
+
+    context "mobile menu navigation items" do
+      context "when user is not logged in" do
+        before do
+          allow_any_instance_of(described_class).to receive(:logged_in?).and_return(false)
+        end
+
+        let(:html) { render_with_view_context(component) }
+        let(:doc) { Nokogiri::HTML5(html) }
+
+        it "mobile menu contains login button" do
+          mobile_login_form = doc.css('[data-controller*="ruby-ui--sheet"] form[action="/auth/auth0"]').first
+          expect(mobile_login_form).not_to be_nil
+          expect(mobile_login_form['method']).to eq('post')
+        end
+
+        it "mobile login form includes CSRF token" do
+          mobile_csrf = doc.css('[data-controller*="ruby-ui--sheet"] form[action="/auth/auth0"] input[name="authenticity_token"]').first
+          expect(mobile_csrf).not_to be_nil
+        end
+      end
+
+      context "when user is logged in" do
+        let(:mock_user) { double("User", name: "John Doe", email: "john@example.com") }
+        let(:html) { render_with_view_context(described_class.new, user: mock_user) }
+        let(:doc) { Nokogiri::HTML5(html) }
+
+        it "mobile menu shows user greeting" do
+          sheet_content = doc.css('[data-controller*="ruby-ui--sheet"]').first
+          expect(sheet_content.text).to include("Hello, John Doe")
+        end
+
+        it "mobile menu contains profile link" do
+          mobile_profile_link = doc.css('[data-controller*="ruby-ui--sheet"] a[href="/profile"]').first
+          expect(mobile_profile_link).not_to be_nil
+        end
+
+        it "mobile menu contains logout form" do
+          mobile_logout_form = doc.css('[data-controller*="ruby-ui--sheet"] form[action="/auth/logout"]').first
+          expect(mobile_logout_form).not_to be_nil
+          expect(mobile_logout_form['method']).to eq('post')
+        end
+      end
+
+      it "mobile menu includes theme toggle" do
+        mobile_theme_toggle = doc.css('[data-controller*="ruby-ui--sheet"] [data-controller*="ruby-ui--theme-toggle"]').first
+        expect(mobile_theme_toggle).not_to be_nil
+      end
     end
   end
 end
