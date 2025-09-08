@@ -16,6 +16,7 @@ class Views::Base < Components::Base
   register_output_helper :form_with
   register_value_helper :t
   register_value_helper :l
+  register_value_helper :flash
 
   def around_template
     render layout.new(page_info) do

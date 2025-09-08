@@ -66,6 +66,7 @@ class Components::Layout::Application < Components::Base
   def render_body
     body(class: body_classes) do
       render Components::Layout::Navbar.new
+      render Components::Layout::FlashMessages.new
 
       main(role: "main") do
         yield

@@ -6,7 +6,7 @@ Plan and implement a feature using Test-Driven Development (TDD) methodology wit
 Provide a description of the feature you want to implement, and I will:
 
 1. **Clarify Requirements**: Ask targeted questions to understand the specific requirements, scope, user experience, technical constraints, and success criteria
-2. **Gather Context**: Use the context-gatherer agent to understand existing codebase patterns, related components, and testing conventions  
+2. **Gather Context**: Use the context-gatherer agent to understand existing codebase patterns, related components, and testing conventions
 3. **Fetch Documentation**: Use the context7-docs-fetcher agent to get up-to-date documentation for Rails 8, RSpec, and any relevant libraries
 4. **Create TDD Plan**: Design a comprehensive implementation plan following test-driven development principles
 
@@ -15,6 +15,7 @@ The command follows this structured approach:
 
 ### Phase 0: Requirements Clarification
 - Ask clarifying questions about feature scope and boundaries
+- Only ask **one** question at a time
 - Understand user personas and use cases
 - Identify technical constraints and preferences
 - Define success criteria and acceptance tests
@@ -22,7 +23,7 @@ The command follows this structured approach:
 
 ### Phase 1: Discovery & Planning
 - Analyze existing codebase patterns and conventions
-- Identify related components and potential impact areas  
+- Identify related components and potential impact areas
 - Research relevant documentation and best practices
 - Create detailed feature specification with acceptance criteria
 
@@ -58,6 +59,6 @@ After providing your feature description, I will ask clarifying questions such a
 
 Then I'll create a comprehensive TDD plan including:
 - Model specs for user avatar associations
-- Controller specs for upload endpoints  
+- Controller specs for upload endpoints
 - Integration specs for the complete workflow
 - Implementation following Rails 8 and project conventions
