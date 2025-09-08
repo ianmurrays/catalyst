@@ -38,18 +38,6 @@ module ComponentHelpers
     # Add helpers object that components can use
     helpers_object = view_context
     view_context.define_singleton_method(:helpers) { helpers_object }
-
-    # Add t helper for i18n
-    view_context.define_singleton_method(:t) do |key, options = {}|
-      case key.to_s
-      when "common.buttons.dismiss"
-        "Dismiss"
-      when "application.name"
-        "Catalyst"
-      else
-        key.to_s
-      end
-    end
   end
 
   # Create a mock user for testing

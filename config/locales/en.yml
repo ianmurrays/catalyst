@@ -25,6 +25,7 @@ en:
       documentation: "Documentation"
       view_on_github: "View on GitHub"
       save_changes: "Save Changes"
+      dismiss: "Dismiss"
     labels:
       language: "Language"
       timezone: "Timezone"
