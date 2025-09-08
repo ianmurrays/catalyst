@@ -107,6 +107,27 @@ RSpec.describe Components::Layout::Application do
       expect(navbar.first['class']).to include('top-0')
       expect(html).to include("Catalyst") # Brand name from navbar
     end
+
+    it "includes flash messages component between navbar and main content" do
+      # Create a flash with a message so we can see the container
+      flash_hash = ActionDispatch::Flash::FlashHash.new
+      flash_hash[:notice] = "Test message"
+
+      html = render_with_view_context(component, flash: flash_hash) { "Test Content" }
+      doc = Nokogiri::HTML5(html)
+
+      # Flash messages should appear between navbar and main
+      navbar = doc.css('header').first
+      main = doc.css('main').first
+      flash_container = doc.css('.container.mx-auto.px-4.py-2').first # Flash messages container
+
+      expect(navbar).not_to be_nil
+      expect(main).not_to be_nil
+      expect(flash_container).not_to be_nil
+
+      # Verify flash message content is rendered
+      expect(html).to include("Test message")
+    end
   end
 
   describe "with head content block" do

@@ -15,8 +15,8 @@ module ComponentHelpers
   end
 
   # Helper for rendering components with Rails integration
-  def render_with_view_context(component, user: nil, &block)
-    setup_view_context_helpers(user: user)
+  def render_with_view_context(component, user: nil, flash: nil, &block)
+    setup_view_context_helpers(user: user, flash: flash)
     if block
       view_context.render(component, &block)
     else
@@ -25,11 +25,19 @@ module ComponentHelpers
   end
 
   # Set up global view context helpers for all components
-  def setup_view_context_helpers(user: nil)
+  def setup_view_context_helpers(user: nil, flash: nil)
     # Add authentication helpers to the view context
     view_context.define_singleton_method(:logged_in?) { user.present? }
     view_context.define_singleton_method(:current_user) { user }
     view_context.define_singleton_method(:form_authenticity_token) { "test-token" }
+
+    # Add flash helper to the view context
+    flash_hash = flash || ActionDispatch::Flash::FlashHash.new
+    view_context.define_singleton_method(:flash) { flash_hash }
+
+    # Add helpers object that components can use
+    helpers_object = view_context
+    view_context.define_singleton_method(:helpers) { helpers_object }
   end
 
   # Create a mock user for testing
