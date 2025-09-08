@@ -40,9 +40,9 @@ module ComponentHelpers
     view_context.define_singleton_method(:helpers) { helpers_object }
   end
 
-  # Create a mock user for testing
-  def create_mock_user(name: "Test User", email: "test@example.com")
-    double("User", name: name, email: email)
+  # Create a user for testing using FactoryBot
+  def create_test_user(name: "Test User", email: "test@example.com")
+    build(:user, display_name: name, email: email)
   end
 end
 

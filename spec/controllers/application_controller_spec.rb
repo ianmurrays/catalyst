@@ -15,7 +15,7 @@ RSpec.describe ApplicationController, type: :controller do
 
   describe "#set_locale" do
     context "when user is authenticated" do
-      let(:user) { User.create!(auth0_sub: "auth0|123", display_name: "Test User", email: "test@example.com") }
+      let(:user) { create(:user, auth0_sub: "auth0|123", display_name: "Test User", email: "test@example.com") }
 
       before do
         allow(controller).to receive(:current_user).and_return(user)
@@ -150,7 +150,7 @@ RSpec.describe ApplicationController, type: :controller do
   end
 
   describe "locale persistence across requests" do
-    let(:user) { User.create!(auth0_sub: "auth0|456", display_name: "Test User", email: "test2@example.com") }
+    let(:user) { create(:user, auth0_sub: "auth0|456", display_name: "Test User", email: "test2@example.com") }
 
     context "when authenticated user changes locale" do
       before do
@@ -188,7 +188,7 @@ RSpec.describe ApplicationController, type: :controller do
 
   describe "locale switching" do
     context "when user updates language preference" do
-      let(:user) { User.create!(auth0_sub: "auth0|789", display_name: "Test User", email: "test3@example.com") }
+      let(:user) { create(:user, auth0_sub: "auth0|789", display_name: "Test User", email: "test3@example.com") }
 
       before do
         allow(controller).to receive(:current_user).and_return(user)
@@ -258,7 +258,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     context "when authenticated user has language preference" do
-      let(:user) { User.create!(auth0_sub: "auth0|999", display_name: "Test User", email: "test@example.com") }
+      let(:user) { create(:user, auth0_sub: "auth0|999", display_name: "Test User", email: "test@example.com") }
 
       before do
         allow(controller).to receive(:current_user).and_return(user)
