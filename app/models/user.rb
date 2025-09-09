@@ -25,7 +25,7 @@ class User < ApplicationRecord
   # Team associations
   has_many :memberships, dependent: :destroy
   has_many :teams, through: :memberships
-  has_many :created_invitations, class_name: 'Invitation', foreign_key: 'created_by_id', dependent: :destroy
+  has_many :created_invitations, class_name: "Invitation", foreign_key: "created_by_id", dependent: :destroy
 
   # Avatar validations
   validate :avatar_content_type_validation
@@ -118,7 +118,7 @@ class User < ApplicationRecord
   end
 
   def admin_teams
-    teams.joins(:memberships).where(memberships: { user: self, role: [:owner, :admin] })
+    teams.joins(:memberships).where(memberships: { user: self, role: [ :owner, :admin ] })
   end
 
   def member_of?(team)
@@ -138,7 +138,7 @@ class User < ApplicationRecord
 
   def admin_of?(team)
     return false unless team
-    memberships.exists?(team: team, role: [:owner, :admin])
+    memberships.exists?(team: team, role: [ :owner, :admin ])
   end
 
   private

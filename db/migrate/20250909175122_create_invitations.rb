@@ -11,8 +11,8 @@ class CreateInvitations < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :invitations, :token, unique: true
-    add_index :invitations, [:team_id, :expires_at]
+    add_index :invitations, [ :team_id, :expires_at ]
   end
 end

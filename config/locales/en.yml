@@ -4,6 +4,10 @@ en:
   application:
     name: "Catalyst"
 
+  # Authorization (Pundit)
+  pundit:
+    not_authorized: "You are not authorized to perform this action."
+
   # Navigation and layout
   navigation:
     profile: "Profile"

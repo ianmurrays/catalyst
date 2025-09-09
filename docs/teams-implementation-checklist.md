@@ -19,16 +19,16 @@ This checklist tracks the progress of implementing the teams feature across all 
 - [x] Run migrations and verify schema
 
 ## Phase 2: Authorization Setup
-- [ ] Add pundit gem to Gemfile
-- [ ] Run bundle install
-- [ ] Include Pundit in ApplicationController
-- [ ] Generate ApplicationPolicy
-- [ ] Create TeamPolicy with basic rules
-- [ ] Create MembershipPolicy
-- [ ] Create InvitationPolicy
-- [ ] Update Secured concern to handle team context
-- [ ] Write policy specs
-- [ ] Add pundit_user method to ApplicationController
+- [x] Add pundit gem to Gemfile
+- [x] Run bundle install
+- [x] Include Pundit in ApplicationController
+- [x] Generate ApplicationPolicy
+- [x] Create TeamPolicy with basic rules
+- [x] Create MembershipPolicy
+- [x] Create InvitationPolicy
+- [x] Update Secured concern to handle team context
+- [x] Write policy specs
+- [x] Add pundit_user method to ApplicationController
 
 ## Phase 3: Team Management
 - [ ] Create TeamsController
