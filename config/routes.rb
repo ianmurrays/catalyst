@@ -19,6 +19,13 @@ Rails.application.routes.draw do
   get "/profile/edit" => "profile#edit", as: :edit_profile
   patch "/profile" => "profile#update"
 
+  # Teams
+  resources :teams do
+    member do
+      patch :restore  # For undeleting soft-deleted teams
+    end
+  end
+
   # Defines the root path route ("/")
   root "pages#home"
 end

@@ -183,6 +183,45 @@ en:
           title: "Authentication Error"
           description: "An error occurred during authentication. Please try again or contact support if the problem persists."
 
+  # Teams
+  teams:
+    index:
+      title: "My Teams"
+      subtitle: "Manage your teams and collaborations"
+      new_team: "Create New Team"
+      empty_state: "You don't belong to any teams yet"
+      empty_description: "Create your first team to start collaborating with others"
+    show:
+      members: "Team Members"
+      settings: "Team Settings"
+      invite_members: "Invite Members"
+      edit_team: "Edit Team"
+      delete_team: "Delete Team"
+      member_count: 
+        one: "%{count} member"
+        other: "%{count} members"
+    new:
+      title: "Create New Team"
+      subtitle: "Start a new team and invite collaborators"
+    edit:
+      title: "Edit Team"
+      subtitle: "Update your team information"
+    form:
+      name_label: "Team Name"
+      name_placeholder: "Enter team name"
+      slug_label: "URL Slug"
+      slug_help: "This will be used in URLs and is automatically generated"
+      cancel: "Cancel"
+      create_team: "Create Team"
+      update_team: "Update Team"
+      confirm_delete: "Are you sure you want to delete this team? This action cannot be undone."
+    flash:
+      created: "Team created successfully"
+      updated: "Team updated successfully"
+      deleted: "Team deleted successfully"
+      restored: "Team restored successfully"
+      not_authorized: "You don't have permission to perform this action"
+
   # Flash messages
   flash:
     profile:
@@ -198,6 +237,9 @@ en:
   activerecord:
     models:
       user: "User"
+      team: "Team"
+      membership: "Membership"
+      invitation: "Invitation"
     attributes:
       user:
         display_name: "Display name"
@@ -208,6 +250,18 @@ en:
         auth0_sub: "Authentication ID"
         created_at: "Created at"
         updated_at: "Updated at"
+      team:
+        name: "Team name"
+        slug: "URL slug"
+        created_at: "Created at"
+        updated_at: "Updated at"
+      membership:
+        role: "Role"
+        created_at: "Joined at"
+      invitation:
+        role: "Role"
+        expires_at: "Expires at"
+        created_at: "Sent at"
     errors:
       models:
         user:
@@ -230,6 +284,13 @@ en:
               content_type_mismatch: "file content doesn't match the expected image format"
               processing_failed: "could not be processed"
               file_size_too_large: "must be smaller than %{max_size}"
+        team:
+          attributes:
+            name:
+              blank: "cannot be blank"
+              too_long: "cannot be more than 100 characters"
+            slug:
+              taken: "is already taken"
 
   # Date and time formats
   date:

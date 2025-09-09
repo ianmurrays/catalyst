@@ -181,6 +181,45 @@ da:
           title: "Autentifikationsfejl"
           description: "Der opstod en fejl under autentifikation. Prøv igen eller kontakt support hvis problemet fortsætter."
 
+  # Teams
+  teams:
+    index:
+      title: "Mine Teams"
+      subtitle: "Administrer dine teams og samarbejde"
+      new_team: "Opret Nyt Team"
+      empty_state: "Du tilhører endnu ikke nogen teams"
+      empty_description: "Opret dit første team for at begynde at samarbejde med andre"
+    show:
+      members: "Team Medlemmer"
+      settings: "Team Indstillinger"
+      invite_members: "Inviter Medlemmer"
+      edit_team: "Rediger Team"
+      delete_team: "Slet Team"
+      member_count: 
+        one: "%{count} medlem"
+        other: "%{count} medlemmer"
+    new:
+      title: "Opret Nyt Team"
+      subtitle: "Start et nyt team og inviter samarbejdspartnere"
+    edit:
+      title: "Rediger Team"
+      subtitle: "Opdater dit teams information"
+    form:
+      name_label: "Team Navn"
+      name_placeholder: "Indtast team navn"
+      slug_label: "URL Slug"
+      slug_help: "Dette vil blive brugt i URLs og genereres automatisk"
+      cancel: "Annuller"
+      create_team: "Opret Team"
+      update_team: "Opdater Team"
+      confirm_delete: "Er du sikker på at du vil slette dette team? Denne handling kan ikke fortrydes."
+    flash:
+      created: "Team oprettet med succes"
+      updated: "Team opdateret med succes"
+      deleted: "Team slettet med succes"
+      restored: "Team gendannet med succes"
+      not_authorized: "Du har ikke tilladelse til at udføre denne handling"
+
   # Flash messages
   flash:
     profile:
@@ -196,6 +235,9 @@ da:
   activerecord:
     models:
       user: "Bruger"
+      team: "Team"
+      membership: "Medlemskab"
+      invitation: "Invitation"
     attributes:
       user:
         display_name: "Visningsnavn"
@@ -206,6 +248,18 @@ da:
         auth0_sub: "Autentifikations-ID"
         created_at: "Oprettet"
         updated_at: "Opdateret"
+      team:
+        name: "Team navn"
+        slug: "URL slug"
+        created_at: "Oprettet"
+        updated_at: "Opdateret"
+      membership:
+        role: "Rolle"
+        created_at: "Tilmeldt"
+      invitation:
+        role: "Rolle"
+        expires_at: "Udløber"
+        created_at: "Sendt"
     errors:
       models:
         user:
@@ -228,6 +282,13 @@ da:
               content_type_mismatch: "filindholdet matcher ikke det forventede billedformat"
               processing_failed: "kunne ikke behandles"
               file_size_too_large: "skal være mindre end %{max_size}"
+        team:
+          attributes:
+            name:
+              blank: "kan ikke være blank"
+              too_long: "kan ikke være længere end 100 tegn"
+            slug:
+              taken: "er allerede taget"
 
   # Date and time formats
   date:

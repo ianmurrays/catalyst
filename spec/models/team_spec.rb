@@ -11,7 +11,7 @@ RSpec.describe Team, type: :model do
         create(:team, slug: "existing-team")
         team = build(:team, slug: "existing-team")
         expect(team).not_to be_valid
-        expect(team.errors[:slug]).to include("has already been taken")
+        expect(team.errors[:slug]).to include("is already taken")
       end
 
       it "allows same slug for deleted team" do

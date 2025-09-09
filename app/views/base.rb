@@ -17,6 +17,10 @@ class Views::Base < Components::Base
   register_value_helper :t
   register_value_helper :l
   register_value_helper :flash
+  register_value_helper :policy
+  register_value_helper :time_ago_in_words
+  register_value_helper :link_to
+  register_output_helper :link_to
 
   def around_template
     render layout.new(page_info) do

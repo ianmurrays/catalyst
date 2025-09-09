@@ -31,19 +31,19 @@ This checklist tracks the progress of implementing the teams feature across all 
 - [x] Add pundit_user method to ApplicationController
 
 ## Phase 3: Team Management
-- [ ] Create TeamsController
-  - [ ] index, show, new, create, edit, update, destroy actions
-  - [ ] Soft delete implementation
-- [ ] Create team views using Phlex
-  - [ ] Teams::Index view
-  - [ ] Teams::Show view
-  - [ ] Teams::New view
-  - [ ] Teams::Edit view
-  - [ ] Teams::Form component
-- [ ] Add team routes
-- [ ] Write controller specs
+- [x] Create TeamsController
+  - [x] index, show, new, create, edit, update, destroy actions
+  - [x] Soft delete implementation
+- [x] Create team views using Phlex
+  - [x] Teams::Index view
+  - [x] Teams::Show view
+  - [x] Teams::New view
+  - [x] Teams::Edit view
+  - [x] Teams::Form component
+- [x] Add team routes
+- [x] Write controller specs
 - [ ] Write request specs
-- [ ] Add i18n translations
+- [x] Add i18n translations
 
 ## Phase 4: Invitation System
 - [ ] Create InvitationsController

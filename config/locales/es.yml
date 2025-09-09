@@ -181,6 +181,45 @@ es:
           title: "Error de autenticación"
           description: "Ocurrió un error durante la autenticación. Inténtalo de nuevo o contacta soporte si el problema persiste."
 
+  # Teams
+  teams:
+    index:
+      title: "Mis Equipos"
+      subtitle: "Gestiona tus equipos y colaboraciones"
+      new_team: "Crear Nuevo Equipo"
+      empty_state: "Aún no perteneces a ningún equipo"
+      empty_description: "Crea tu primer equipo para comenzar a colaborar con otros"
+    show:
+      members: "Miembros del Equipo"
+      settings: "Configuración del Equipo"
+      invite_members: "Invitar Miembros"
+      edit_team: "Editar Equipo"
+      delete_team: "Eliminar Equipo"
+      member_count: 
+        one: "%{count} miembro"
+        other: "%{count} miembros"
+    new:
+      title: "Crear Nuevo Equipo"
+      subtitle: "Inicia un nuevo equipo e invita colaboradores"
+    edit:
+      title: "Editar Equipo"
+      subtitle: "Actualiza la información de tu equipo"
+    form:
+      name_label: "Nombre del Equipo"
+      name_placeholder: "Ingresa el nombre del equipo"
+      slug_label: "Slug de URL"
+      slug_help: "Esto se usará en las URLs y se genera automáticamente"
+      cancel: "Cancelar"
+      create_team: "Crear Equipo"
+      update_team: "Actualizar Equipo"
+      confirm_delete: "¿Estás seguro de que deseas eliminar este equipo? Esta acción no se puede deshacer."
+    flash:
+      created: "Equipo creado exitosamente"
+      updated: "Equipo actualizado exitosamente"
+      deleted: "Equipo eliminado exitosamente"
+      restored: "Equipo restaurado exitosamente"
+      not_authorized: "No tienes permiso para realizar esta acción"
+
   # Flash messages
   flash:
     profile:
@@ -196,6 +235,9 @@ es:
   activerecord:
     models:
       user: "Usuario"
+      team: "Equipo"
+      membership: "Membresía"
+      invitation: "Invitación"
     attributes:
       user:
         display_name: "Nombre a mostrar"
@@ -206,6 +248,18 @@ es:
         auth0_sub: "ID de autenticación"
         created_at: "Creado en"
         updated_at: "Actualizado en"
+      team:
+        name: "Nombre del equipo"
+        slug: "Slug de URL"
+        created_at: "Creado en"
+        updated_at: "Actualizado en"
+      membership:
+        role: "Rol"
+        created_at: "Se unió en"
+      invitation:
+        role: "Rol"
+        expires_at: "Expira en"
+        created_at: "Enviado en"
     errors:
       models:
         user:
@@ -228,6 +282,13 @@ es:
               content_type_mismatch: "el contenido del archivo no coincide con el formato de imagen esperado"
               processing_failed: "no se pudo procesar"
               file_size_too_large: "debe ser más pequeño que %{max_size}"
+        team:
+          attributes:
+            name:
+              blank: "no puede estar en blanco"
+              too_long: "no puede tener más de 100 caracteres"
+            slug:
+              taken: "ya está en uso"
 
   # Date and time formats
   date:

@@ -8,7 +8,7 @@ class TeamPolicy < ApplicationPolicy
 
   # show?: team members can view
   def show?
-    team_member?
+    logged_in? && record.has_member?(user)
   end
 
   # create?: check Rails.configuration.allow_team_creation
@@ -22,17 +22,22 @@ class TeamPolicy < ApplicationPolicy
 
   # update?: owners and admins only
   def update?
-    team_admin_or_owner?
+    logged_in? && (record.admin?(user) || record.owner?(user))
   end
 
   # destroy?: owners only
   def destroy?
-    team_owner?
+    logged_in? && record.owner?(user)
   end
 
   # switch?: team members only
   def switch?
-    team_member?
+    logged_in? && record.has_member?(user)
+  end
+
+  # restore?: owners only (for soft-deleted teams)
+  def restore?
+    logged_in? && record.owner?(user)
   end
 
   class Scope < ApplicationPolicy::Scope
