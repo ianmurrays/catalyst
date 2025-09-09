@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  # Audit all changes except sensitive fields
+  audited except: [ :auth0_sub, :updated_at, :created_at ]
+
   # Define preferences attribute with UserPreferences embedded model
   attribute :preferences, UserPreferences.to_type,
             default: -> { UserPreferences.new }

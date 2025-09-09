@@ -79,3 +79,6 @@ gem "rails-controller-testing", "~> 1.0", group: :test
 
 # StoreModel for embedded JSON models
 gem "store_model", "~> 2.3"
+
+# Audited for model change tracking
+gem "audited", "~> 5.7"
