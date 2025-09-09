@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_09_132838) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_09_175122) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -61,6 +61,45 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_132838) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.integer "team_id", null: false
+    t.string "token", null: false
+    t.integer "role", default: 2, null: false
+    t.datetime "expires_at"
+    t.integer "created_by_id", null: false
+    t.datetime "used_at"
+    t.integer "used_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_invitations_on_created_by_id"
+    t.index ["team_id", "expires_at"], name: "index_invitations_on_team_id_and_expires_at"
+    t.index ["team_id"], name: "index_invitations_on_team_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
+    t.index ["used_by_id"], name: "index_invitations_on_used_by_id"
+  end
+
+  create_table "memberships", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "team_id", null: false
+    t.integer "role", default: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id", "role"], name: "index_memberships_on_team_id_and_role"
+    t.index ["team_id"], name: "index_memberships_on_team_id"
+    t.index ["user_id", "team_id"], name: "index_memberships_on_user_id_and_team_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_teams_on_deleted_at"
+    t.index ["slug"], name: "index_teams_on_slug", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "auth0_sub", null: false
     t.string "display_name"
@@ -75,4 +114,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_132838) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "invitations", "teams"
+  add_foreign_key "invitations", "users", column: "created_by_id"
+  add_foreign_key "invitations", "users", column: "used_by_id"
+  add_foreign_key "memberships", "teams"
+  add_foreign_key "memberships", "users"
 end

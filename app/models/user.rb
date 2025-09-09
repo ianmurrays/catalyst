@@ -22,6 +22,11 @@ class User < ApplicationRecord
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :preferences, store_model: true
 
+  # Team associations
+  has_many :memberships, dependent: :destroy
+  has_many :teams, through: :memberships
+  has_many :created_invitations, class_name: 'Invitation', foreign_key: 'created_by_id', dependent: :destroy
+
   # Avatar validations
   validate :avatar_content_type_validation
   validate :avatar_size_validation
@@ -105,6 +110,35 @@ class User < ApplicationRecord
   # Keep available_languages for backward compatibility
   def available_languages
     LocaleService.language_options
+  end
+
+  # Team convenience methods
+  def owned_teams
+    teams.joins(:memberships).where(memberships: { user: self, role: :owner })
+  end
+
+  def admin_teams
+    teams.joins(:memberships).where(memberships: { user: self, role: [:owner, :admin] })
+  end
+
+  def member_of?(team)
+    return false unless team
+    memberships.exists?(team: team)
+  end
+
+  def role_in_team(team)
+    return nil unless team
+    memberships.find_by(team: team)&.role
+  end
+
+  def owner_of?(team)
+    return false unless team
+    memberships.exists?(team: team, role: :owner)
+  end
+
+  def admin_of?(team)
+    return false unless team
+    memberships.exists?(team: team, role: [:owner, :admin])
   end
 
   private
