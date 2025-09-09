@@ -15,11 +15,11 @@ The command follows this structured approach:
 
 ### Phase 0: Requirements Clarification
 - Ask clarifying questions about feature scope and boundaries
-- Only ask **one** question at a time
 - Understand user personas and use cases
 - Identify technical constraints and preferences
 - Define success criteria and acceptance tests
 - Clarify integration points with existing systems
+- Wait for the user to respond to the questions before continuing
 
 ### Phase 1: Discovery & Planning
 - Analyze existing codebase patterns and conventions

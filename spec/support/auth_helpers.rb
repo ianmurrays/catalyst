@@ -7,7 +7,7 @@ module AuthHelpers
       session[:userinfo] = {
         'email' => user.email,
         'name' => user.name,
-        'sub' => user.auth_provider_id || "auth0|#{SecureRandom.hex(12)}"
+        'sub' => user.auth0_sub || "auth0|#{SecureRandom.hex(12)}"
       }
     else
       # For request specs - we need to make a request that sets the session
@@ -18,7 +18,7 @@ module AuthHelpers
             "raw_info" => {
               "email" => user.email,
               "name" => user.name,
-              "sub" => user.auth_provider_id || "auth0|#{SecureRandom.hex(12)}"
+              "sub" => user.auth0_sub || "auth0|#{SecureRandom.hex(12)}"
             }
           }
         })
