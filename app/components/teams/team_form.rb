@@ -11,6 +11,13 @@ class Components::Teams::TeamForm < Components::Base
 
   def view_template
     render RubyUI::Card::Card.new do
+      render RubyUI::Card::CardHeader.new do
+        render RubyUI::Card::CardTitle.new { t("teams.form.basic_info.title") }
+        render RubyUI::Card::CardDescription.new do
+          t("teams.form.basic_info.description")
+        end
+      end
+
       render RubyUI::Card::CardContent.new do
         form_with(
           model: @team,
@@ -36,7 +43,7 @@ class Components::Teams::TeamForm < Components::Base
 
       # Team name field
       div do
-        label(class: "block text-sm font-medium text-gray-700 mb-1", for: "team_name") do
+        label(class: "block text-sm font-medium text-card-foreground mb-1", for: "team_name") do
           t("teams.form.name_label")
         end
 
@@ -50,7 +57,7 @@ class Components::Teams::TeamForm < Components::Base
         )
 
         if @team.errors[:name].any?
-          div(class: "mt-1 text-sm text-red-600") do
+          div(class: "mt-1 text-sm text-destructive") do
             @team.errors[:name].first
           end
         end
@@ -59,17 +66,17 @@ class Components::Teams::TeamForm < Components::Base
       # Auto-generated slug display
       if @team.persisted?
         div do
-          label(class: "block text-sm font-medium text-gray-700 mb-1") do
+          label(class: "block text-sm font-medium text-card-foreground mb-1") do
             t("teams.form.slug_label")
           end
 
           render RubyUI::Input::Input.new(
             value: @team.slug,
             disabled: true,
-            class: "bg-gray-50 text-gray-500"
+            class: "bg-muted text-muted-foreground"
           )
 
-          p(class: "mt-1 text-xs text-gray-500") do
+          p(class: "mt-1 text-xs text-muted-foreground") do
             t("teams.form.slug_help")
           end
         end
@@ -109,7 +116,7 @@ class Components::Teams::TeamForm < Components::Base
 
   def error_class_for(field)
     if @team.errors[field].any?
-      "border-red-500 focus:border-red-500 focus:ring-red-500"
+      "border-destructive focus:border-destructive focus:ring-destructive"
     else
       ""
     end

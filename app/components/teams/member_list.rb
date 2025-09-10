@@ -24,7 +24,7 @@ class Components::Teams::MemberList < Components::Base
   end
 
   def member_row(membership)
-    div(class: "flex items-center justify-between p-3 border border-gray-200 rounded-lg") do
+    div(class: "flex items-center justify-between p-3 border border-border rounded-lg") do
       div(class: "flex items-center gap-3") do
         member_avatar(membership.user)
         member_info(membership)
@@ -35,8 +35,14 @@ class Components::Teams::MemberList < Components::Base
   end
 
   def member_avatar(user)
-    div(class: "w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center") do
-      span(class: "text-white text-xs font-medium") do
+    render RubyUI::Avatar::Avatar.new(class: "w-8 h-8") do
+      if user.picture_url
+        render RubyUI::Avatar::AvatarImage.new(
+          src: user.picture_url,
+          alt: user.display_name
+        )
+      end
+      render RubyUI::Avatar::AvatarFallback.new do
         user.display_name[0..1].upcase
       end
     end
@@ -45,7 +51,7 @@ class Components::Teams::MemberList < Components::Base
   def member_info(membership)
     div do
       div(class: "flex items-center gap-2") do
-        span(class: "font-medium text-gray-900") { membership.user.display_name }
+        span(class: "font-medium text-card-foreground") { membership.user.display_name }
 
         render RubyUI::Badge::Badge.new(
           variant: badge_variant_for_role(membership.role),
@@ -55,9 +61,9 @@ class Components::Teams::MemberList < Components::Base
         end
       end
 
-      p(class: "text-sm text-gray-600") { membership.user.email }
+      p(class: "text-sm text-muted-foreground") { membership.user.email }
 
-      p(class: "text-xs text-gray-500") do
+      p(class: "text-xs text-muted-foreground") do
         "#{t('activerecord.attributes.membership.created_at')}: #{l(membership.created_at, format: :short)}"
       end
     end
@@ -73,17 +79,17 @@ class Components::Teams::MemberList < Components::Base
         render RubyUI::Button::Button.new(
           variant: :outline,
           size: :sm,
-          class: "text-red-600 hover:text-red-700 hover:bg-red-50"
+          class: "text-destructive hover:text-destructive hover:bg-destructive/10"
         ) do
-          "Remove"
+          t("common.buttons.remove")
         end
       end
     end
   end
 
   def empty_members_state
-    div(class: "text-center py-8 text-gray-500") do
-      p { "No members yet" }
+    div(class: "text-center py-8 text-muted-foreground") do
+      p { t("teams.members.empty_state") }
     end
   end
 

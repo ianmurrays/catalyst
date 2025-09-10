@@ -8,7 +8,7 @@ class Views::Teams::Show < Views::Base
   end
 
   def view_template
-    div(class: "container mx-auto px-4 py-8") do
+    div(class: "container mx-auto px-4 py-8 max-w-4xl") do
       header_section
       content_section
     end
@@ -17,15 +17,17 @@ class Views::Teams::Show < Views::Base
   private
 
   def header_section
-    div(class: "flex items-center justify-between mb-8") do
-      div do
-        h1(class: "text-3xl font-bold text-gray-900") { @team.name }
-        p(class: "text-gray-600 mt-1") do
-          t("teams.show.member_count", count: @team.memberships.count)
+    div(class: "bg-card border rounded-xl p-6 mb-6") do
+      div(class: "flex items-center justify-between") do
+        div do
+          h1(class: "text-2xl font-bold text-card-foreground") { @team.name }
+          p(class: "text-muted-foreground mt-1") do
+            t("teams.show.member_count", count: @team.memberships.count)
+          end
         end
-      end
 
-      actions_section if can_manage_team?
+        actions_section if can_manage_team?
+      end
     end
   end
 
@@ -53,14 +55,14 @@ class Views::Teams::Show < Views::Base
   end
 
   def content_section
-    div(class: "grid gap-8 lg:grid-cols-3") do
+    div(class: "grid grid-cols-1 lg:grid-cols-3 gap-6") do
       main_content
       sidebar_content
     end
   end
 
   def main_content
-    div(class: "lg:col-span-2 space-y-8") do
+    div(class: "lg:col-span-2 space-y-6") do
       team_info_section
       members_section
     end
@@ -76,19 +78,8 @@ class Views::Teams::Show < Views::Base
 
       render RubyUI::Card::CardContent.new do
         div(class: "space-y-4") do
-          div do
-            label(class: "block text-sm font-medium text-gray-700") do
-              t("teams.form.name_label")
-            end
-            p(class: "mt-1 text-sm text-gray-900") { @team.name }
-          end
-
-          div do
-            label(class: "block text-sm font-medium text-gray-700") do
-              t("teams.form.slug_label")
-            end
-            p(class: "mt-1 text-sm text-gray-600") { @team.slug }
-          end
+          team_field(t("teams.form.name_label"), @team.name)
+          team_field(t("teams.form.slug_label"), @team.slug)
         end
       end
     end
@@ -124,19 +115,11 @@ class Views::Teams::Show < Views::Base
       end
 
       render RubyUI::Card::CardContent.new do
-        div(class: "space-y-4 text-sm") do
-          div do
-            span(class: "font-medium") { t("activerecord.attributes.team.created_at") }
-            br
-            span(class: "text-gray-600") { l(@team.created_at, format: :long) }
-          end
+        div(class: "space-y-4") do
+          team_field(t("activerecord.attributes.team.created_at"), l(@team.created_at, format: :long))
 
           if @team.updated_at != @team.created_at
-            div do
-              span(class: "font-medium") { t("activerecord.attributes.team.updated_at") }
-              br
-              span(class: "text-gray-600") { l(@team.updated_at, format: :long) }
-            end
+            team_field(t("activerecord.attributes.team.updated_at"), l(@team.updated_at, format: :long))
           end
         end
       end
@@ -152,11 +135,11 @@ class Views::Teams::Show < Views::Base
       end
 
       render RubyUI::Card::CardContent.new do
-        div(class: "space-y-2 text-sm") do
+        div(class: "space-y-2") do
           @team.audits.order(created_at: :desc).limit(5).each do |audit|
-            div(class: "flex justify-between items-center py-2 border-b border-gray-100 last:border-0") do
-              span { audit.action.humanize }
-              span(class: "text-gray-500") { time_ago_in_words(audit.created_at) + " ago" }
+            div(class: "flex justify-between py-2 border-b border-border last:border-b-0") do
+              span(class: "text-sm font-medium") { audit.action.humanize }
+              span(class: "text-sm text-muted-foreground") { time_ago_in_words(audit.created_at) + " ago" }
             end
           end
         end
@@ -166,5 +149,12 @@ class Views::Teams::Show < Views::Base
 
   def can_manage_team?
     policy(@team).update? || policy(@team).destroy?
+  end
+
+  def team_field(label, value)
+    div(class: "flex justify-between py-2 border-b border-border last:border-b-0") do
+      span(class: "font-medium text-sm") { label }
+      span(class: "text-sm text-muted-foreground truncate ml-4") { value }
+    end
   end
 end

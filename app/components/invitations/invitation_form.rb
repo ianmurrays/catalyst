@@ -29,24 +29,36 @@ class Components::Invitations::InvitationForm < Components::Base
     div(class: "space-y-4") do
       # Role select
       div do
-        label(class: "block text-sm font-medium text-gray-700 mb-1", for: "invitation_role") do
+        label(class: "block text-sm font-medium text-card-foreground mb-1", for: "invitation_role") do
           t("invitations.new.role_label")
         end
 
-        select(
-          id: "invitation_role",
-          name: "invitation[role]",
-          class: "w-full rounded-md border border-gray-300 p-2"
-        ) do
-          available_roles.each do |value, label|
-            option(value: value, selected: @invitation.role.to_s == value) { label }
+        render RubyUI::Select::Select.new do
+          render RubyUI::Select::SelectInput.new(
+            id: "invitation_role",
+            name: "invitation[role]",
+            value: @invitation.role
+          )
+
+          render RubyUI::Select::SelectTrigger.new(class: "w-full") do
+            render RubyUI::Select::SelectValue.new(
+              placeholder: t("invitations.new.role_placeholder", default: "Select role")
+            )
+          end
+
+          render RubyUI::Select::SelectContent.new do
+            available_roles.each do |value, label|
+              render RubyUI::Select::SelectItem.new(value: value) do
+                label
+              end
+            end
           end
         end
       end
 
       # Expiration select
       div do
-        label(class: "block text-sm font-medium text-gray-700 mb-1", for: "invitation_expires_in") do
+        label(class: "block text-sm font-medium text-card-foreground mb-1", for: "invitation_expires_in") do
           t("invitations.new.expiration_label", default: "Expiration")
         end
 

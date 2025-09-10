@@ -205,6 +205,9 @@ da:
       title: "Rediger Team"
       subtitle: "Opdater dit teams information"
     form:
+      basic_info:
+        title: "Grundlæggende Information"
+        description: "Dine offentlige profiloplysninger"
       name_label: "Team Navn"
       name_placeholder: "Indtast team navn"
       slug_label: "URL Slug"

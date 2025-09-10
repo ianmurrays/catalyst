@@ -16,25 +16,22 @@ class Components::Teams::TeamCard < Components::Base
   private
 
   def card_content
-    render RubyUI::Card::CardHeader.new do
+    render RubyUI::Card::CardContent.new(class: "p-4") do
       div(class: "flex items-center justify-between") do
-        div(class: "flex items-center gap-3") do
+        div(class: "flex items-center gap-3 flex-1") do
           team_avatar
           team_info
+          team_stats
         end
 
         user_role_badge
       end
     end
-
-    render RubyUI::Card::CardContent.new do
-      team_stats
-    end
   end
 
   def team_avatar
-    div(class: "w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center") do
-      span(class: "text-white font-semibold") do
+    render RubyUI::Avatar::Avatar.new(class: "w-10 h-10") do
+      render RubyUI::Avatar::AvatarFallback.new do
         @team.name[0..1].upcase
       end
     end
@@ -42,8 +39,8 @@ class Components::Teams::TeamCard < Components::Base
 
   def team_info
     div do
-      h3(class: "font-semibold text-gray-900 text-lg") { @team.name }
-      p(class: "text-sm text-gray-600") do
+      h3(class: "font-semibold text-card-foreground text-lg") { @team.name }
+      p(class: "text-sm text-muted-foreground") do
         "@#{@team.slug}"
       end
     end
@@ -62,22 +59,18 @@ class Components::Teams::TeamCard < Components::Base
   end
 
   def team_stats
-    div(class: "flex items-center justify-between text-sm text-gray-600") do
-      div(class: "flex items-center gap-4") do
-        div(class: "flex items-center gap-1") do
-          # Users icon (using simple text for now)
-          span(class: "text-gray-400") { "👥" }
-          span do
-            t("teams.show.member_count", count: @team.memberships.count)
-          end
+    div(class: "flex items-center gap-4 text-sm text-muted-foreground ml-auto mr-4") do
+      div(class: "flex items-center gap-1") do
+        span(class: "text-muted-foreground") { "Members:" }
+        span do
+          @team.memberships.count.to_s
         end
+      end
 
-        div(class: "flex items-center gap-1") do
-          # Calendar icon
-          span(class: "text-gray-400") { "📅" }
-          span do
-            time_ago_in_words(@team.created_at) + " ago"
-          end
+      div(class: "flex items-center gap-1") do
+        span(class: "text-muted-foreground") { "Created:" }
+        span do
+          time_ago_in_words(@team.created_at) + " ago"
         end
       end
     end

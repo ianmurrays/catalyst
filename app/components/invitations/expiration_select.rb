@@ -8,13 +8,25 @@ class Components::Invitations::ExpirationSelect < Components::Base
   end
 
   def view_template
-    select(
-      id: @id,
-      name: @name,
-      class: "w-full rounded-md border border-gray-300 p-2"
-    ) do
-      options.each do |value, label|
-        option(value: value, selected: value == @selected) { label }
+    render RubyUI::Select::Select.new do
+      render RubyUI::Select::SelectInput.new(
+        id: @id,
+        name: @name,
+        value: @selected
+      )
+
+      render RubyUI::Select::SelectTrigger.new(class: "w-full") do
+        render RubyUI::Select::SelectValue.new(
+          placeholder: t("invitations.new.expiration_placeholder", default: "Select expiration")
+        )
+      end
+
+      render RubyUI::Select::SelectContent.new do
+        options.each do |value, label|
+          render RubyUI::Select::SelectItem.new(value: value) do
+            label
+          end
+        end
       end
     end
   end

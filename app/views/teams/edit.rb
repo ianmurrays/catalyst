@@ -8,23 +8,15 @@ class Views::Teams::Edit < Views::Base
   end
 
   def view_template
-    div(class: "container mx-auto px-4 py-8") do
-      header_section
+    div(class: "container mx-auto px-4 py-8 max-w-4xl") do
       form_section
     end
   end
 
   private
 
-  def header_section
-    div(class: "mb-8") do
-      h1(class: "text-3xl font-bold text-gray-900") { t("teams.edit.title") }
-      p(class: "text-gray-600 mt-1") { t("teams.edit.subtitle") }
-    end
-  end
-
   def form_section
-    div(class: "max-w-2xl") do
+    div(class: "max-w-2xl mx-auto") do
       render Components::Teams::TeamForm.new(
         team: @team,
         url: team_path(@team),

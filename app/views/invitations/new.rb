@@ -12,7 +12,7 @@ class Views::Invitations::New < Views::Base
   end
 
   def view_template
-    div(class: "container mx-auto px-4 py-8") do
+    div(class: "container mx-auto px-4 py-8 max-w-4xl") do
       header_section
       content_section
     end
@@ -21,9 +21,9 @@ class Views::Invitations::New < Views::Base
   private
 
   def header_section
-    div(class: "mb-8") do
-      h1(class: "text-3xl font-bold text-gray-900") { t("invitations.new.title") }
-      p(class: "text-gray-600 mt-1") { t("invitations.new.subtitle", default: "Invite new members to join your team") }
+    div(class: "bg-card border rounded-xl p-6 mb-6") do
+      h1(class: "text-2xl font-bold text-card-foreground") { t("invitations.new.title") }
+      p(class: "text-muted-foreground mt-1") { t("invitations.new.subtitle", default: "Invite new members to join your team") }
     end
   end
 
@@ -45,8 +45,8 @@ class Views::Invitations::New < Views::Base
         )
 
         if @generated_url.present?
-          div(class: "mt-6 border-t pt-6") do
-            h2(class: "text-lg font-semibold mb-2") { t("invitations.new.share_title", default: "Share this link") }
+          div(class: "mt-6 border-t border-border pt-6") do
+            h2(class: "text-lg font-semibold text-card-foreground mb-2") { t("invitations.new.share_title", default: "Share this link") }
             render Components::Invitations::ShareLink.new(url: @generated_url)
           end
         end

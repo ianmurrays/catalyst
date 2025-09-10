@@ -207,6 +207,9 @@ en:
       title: "Edit Team"
       subtitle: "Update your team information"
     form:
+      basic_info:
+        title: "Basic Information"
+        description: "Your public profile information"
       name_label: "Team Name"
       name_placeholder: "Enter team name"
       slug_label: "URL Slug"
