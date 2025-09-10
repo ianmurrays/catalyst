@@ -46,17 +46,17 @@ This checklist tracks the progress of implementing the teams feature across all 
 - [x] Add i18n translations
 
 ## Phase 4: Invitation System
-- [ ] Create InvitationsController
-  - [ ] new, create, accept actions
-- [ ] Create invitation views
-  - [ ] Invitations::New view
-  - [ ] Invitations::Accept view
-- [ ] Add invitation routes with token parameter
-- [ ] Implement invitation acceptance flow
-- [ ] Add invitation expiration options (1 hour, 1 day, 3 days, 1 week, never)
-- [ ] Create invitation link generation service
-- [ ] Write controller and service specs
-- [ ] Add i18n translations
+- [x] Create InvitationsController
+  - [x] new, create, accept actions
+- [x] Create invitation views
+  - [x] Invitations::New view
+  - [x] Invitations::Accept view
+- [x] Add invitation routes with token parameter
+- [x] Implement invitation acceptance flow
+- [x] Add invitation expiration options (1 hour, 1 day, 3 days, 1 week, never)
+- [x] Create invitation link generation service
+- [x] Write controller and service specs
+- [x] Add i18n translations
 
 ## Phase 5: Team Context & Switching
 - [ ] Add current_team to ApplicationController

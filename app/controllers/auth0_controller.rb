@@ -13,9 +13,14 @@ class Auth0Controller < ApplicationController
       # Only set session if user creation succeeds
       session[:userinfo] = raw_info
 
-      # Redirect to the URL they were trying to access or home
-      redirect_url = session.delete(:return_to) || "/"
-      redirect_to redirect_url
+      # If an invitation token was captured pre-login, complete the invitation flow
+      if (invitation_token = session.delete(:invitation_token)).present?
+        redirect_to accept_invitation_path(token: invitation_token)
+      else
+        # Otherwise, redirect to the URL they were trying to access or home
+        redirect_url = session.delete(:return_to) || "/"
+        redirect_to redirect_url
+      end
     rescue ArgumentError => e
       # Email is missing from provider
       Rails.logger.error "Authentication failed: #{e.message}"
@@ -38,6 +43,10 @@ class Auth0Controller < ApplicationController
   def logout
     reset_session
     redirect_to logout_url, allow_other_host: true
+  end
+
+  def login
+    render Views::Auth0::Login.new
   end
 
   private

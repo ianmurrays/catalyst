@@ -301,7 +301,7 @@ RSpec.describe TeamsController, type: :controller do
 
     it "redirects to authentication provider when not logged in" do
       get :index
-      expect(response).to redirect_to("/auth/auth0")
+      expect(response).to redirect_to("/login")
     end
   end
 

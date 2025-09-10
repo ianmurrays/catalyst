@@ -1,0 +1,39 @@
+en:
+  common:
+    labels:
+      actions: "Actions"
+  invitations:
+    new:
+      title: "Invite Team Members"
+      subtitle: "Invite new members to join your team"
+      role_label: "Role"
+      expiration_label: "Expiration"
+      generate_button: "Generate Invitation Link"
+      share_title: "Share this link"
+      share_link_label: "Invitation Link"
+      copy_link_button: "Copy link"
+      expiration_1h: "1 hour"
+      expiration_1d: "1 day"
+      expiration_3d: "3 days"
+      expiration_1w: "1 week"
+      expiration_never: "Never"
+    index:
+      title: "Team Invitations"
+      active_tab: "Active"
+      used_tab: "Used"
+      created_by: "Created By"
+      status: "Status"
+      empty_state: "No invitations found."
+      revoke_confirm: "Are you sure you want to revoke this invitation?"
+    status:
+      used: "Used"
+      expired: "Expired"
+      never_expires: "Never Expires"
+      expires_in: "Expires %{time}"
+    flash:
+      created: "Invitation created successfully"
+      accepted: "You've joined the team!"
+      already_member: "You're already a member of this team"
+      expired: "This invitation has expired."
+      already_used: "This invitation link has already been used."
+      revoked: "Invitation revoked."

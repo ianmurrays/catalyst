@@ -10,7 +10,7 @@ module Secured
   def require_authentication
     unless logged_in?
       session[:return_to] = request.fullpath
-      redirect_to "/auth/auth0", allow_other_host: true
+      redirect_to login_path
     end
   end
 end

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get "/auth/auth0/callback" => "auth0#callback"
   get "/auth/failure" => "auth0#failure"
   delete "/auth/logout" => "auth0#logout"
+  get "/login" => "auth0#login", as: :login
 
   # Profile
   get "/profile" => "profile#show", as: :profile
@@ -24,7 +25,13 @@ Rails.application.routes.draw do
     member do
       patch :restore  # For undeleting soft-deleted teams
     end
+
+    # Invitations (Phase 4)
+    resources :invitations, only: [ :index, :new, :create, :destroy ]
   end
+
+  # Public invitation acceptance route
+  get "invitations/:token", to: "invitations#accept", as: :accept_invitation
 
   # Defines the root path route ("/")
   root "pages#home"

@@ -60,6 +60,15 @@ RSpec.describe Auth0Controller, type: :controller do
         end
       end
 
+      context "when an invitation token is present in session" do
+        it "redirects to the invitation acceptance path and clears the token" do
+          session[:invitation_token] = "rawtoken123"
+          post :callback
+          expect(response).to redirect_to(accept_invitation_path(token: "rawtoken123"))
+          expect(session[:invitation_token]).to be_nil
+        end
+      end
+
       context "when user already exists" do
         let!(:existing_user) { create(:user, auth0_sub: "auth0|123456789") }
 

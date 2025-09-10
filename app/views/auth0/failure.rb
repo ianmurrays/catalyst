@@ -90,7 +90,7 @@ class Views::Auth0::Failure < Views::Base
 
   def action_buttons
     div(class: "flex flex-col gap-3") do
-      link_to "/auth/auth0", class: "w-full" do
+      link_to login_path, class: "w-full" do
         render RubyUI::Button::Button.new(class: "w-full") do
           "Try Again"
         end

@@ -35,6 +35,13 @@ class Views::Teams::Show < Views::Base
         link_to t("teams.show.edit_team"), edit_team_path(@team)
       end
 
+      # Invite Members (owners/admins)
+      if policy(@team).update?
+        render RubyUI::Button::Button.new(variant: :primary) do
+          link_to t("teams.show.invite_members"), new_team_invitation_path(@team)
+        end
+      end
+
       if policy(@team).destroy?
         render RubyUI::Button::Button.new(variant: :destructive) do
           link_to t("teams.show.delete_team"), team_path(@team),
