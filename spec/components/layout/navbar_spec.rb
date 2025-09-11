@@ -81,7 +81,16 @@ RSpec.describe Components::Layout::Navbar do
 
     context "when user is logged in" do
       let(:mock_user) { create(:user, display_name: "John Doe", email: "john@example.com") }
-      let(:html) { render_with_view_context(described_class.new, user: mock_user) }
+      let(:component) do
+        comp = described_class.new
+        allow(comp).to receive(:current_user).and_return(mock_user)
+        allow(comp).to receive(:logged_in?).and_return(true)
+        allow(comp).to receive(:user_has_teams?).and_return(false)
+        allow(comp).to receive(:current_team).and_return(nil)
+        allow(comp).to receive(:form_authenticity_token).and_return("test-token")
+        comp
+      end
+      let(:html) { render_with_view_context(component) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "shows user greeting with name" do
@@ -205,7 +214,16 @@ RSpec.describe Components::Layout::Navbar do
 
     context "when logged in" do
       let(:mock_user) { create(:user, display_name: "John Doe") }
-      let(:html) { render_with_view_context(described_class.new, user: mock_user) }
+      let(:component) do
+        comp = described_class.new
+        allow(comp).to receive(:current_user).and_return(mock_user)
+        allow(comp).to receive(:logged_in?).and_return(true)
+        allow(comp).to receive(:user_has_teams?).and_return(false)
+        allow(comp).to receive(:current_team).and_return(nil)
+        allow(comp).to receive(:form_authenticity_token).and_return("test-token")
+        comp
+      end
+      let(:html) { render_with_view_context(component) }
       let(:doc) { Nokogiri::HTML5(html) }
 
       it "uses ghost variant for profile button" do
@@ -345,7 +363,16 @@ RSpec.describe Components::Layout::Navbar do
 
       context "when user is logged in" do
         let(:mock_user) { create(:user, display_name: "John Doe", email: "john@example.com") }
-        let(:html) { render_with_view_context(described_class.new, user: mock_user) }
+        let(:component) do
+          comp = described_class.new
+          allow(comp).to receive(:current_user).and_return(mock_user)
+          allow(comp).to receive(:logged_in?).and_return(true)
+          allow(comp).to receive(:user_has_teams?).and_return(false)
+          allow(comp).to receive(:current_team).and_return(nil)
+          allow(comp).to receive(:form_authenticity_token).and_return("test-token")
+          comp
+        end
+        let(:html) { render_with_view_context(component) }
         let(:doc) { Nokogiri::HTML5(html) }
 
         it "mobile menu shows user greeting" do

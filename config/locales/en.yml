@@ -187,6 +187,12 @@ en:
   # Teams
   teams:
     no_team: "No team selected"
+    select_team: "Select a team"
+    no_teams_available: "No teams available"
+    roles:
+      owner: "Owner"
+      admin: "Admin"
+      member: "Member"
     actions:
       switch: "Switch Team"
       switching: "Switching..."

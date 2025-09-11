@@ -4,6 +4,8 @@ class Components::Layout::Navbar < Components::Base
   register_value_helper :current_user
   register_value_helper :logged_in?
   register_value_helper :form_authenticity_token
+  register_value_helper :current_team
+  register_value_helper :user_has_teams?
 
   def view_template
     header(class: "sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-2xl backdrop-saturate-200 block") do
@@ -58,6 +60,9 @@ class Components::Layout::Navbar < Components::Base
         end
         span(class: "text-muted-foreground hidden sm:inline") { t("navigation.greeting", name: current_user.name) }
       end
+
+      # Team switcher (if user has teams)
+      team_switcher_section
 
       a(href: "/profile", class: "inline-flex") do
         render RubyUI::Button::Button.new(variant: :ghost, size: :md) do
@@ -177,6 +182,28 @@ class Components::Layout::Navbar < Components::Base
       render RubyUI::Button::Button.new(type: :submit, variant: :outline, size: :md, class: "w-full justify-start") do
         t("navigation.login")
       end
+    end
+  end
+
+  def team_switcher_section
+    # Defensive check - only show if methods are available and user has teams
+    begin
+      return unless user_has_teams?
+      return unless current_user.respond_to?(:teams) && current_user.teams.exists?
+
+      # Only show on desktop for now
+      div(class: "hidden md:block") do
+        render Components::Teams::TeamSwitcher.new(
+          current_team: current_team,
+          available_teams: current_user.teams,
+          show_role_badges: false,
+          mobile: false,
+          size: :sm
+        )
+      end
+    rescue NoMethodError
+      # Method not available in this context, silently skip
+      nil
     end
   end
 end
