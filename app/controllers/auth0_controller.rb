@@ -18,10 +18,15 @@ class Auth0Controller < ApplicationController
       # If an invitation token was captured pre-login, complete the invitation flow
       if (invitation_token = session.delete(:invitation_token)).present?
         redirect_to accept_invitation_path(token: invitation_token)
+      elsif (return_url = session.delete(:return_to)).present?
+        # User was trying to access a specific URL, redirect there
+        redirect_to return_url
+      elsif current_user.teams.empty?
+        # User has no teams, redirect to onboarding (Phase 6)
+        redirect_to onboarding_path
       else
-        # Otherwise, redirect to the URL they were trying to access or home
-        redirect_url = session.delete(:return_to) || "/"
-        redirect_to redirect_url
+        # Default to home
+        redirect_to "/"
       end
     rescue ArgumentError => e
       # Email is missing from provider

@@ -248,6 +248,26 @@ en:
       restored: "Team restored successfully"
       not_authorized: "You don't have permission to perform this action"
 
+  # Onboarding (Phase 6)
+  onboarding:
+    welcome:
+      title: "Welcome to %{app_name}, %{name}!"
+      subtitle: "Let's get you set up with a team"
+    create_team:
+      heading: "Create Your First Team"
+      description: "Teams help you collaborate and organize your work"
+      button: "Create Team"
+      skip: "I'll do this later"
+    waiting:
+      title: "Waiting for Invitation"
+      message: "You need to be invited to a team to continue"
+      contact: "Please contact your administrator"
+      check_again: "Check Again"
+    team_creation_disabled: "Team creation is currently disabled"
+    flash:
+      team_created: "Team created! Welcome aboard!"
+      invitation_accepted: "You've joined the team!"
+
   # Flash messages
   flash:
     profile:

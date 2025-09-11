@@ -43,6 +43,9 @@ module Catalyst
     config.i18n.default_locale = :en
     config.i18n.fallbacks = true
 
+    # Teams configuration
+    config.allow_team_creation = true
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

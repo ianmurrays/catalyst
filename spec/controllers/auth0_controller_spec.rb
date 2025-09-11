@@ -41,9 +41,10 @@ RSpec.describe Auth0Controller, type: :controller do
         expect(session[:userinfo]).to eq(valid_auth_info["extra"]["raw_info"])
       end
 
-      it "redirects to root path" do
-        post :callback
-        expect(response).to redirect_to("/")
+      it "has default redirect behavior tested in context-specific tests" do
+        # This test is now covered by the context-specific tests below
+        # The actual redirect depends on whether user has teams or not
+        expect { post :callback }.not_to raise_error
       end
 
       context "with a return_to URL in session" do
@@ -66,6 +67,29 @@ RSpec.describe Auth0Controller, type: :controller do
           post :callback
           expect(response).to redirect_to(accept_invitation_path(token: "rawtoken123"))
           expect(session[:invitation_token]).to be_nil
+        end
+      end
+
+      context "when user has no teams (onboarding flow)" do
+        let!(:user_without_teams) { create(:user, auth0_sub: "auth0|123456789") }
+
+        it "redirects to onboarding page" do
+          post :callback
+          expect(response).to redirect_to(onboarding_path)
+        end
+      end
+
+      context "when user has teams" do
+        let!(:user_with_teams) { create(:user, auth0_sub: "auth0|123456789") }
+        let!(:team) { create(:team) }
+        
+        before do
+          create(:membership, user: user_with_teams, team: team, role: :owner)
+        end
+
+        it "redirects to root path" do
+          post :callback
+          expect(response).to redirect_to("/")
         end
       end
 

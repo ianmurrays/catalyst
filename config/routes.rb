@@ -37,6 +37,10 @@ Rails.application.routes.draw do
   post "teams/switch/:team_id", to: "team_switch#update", as: :switch_team,
        constraints: { team_id: /\d+/ }
 
+  # Onboarding (Phase 6)
+  get "onboarding", to: "onboarding#show"
+  post "onboarding/create_team", to: "onboarding#create_team"
+
   # Defines the root path route ("/")
   root "pages#home"
 end
