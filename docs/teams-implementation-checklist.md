@@ -59,14 +59,14 @@ This checklist tracks the progress of implementing the teams feature across all 
 - [x] Add i18n translations
 
 ## Phase 5: Team Context & Switching
-- [ ] Add current_team to ApplicationController
-- [ ] Implement team selection storage (session + cookie)
-- [ ] Create TeamSelector concern
-- [ ] Add set_current_team before_action
-- [ ] Create team switching endpoint
-- [ ] Update TeamPolicy for switching permissions
-- [ ] Write specs for team context
-- [ ] Test cookie persistence across sessions
+- [x] Add current_team to ApplicationController
+- [x] Implement team selection storage (session + cookie)
+- [x] Create TeamSelector concern
+- [x] Add set_current_team before_action
+- [x] Create team switching endpoint
+- [x] Update TeamPolicy for switching permissions
+- [x] Write specs for team context
+- [x] Test cookie persistence across sessions
 
 ## Phase 6: Onboarding Flow
 - [ ] Create OnboardingController

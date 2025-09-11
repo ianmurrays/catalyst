@@ -9,6 +9,9 @@ class ApplicationController < ActionController::Base
   include I18nProvider
   include Pundit::Authorization
 
+  before_action :set_current_team
+  helper_method :current_team
+
   # Define pundit_user to include current team context
   def pundit_user
     UserContext.new(current_user, current_team)
@@ -19,9 +22,43 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Placeholder for current team - will be implemented in Phase 5
+  # Current team for this request
   def current_team
-    nil
+    @current_team
+  end
+
+  # Resolve and persist current team context
+  def set_current_team
+    return unless logged_in?
+
+    # Try session first
+    if session[:current_team_id]
+      @current_team = current_user.teams.find_by(id: session[:current_team_id])
+    end
+
+    # Try cookie if no session match
+    if @current_team.nil? && cookies.encrypted[:last_team_id]
+      @current_team = current_user.teams.find_by(id: cookies.encrypted[:last_team_id])
+    end
+
+    # Fallback: support plain cookie jar (e.g., request specs)
+    if @current_team.nil? && cookies[:last_team_id]
+      @current_team = current_user.teams.find_by(id: cookies[:last_team_id])
+    end
+
+    # Default to first available team
+    @current_team ||= current_user.teams.first
+
+    # Update session with resolved team id (or nil)
+    session[:current_team_id] = @current_team&.id
+  end
+
+  # Require a current team for team-scoped areas
+  # Phase 6 will introduce proper onboarding; until then, redirect to teams listing.
+  def require_team
+    unless current_team
+      redirect_to teams_path
+    end
   end
 
   def user_not_authorized

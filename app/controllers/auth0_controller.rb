@@ -1,4 +1,6 @@
 class Auth0Controller < ApplicationController
+  skip_before_action :set_current_team
+
   def callback
     # OmniAuth stores the information returned from Auth0 and the IdP in request.env['omniauth.auth'].
     # In this code, you will pull the raw_info supplied from the id_token and assign it to the session.
@@ -41,6 +43,7 @@ class Auth0Controller < ApplicationController
   end
 
   def logout
+    cookies.delete(:last_team_id)
     reset_session
     redirect_to logout_url, allow_other_host: true
   end
