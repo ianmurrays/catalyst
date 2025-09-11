@@ -43,8 +43,10 @@ class Auth0Controller < ApplicationController
   end
 
   def logout
-    cookies.delete(:last_team_id)
-    reset_session
+    # Keep cookie preference for next login (per Phase 5 requirements)
+    # Only clear session, not the persistent team preference
+    session.delete(:userinfo)
+    session.delete(:current_team_id)
     redirect_to logout_url, allow_other_host: true
   end
 

@@ -61,7 +61,7 @@ RSpec.describe "Team Context", type: :request do
   end
 
   describe "cookie persistence and logout behavior" do
-    it "sets last_team_id cookie on switch, and clears it on logout" do
+    it "sets last_team_id cookie on switch, and preserves it on logout" do
       login
 
       post switch_team_path(team_id: team_a.id)
@@ -70,8 +70,8 @@ RSpec.describe "Team Context", type: :request do
       delete "/auth/logout"
       expect(response).to redirect_to(%r{\Ahttps://}) # external logout
 
-      # last_team cookie cleared for security (session fixation mitigation)
-      expect(cookies[:last_team_id]).to be_blank
+      # Per Phase 5 requirements: keep cookie preference for next login
+      expect(cookies[:last_team_id]).to be_present
     end
   end
 

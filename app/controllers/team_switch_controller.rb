@@ -8,14 +8,9 @@ class TeamSwitchController < ApplicationController
     team = Team.find(params[:team_id])
     authorize team, :switch?
 
-    # Update session and persistent cookie
+    # Update session and persistent cookie using consistent method
     session[:current_team_id] = team.id
-    cookies.encrypted[:last_team_id] = {
-      value: team.id,
-      expires: 1.year.from_now,
-      httponly: true,
-      secure: Rails.env.production?
-    }
+    store_team_preference(team)
 
     # Clear any cached Pundit user context per Pundit docs
     pundit_reset!

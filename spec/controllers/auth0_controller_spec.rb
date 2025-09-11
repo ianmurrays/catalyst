@@ -165,15 +165,23 @@ RSpec.describe Auth0Controller, type: :controller do
   end
 
   describe "#logout" do
+    let(:team) { create(:team) }
+
     before do
       session[:userinfo] = { "sub" => "auth0|123456789" }
-      session[:test_data] = "should be cleared"
+      session[:current_team_id] = team.id
+      cookies.encrypted[:last_team_id] = team.id
     end
 
-    it "resets the session" do
+    it "clears userinfo and current_team_id from session" do
       post :logout
       expect(session[:userinfo]).to be_nil
-      expect(session[:test_data]).to be_nil
+      expect(session[:current_team_id]).to be_nil
+    end
+
+    it "preserves team preference cookie for next login" do
+      post :logout
+      expect(cookies.encrypted[:last_team_id]).to eq(team.id)
     end
 
     it "redirects to Auth0 logout URL" do

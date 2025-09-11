@@ -37,6 +37,12 @@ RSpec.describe TeamSwitchController, type: :controller do
       expect(response).to redirect_to("/previous")
     end
 
+    it "uses consistent cookie settings via store_team_preference method" do
+      post :update, params: { team_id: team_a.id }
+
+      expect(cookies.encrypted[:last_team_id]).to eq(team_a.id)
+    end
+
     it "redirects to team path when no referrer" do
       post :update, params: { team_id: team_a.id }
 
