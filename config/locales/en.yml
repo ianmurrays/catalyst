@@ -14,6 +14,7 @@ en:
     login: "Login"
     logout: "Logout"
     greeting: "Hello, %{name}"
+    teams: "Teams"
 
   # Common UI elements
   common:
@@ -186,6 +187,8 @@ en:
   # Teams
   teams:
     no_team: "No team selected"
+    errors:
+      no_team_selected: "You must select a team to access this area"
     index:
       title: "My Teams"
       subtitle: "Manage your teams and collaborations"
