@@ -5,6 +5,9 @@ class ApplicationController < ActionController::Base
   # Disable Rails layouts - Phlex handles all layout rendering
   layout false
 
+  # Basic security measures
+  protect_from_forgery with: :exception
+
   include AuthProvider
   include I18nProvider
   include Pundit::Authorization

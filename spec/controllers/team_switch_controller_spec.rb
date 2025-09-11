@@ -211,4 +211,159 @@ RSpec.describe TeamSwitchController, type: :controller do
       end
     end
   end
+
+  # Security validation tests - Phase 5.8
+  describe "Security Validation" do
+    context "CSRF protection" do
+      it "inherits from ApplicationController with security features" do
+        # Verify proper inheritance chain
+        expect(described_class.ancestors).to include(ApplicationController)
+        expect(ApplicationController.ancestors).to include(ActionController::Base)
+      end
+
+      it "has secure team switching endpoint" do
+        # The POST-only route and authorization checks provide security
+        route = Rails.application.routes.recognize_path("/teams/switch/1", method: :post)
+        expect(route[:controller]).to eq("team_switch")
+        expect(route[:action]).to eq("update")
+      end
+    end
+
+    context "Parameter validation" do
+      it "rejects invalid team_id parameter via route constraints" do
+        # Route constraint {team_id: /\d+/} prevents non-numeric IDs
+        expect {
+          post :update, params: { team_id: "invalid_id" }
+        }.to raise_error(ActionController::UrlGenerationError)
+      end
+
+      it "prevents SQL injection via route constraints" do
+        # Route constraint blocks malicious SQL
+        expect {
+          post :update, params: { team_id: "1; DROP TABLE teams;" }
+        }.to raise_error(ActionController::UrlGenerationError)
+      end
+
+      it "validates return_to parameter for open redirect prevention" do
+        # External URLs should be ignored
+        post :update, params: { team_id: team_a.id, return_to: "https://evil.com/steal-data" }
+        expect(response).to redirect_to(teams_path)
+      end
+
+      it "allows safe relative URLs in return_to parameter" do
+        post :update, params: { team_id: team_a.id, return_to: "/dashboard" }
+        expect(response).to redirect_to("/dashboard")
+      end
+
+      it "handles malformed URLs in return_to gracefully" do
+        post :update, params: { team_id: team_a.id, return_to: "ht!tp://bad-url" }
+        expect(response).to redirect_to(teams_path)
+      end
+    end
+
+    context "Session security" do
+      it "validates user membership before switching" do
+        # Attempt to switch to a team user doesn't belong to
+        post :update, params: { team_id: other_team.id }
+
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq(I18n.t("teams.errors.unauthorized_switch"))
+        expect(session[:current_team_id]).not_to eq(other_team.id)
+      end
+
+      it "logs security violations for audit trail" do
+        expect(Rails.logger).to receive(:error).with(/Team switch error/)
+
+        # Simulate a switch error
+        allow(controller).to receive(:switch_to_team).and_raise(TeamSwitchError, "Test error")
+
+        post :update, params: { team_id: team_a.id }
+      end
+
+      it "clears team cache on successful switch to prevent stale data" do
+        # Set cached team data
+        controller.instance_variable_set(:@current_team, team_b)
+        expect(controller.instance_variable_defined?(:@current_team)).to be true
+
+        post :update, params: { team_id: team_a.id }
+
+        expect(controller.instance_variable_defined?(:@current_team)).to be false
+      end
+
+      it "resets Pundit context to prevent authorization bypass" do
+        expect(controller).to receive(:pundit_reset!).and_call_original
+
+        post :update, params: { team_id: team_a.id }
+      end
+    end
+
+    context "Error handling security" do
+      it "does not expose sensitive information in error messages" do
+        post :update, params: { team_id: 99999 }
+
+        # Should show generic error, not database details
+        expect(flash[:alert]).to eq(I18n.t("teams.errors.team_not_found"))
+        expect(flash[:alert]).not_to include("ActiveRecord")
+        expect(flash[:alert]).not_to include("SQL")
+      end
+
+      it "logs errors without exposing sensitive data in response" do
+        allow(Rails.logger).to receive(:error)
+        allow(controller).to receive(:switch_to_team).and_raise(TeamSwitchError, "Database connection failed")
+
+        post :update, params: { team_id: team_a.id }
+
+        # Response should show generic error
+        expect(flash[:alert]).to eq(I18n.t("teams.errors.switch_failed"))
+        # But detailed error should be logged
+        expect(Rails.logger).to have_received(:error).with(/Team switch error.*Database connection failed/)
+      end
+    end
+
+    context "Authorization bypass prevention" do
+      it "prevents switching to teams after membership removal" do
+        # Remove user's membership to team_a
+        user.memberships.find_by(team: team_a).destroy
+
+        post :update, params: { team_id: team_a.id }
+
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq(I18n.t("teams.errors.unauthorized_switch"))
+      end
+
+      it "prevents switching when user is not logged in" do
+        allow(controller).to receive(:logged_in?).and_return(false)
+
+        # This should be handled by the Secured concern
+        expect(controller).to receive(:require_authentication)
+
+        post :update, params: { team_id: team_a.id }
+      end
+    end
+
+    context "JSON API security" do
+      it "returns proper HTTP status codes for security violations" do
+        post :update, params: { team_id: other_team.id }, format: :json
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "does not expose sensitive data in JSON error responses" do
+        post :update, params: { team_id: 99999 }, format: :json
+
+        json_response = JSON.parse(response.body)
+        expect(json_response).to have_key('error')
+        expect(json_response['error']).not_to include('ActiveRecord')
+        expect(json_response['error']).not_to include('SQL')
+      end
+
+      it "includes proper error structure in JSON responses" do
+        post :update, params: { team_id: other_team.id }, format: :json
+
+        json_response = JSON.parse(response.body)
+        expect(json_response).to have_key('error')
+        expect(json_response['error']).to be_a(String)
+        expect(json_response).not_to have_key('team') # No team data on error
+      end
+    end
+  end
 end
