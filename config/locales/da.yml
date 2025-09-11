@@ -183,6 +183,22 @@ da:
 
   # Teams
   teams:
+    no_team: "Intet team valgt"
+    actions:
+      switch: "Skift Team"
+      switching: "Skifter..."
+    messages:
+      switched_to: "Skiftet til %{team_name}"
+      current_team: "Nuværende team: %{team_name}"
+      no_team_selected: "Intet team valgt"
+    errors:
+      team_not_found: "Team ikke fundet eller eksisterer ikke længere"
+      unauthorized_switch: "Du har ikke adgang til det team"
+      switch_failed: "Kunne ikke skifte team. Prøv igen."
+      no_teams: "Du er ikke medlem af nogen teams endnu"
+      no_team_selected: "Du skal vælge et team for at få adgang til dette område"
+    notifications:
+      switch_success: "Skiftet til %{team_name} med succes"
     index:
       title: "Mine Teams"
       subtitle: "Administrer dine teams og samarbejde"

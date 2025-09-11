@@ -14,6 +14,7 @@ es:
     login: "Iniciar sesión"
     logout: "Cerrar sesión"
     greeting: "Hola, %{name}"
+    teams: "Equipos"
     
   # Common UI elements
   common:
@@ -183,6 +184,22 @@ es:
 
   # Teams
   teams:
+    no_team: "Ningún equipo seleccionado"
+    actions:
+      switch: "Cambiar Equipo"
+      switching: "Cambiando..."
+    messages:
+      switched_to: "Cambiado a %{team_name}"
+      current_team: "Equipo actual: %{team_name}"
+      no_team_selected: "Ningún equipo seleccionado"
+    errors:
+      team_not_found: "Equipo no encontrado o ya no existe"
+      unauthorized_switch: "No tienes acceso a ese equipo"
+      switch_failed: "Error al cambiar de equipo. Inténtalo de nuevo."
+      no_teams: "Aún no eres miembro de ningún equipo"
+      no_team_selected: "Debes seleccionar un equipo para acceder a esta área"
+    notifications:
+      switch_success: "Cambiado exitosamente a %{team_name}"
     index:
       title: "Mis Equipos"
       subtitle: "Gestiona tus equipos y colaboraciones"

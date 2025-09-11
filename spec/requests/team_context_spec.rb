@@ -55,7 +55,7 @@ RSpec.describe "Team Context", type: :request do
       post switch_team_path(team_id: other_team.id)
 
       expect(response).to redirect_to(root_path)
-      expect(flash[:alert]).to eq(I18n.t("pundit.not_authorized"))
+      expect(flash[:alert]).to eq(I18n.t("teams.errors.unauthorized_switch"))
       expect(session[:current_team_id]).not_to eq(other_team.id)
     end
   end

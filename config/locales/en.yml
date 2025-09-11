@@ -187,8 +187,21 @@ en:
   # Teams
   teams:
     no_team: "No team selected"
+    actions:
+      switch: "Switch Team"
+      switching: "Switching..."
+    messages:
+      switched_to: "Switched to %{team_name}"
+      current_team: "Current team: %{team_name}"
+      no_team_selected: "No team selected"
     errors:
+      team_not_found: "Team not found or no longer exists"
+      unauthorized_switch: "You don't have access to that team"
+      switch_failed: "Failed to switch teams. Please try again."
+      no_teams: "You're not a member of any teams yet"
       no_team_selected: "You must select a team to access this area"
+    notifications:
+      switch_success: "Successfully switched to %{team_name}"
     index:
       title: "My Teams"
       subtitle: "Manage your teams and collaborations"

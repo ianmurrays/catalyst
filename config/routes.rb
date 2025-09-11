@@ -34,7 +34,8 @@ Rails.application.routes.draw do
   get "invitations/:token", to: "invitations#accept", as: :accept_invitation
 
   # Team switching (Phase 5)
-  post "teams/switch/:team_id", to: "team_switch#update", as: :switch_team
+  post "teams/switch/:team_id", to: "team_switch#update", as: :switch_team,
+       constraints: { team_id: /\d+/ }
 
   # Defines the root path route ("/")
   root "pages#home"
