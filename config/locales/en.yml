@@ -226,6 +226,7 @@ en:
     new:
       title: "Create New Team"
       subtitle: "Start a new team and invite collaborators"
+      creation_disabled: "Team creation is currently disabled"
     edit:
       title: "Edit Team"
       subtitle: "Update your team information"
@@ -247,6 +248,7 @@ en:
       deleted: "Team deleted successfully"
       restored: "Team restored successfully"
       not_authorized: "You don't have permission to perform this action"
+      creation_disabled: "Team creation is currently disabled"
 
   # Onboarding (Phase 6)
   onboarding:

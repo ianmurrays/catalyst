@@ -15,12 +15,26 @@ class TeamsController < ApplicationController
 
   def new
     @team = Team.new
+    
+    # Check configuration before authorization
+    unless Rails.configuration.respond_to?(:allow_team_creation) && Rails.configuration.allow_team_creation
+      flash[:alert] = t("teams.flash.creation_disabled")
+      redirect_to teams_path and return
+    end
+    
     authorize @team
     render Views::Teams::New.new(team: @team)
   end
 
   def create
     @team = Team.new(team_params)
+    
+    # Check configuration before authorization
+    unless Rails.configuration.respond_to?(:allow_team_creation) && Rails.configuration.allow_team_creation
+      flash[:alert] = t("teams.flash.creation_disabled")
+      redirect_to teams_path and return
+    end
+    
     authorize @team
 
     if @team.save

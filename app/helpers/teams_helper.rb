@@ -65,6 +65,13 @@ module TeamsHelper
     }
   end
 
+  # Configuration helper for team creation (Phase 8)
+  def can_create_teams?
+    Rails.configuration.respond_to?(:allow_team_creation) ?
+      Rails.configuration.allow_team_creation :
+      true # default to true if configuration not set
+  end
+
   private
 
   def avatar_size_classes(size)
