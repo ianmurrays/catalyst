@@ -9,6 +9,10 @@ Catalyst uses a comprehensive testing stack designed for Rails applications with
 - **Shoulda Matchers** - Simplified model testing
 - **Rails Controller Testing** - Controller specification helpers
 
+## Debugging and Logging
+
+You're very much **encouraged** to add logging to the code in order to figure out issues with it, understand flows, and fix specs, etc.
+
 ## Quick Commands
 
 ```bash
