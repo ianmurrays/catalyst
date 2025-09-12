@@ -30,7 +30,7 @@ RSpec.describe "Onboarding Flows", type: :request do
       it "redirects new user to onboarding and allows team creation" do
         # Login as user without teams
         login_as_user(user)
-        
+
         # Visit onboarding page directly (simulating redirect from auth)
         get onboarding_path
 
@@ -127,7 +127,7 @@ RSpec.describe "Onboarding Flows", type: :request do
 
       # Step 3: Invitation should be accepted
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("You've joined")
+      expect(response.body).to include("You&#39;ve joined the team!")
       expect(team.has_member?(User.find_by(auth0_sub: user.auth0_sub))).to be true
     end
   end
@@ -139,7 +139,7 @@ RSpec.describe "Onboarding Flows", type: :request do
 
     before do
       allow(Teams::InvitationService).to receive(:digest).with(raw_token).and_return(invitation.token)
-      
+
       # Login as existing user
       simulate_auth_callback({
         "email" => existing_user.email,
@@ -153,7 +153,7 @@ RSpec.describe "Onboarding Flows", type: :request do
       get accept_invitation_path(token: raw_token)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("You've joined")
+      expect(response.body).to include("You&#39;ve joined the team!")
       expect(team.has_member?(existing_user)).to be true
     end
   end
@@ -192,17 +192,11 @@ RSpec.describe "Onboarding Flows", type: :request do
     context "user visits onboarding but has teams" do
       it "redirects to teams path" do
         # Login user with teams
-        post "/auth/auth0/callback", env: {
-          "omniauth.auth" => OmniAuth::AuthHash.new({
-            "extra" => {
-              "raw_info" => {
-                "email" => existing_user_with_team.email,
-                "name" => existing_user_with_team.display_name,
-                "sub" => existing_user_with_team.auth0_sub
-              }
-            }
-          })
-        }
+        simulate_auth_callback({
+          "email" => existing_user_with_team.email,
+          "name" => existing_user_with_team.display_name,
+          "sub" => existing_user_with_team.auth0_sub
+        })
 
         # Try to access onboarding
         get onboarding_path
