@@ -17,13 +17,13 @@ RSpec.describe "Team Configuration" do
     context "when configuration changes" do
       it "reflects changes immediately" do
         original = Rails.configuration.allow_team_creation
-        
+
         Rails.configuration.allow_team_creation = false
         expect(Rails.configuration.allow_team_creation).to be false
-        
+
         Rails.configuration.allow_team_creation = true
         expect(Rails.configuration.allow_team_creation).to be true
-        
+
         # Restore
         Rails.configuration.allow_team_creation = original
       end

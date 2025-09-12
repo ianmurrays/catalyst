@@ -82,7 +82,7 @@ RSpec.describe Auth0Controller, type: :controller do
       context "when user has teams" do
         let!(:user_with_teams) { create(:user, auth0_sub: "auth0|123456789") }
         let!(:team) { create(:team) }
-        
+
         before do
           create(:membership, user: user_with_teams, team: team, role: :owner)
         end

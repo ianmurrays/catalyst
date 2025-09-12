@@ -26,10 +26,10 @@ RSpec.describe "Team Creation Configuration", type: :request do
       it "redirects to teams index with error message" do
         with_team_creation_allowed(false) do
           get new_team_path
-          
+
           expect(response).to redirect_to(teams_path)
           follow_redirect!
-          
+
           expect(response.body).to include(I18n.t("teams.flash.creation_disabled"))
         end
       end
@@ -75,7 +75,7 @@ RSpec.describe "Team Creation Configuration", type: :request do
       with_team_creation_allowed(false) do
         get new_team_path
         expect(response).to redirect_to(teams_path)
-        
+
         get new_team_path
         expect(response).to redirect_to(teams_path)
       end
@@ -84,7 +84,7 @@ RSpec.describe "Team Creation Configuration", type: :request do
 
   describe "helper method integration" do
     let(:teams_controller) { TeamsController.new }
-    
+
     before do
       teams_controller.instance_variable_set(:@current_user, user)
     end
