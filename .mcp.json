@@ -8,6 +8,16 @@
         "@upstash/context7-mcp"
       ],
       "env": {}
+    },
+    "ruby-ui": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "sitemcp",
+        "https://rubyui.com",
+        "-m",
+        "/docs/**"
+      ]
     }
   }
 }
