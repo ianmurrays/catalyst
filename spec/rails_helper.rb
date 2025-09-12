@@ -41,6 +41,13 @@ RSpec.configure do |config|
   # Include ActionDispatch::TestProcess for fixture_file_upload
   config.include ActionDispatch::TestProcess::FixtureFile
 
+  # Configure OmniAuth for testing
+  config.before(:each) do
+    # Reset OmniAuth configuration for each test
+    OmniAuth.config.test_mode = false
+    OmniAuth.config.mock_auth[:auth0] = nil
+  end
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')
