@@ -76,6 +76,7 @@ gem "factory_bot_rails", "~> 6.5", group: :test
 
 gem "shoulda-matchers", "~> 6.5", group: :test
 gem "rails-controller-testing", "~> 1.0", group: :test
+gem "simplecov", require: false, group: :test
 
 # StoreModel for embedded JSON models
 gem "store_model", "~> 2.3"
