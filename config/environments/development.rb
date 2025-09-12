@@ -71,5 +71,5 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   # Team feature configuration
-  config.allow_team_creation = false
+  config.allow_team_creation = true
 end
