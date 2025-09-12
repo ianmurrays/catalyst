@@ -55,10 +55,13 @@ class Views::Onboarding::Show < Views::Base
         label(class: "block text-sm font-medium mb-2", for: "team_name") do
           t("teams.form.name_label")
         end
-        form.text_field :name,
+        render RubyUI::Input::Input.new(
+          name: "team[name]",
+          id: "team_name",
           placeholder: t("teams.form.name_placeholder"),
           value: @team&.name,
           class: "w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+        )
 
         if @team&.errors&.[](:name)&.any?
           div(class: "text-sm text-destructive mt-1") do
